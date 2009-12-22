@@ -16,7 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 test:
-	nosetests --with-coverage --with-doctest
+	nosetests --cover-erase --with-coverage --with-doctest \
+	    --cover-package=mygpoclient
 
 clean:
 	find -name '*.pyc' -exec rm '{}' \;
