@@ -128,7 +128,11 @@ class Locator(object):
         >>> locator.download_episode_actions_uri(since=54321, device_id='ipod')
         'http://my.gpodder.org/api/1/episodes/steve.json?since=54321&device=ipod'
         """
+        if podcast is not None and device_id is not None:
+            raise ValueError('must not specify both "podcast" and "device_id"')
+
         filename = self._username+'.json'
+
         params = []
         if since is not None:
             since = str(self._convert_since(since))

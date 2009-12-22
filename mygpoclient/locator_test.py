@@ -32,3 +32,10 @@ class Test_Exceptions(unittest.TestCase):
         self.assertRaises(ValueError,
                 self.locator.subscription_updates_uri, 'ipod', 'anytime')
 
+    def test_download_episode_actions_uri_exceptions(self):
+        """Test if using both "podcast" and "device_id" raises a ValueError"""
+        self.assertRaises(ValueError,
+                self.locator.download_episode_actions_uri,
+                podcast='http://example.org/episodes.rss',
+                device_id='gpodder')
+
