@@ -1,0 +1,66 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# my.gpodder.org API Client
+# Copyright (C) 2009 Thomas Perl
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+import sys
+import getpass
+
+import mygpoclient
+
+from mygpoclient import simple
+
+def usage():
+    print >>sys.stderr, """
+    Usage: python %s {get|put} {username} {device_id} [host]
+    """ % (sys.argv[0],)
+    sys.exit(1)
+
+if __name__ == '__main__':
+    # Use the default host if not specified
+    if len(sys.argv) == 4:
+        sys.argv.append(mygpoclient.HOST)
+
+    # Check for valid arguments
+    if len(sys.argv) != 5:
+        usage()
+
+    # Split arguments in local variables
+    progname, subcommand, username, device_id, host = sys.argv
+
+    # Check for valid subcommand
+    if subcommand not in ('get', 'put'):
+        usage()
+
+    # Read password from the terminal
+    password = getpass.getpass("%s@%s's password: " % (username, host))
+
+    # Create the client object with username/password/host set
+    client = simple.SimpleClient(username, password, host)
+
+    if subcommand == 'get':
+        # Get the URL list and print it, one per line
+        print '\n'.join(client.get_subscriptions(device_id))
+    elif subcommand == 'put':
+        # Read the URL list from standard input and upload it
+        print >>sys.stderr, 'Enter podcast URLs, one per line.'
+        urls = sys.stdin.read().splitlines()
+        if client.put_subscriptions(device_id, urls):
+            print >>sys.stderr, 'Upload successful.'
+        else:
+            print >>sys.stderr, 'Could not upload list.'
+
