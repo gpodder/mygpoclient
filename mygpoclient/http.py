@@ -18,8 +18,6 @@
 import urllib2
 import mygpoclient
 
-password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
-
 class SimpleHttpPasswordManager(urllib2.HTTPPasswordMgr):
     """Simplified password manager for urllib2
 
