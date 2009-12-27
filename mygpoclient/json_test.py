@@ -44,6 +44,10 @@ class Test_JsonClient(unittest.TestCase):
         self.mock_setHttpResponse('[1,2,3,6,7]')
         self.assertEquals(self.client.GET('/'), [1,2,3,6,7])
 
+    def test_parseResponse_emptyString_returnsNone(self):
+        self.mock_setHttpResponse('')
+        self.assertEquals(self.client.GET('/'), None)
+
     def test_invalidContent_raisesJsonException(self):
         self.mock_setHttpResponse('this is not a valid json string')
         self.assertRaises(json.JsonException, self.client.GET, '/')

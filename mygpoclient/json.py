@@ -34,12 +34,42 @@ class JsonClient(http.HttpClient):
     def __init__(self, username=None, password=None):
         http.HttpClient.__init__(self, username, password)
 
+    def encode(self, data):
+        """Encodes a object into its JSON string repesentation
+
+        >>> client = JsonClient()
+        >>> client.encode(None)
+        ''
+        >>> client.encode([1,2,3])
+        '[1, 2, 3]'
+        >>> client.encode(42)
+        '42'
+        """
+        if data is None:
+            return ''
+        else:
+            return json.dumps(data)
+
+    def decode(self, data):
+        """Decodes a response string to a Python object
+
+        >>> client = JsonClient()
+        >>> client.decode('')
+        >>> client.decode('[1,2,3]')
+        [1, 2, 3]
+        >>> client.decode('42')
+        42
+        """
+        if data == '':
+            return None
+        else:
+            try:
+                return json.loads(data)
+            except ValueError, ve:
+                raise JsonException('Value error while parsing response: ' + data)
+
     def _request(self, method, uri, data):
-        data = json.dumps(data)
+        data = self.encode(data)
         response = http.HttpClient._request(self, method, uri, data)
-        try:
-            response = json.loads(response)
-        except ValueError, ve:
-            raise JsonException('Value error while parsing response')
-        return response
+        return self.decode(response)
 
