@@ -60,7 +60,7 @@ class PodcastDevice(object):
 
     def __init__(self, device_id, caption, type, subscriptions):
         # Check if the device type is valid
-        if type not in self.VALID_ACTIONS:
+        if type not in self.VALID_TYPES:
             raise ValueError('Invalid device type (see VALID_TYPES)')
 
         # Check if subsciptions is a numeric value
