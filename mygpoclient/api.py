@@ -75,6 +75,16 @@ class PodcastDevice(object):
         self.type = type
         self.subscriptions = int(subscriptions)
 
+    def __str__(self):
+        """String representation of this device
+
+        >>> device = PodcastDevice('mygpo', 'My Device', 'mobile', 10)
+        >>> print device
+        PodcastDevice('mygpo', 'My Device', 'mobile', 10)
+        """
+        return '%s(%r, %r, %r, %r)' % (self.__class__.__name__,
+                self.device_id, self.caption, self.type, self.subscriptions)
+
     @classmethod
     def from_dictionary(cls, d):
         return cls(d['id'], d['caption'], d['type'], d['subscriptions'])
@@ -152,6 +162,17 @@ class MygPodderClient(simple.SimpleClient):
     Advanced API of my.gpodder.org. See the SimpleClient class
     for a smaller class that only implements the Simple API.
     """
+
+    def get_subscriptions(self, device):
+        # Overloaded to accept PodcastDevice objects as arguments
+        device = getattr(device, 'device_id', device)
+        return simple.SimpleClient.get_subscriptions(self, device)
+
+    def put_subscriptions(self, device, urls):
+        # Overloaded to accept PodcastDevice objects as arguments
+        device = getattr(device, 'device_id', device)
+        return simple.SimpleClient.put_subscriptions(self, device, urls)
+
     def update_subscriptions(self, device_id, add_urls=[], remove_urls=[]):
         """Update the subscription list for a given device.
 

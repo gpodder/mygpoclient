@@ -204,6 +204,19 @@ class Test_MygPodderClient(unittest.TestCase):
         """Same as has_put_json_data, but require a POST request"""
         return self.has_put_json_data(data, required_method='POST')
 
+    def test_getSubscriptions_withPodcastDevice(self):
+        self.set_http_response_value('[]')
+        device = api.PodcastDevice('manatee', 'My Device', 'mobile', 20)
+        self.assertEquals(self.client.get_subscriptions(device), [])
+        self.assert_http_request_count(1)
+
+    def test_putSubscriptions_withPodcastDevice(self):
+        self.set_http_response_value('')
+        device = api.PodcastDevice('manatee', 'My Device', 'mobile', 20)
+        self.assertEquals(self.client.put_subscriptions(device, self.ADD), True)
+        self.assert_http_request_count(1)
+        self.assert_(self.has_put_json_data(self.ADD))
+
     def test_updateSubscriptions_raisesValueError_onInvalidAddList(self):
         self.assertRaises(ValueError,
                 self.client.update_subscriptions, DEVICE_ID_2,
