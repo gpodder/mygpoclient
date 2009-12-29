@@ -34,15 +34,15 @@ class JsonClient(http.HttpClient):
     def __init__(self, username=None, password=None):
         http.HttpClient.__init__(self, username, password)
 
-    def encode(self, data):
+    @staticmethod
+    def encode(data):
         """Encodes a object into its JSON string repesentation
 
-        >>> client = JsonClient()
-        >>> client.encode(None)
+        >>> JsonClient.encode(None)
         ''
-        >>> client.encode([1,2,3])
+        >>> JsonClient.encode([1,2,3])
         '[1, 2, 3]'
-        >>> client.encode(42)
+        >>> JsonClient.encode(42)
         '42'
         """
         if data is None:
@@ -50,14 +50,14 @@ class JsonClient(http.HttpClient):
         else:
             return json.dumps(data)
 
-    def decode(self, data):
+    @staticmethod
+    def decode(data):
         """Decodes a response string to a Python object
 
-        >>> client = JsonClient()
-        >>> client.decode('')
-        >>> client.decode('[1,2,3]')
+        >>> JsonClient.decode('')
+        >>> JsonClient.decode('[1,2,3]')
         [1, 2, 3]
-        >>> client.decode('42')
+        >>> JsonClient.decode('42')
         42
         """
         if data == '':
