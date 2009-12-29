@@ -17,6 +17,7 @@
 
 import mygpoclient
 
+from mygpoclient import util
 from mygpoclient import simple
 
 # Additional error types for the advanced API client
@@ -103,11 +104,15 @@ class EpisodeAction(object):
 
         # Check the format of the timestamp value
         if timestamp is not None:
-            pass # FIXME: Check for valid XML timestamp
+            if util.iso8601_to_datetime(timestamp) is None:
+                raise ValueError('Timestamp has to be in ISO 8601 format')
 
         # Check the format of the position value
         if position is not None:
-            pass # FIXME: Check for valid HH:MM:SS timestamp
+            try:
+                util.position_to_seconds(position)
+            except ValueError:
+                raise ValueError('Position has to be in HH:MM:SS format')
 
         self.podcast = podcast
         self.episode = episode
