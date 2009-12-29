@@ -38,8 +38,8 @@ class FakeJsonClient(object):
         return self
 
     def _request(self, method, uri, data):
-        data = json.JsonClient.encode(data)
         self.requests.append((method, uri, data))
+        data = json.JsonClient.encode(data)
         return json.JsonClient.decode(self.response_value)
 
     def GET(self, uri):

@@ -182,6 +182,15 @@ class Test_MygPodderClient(unittest.TestCase):
     def assert_http_request_count(self, count):
         self.assertEquals(len(self.fake_client.requests), count)
 
+    def has_put_json_data(self, data):
+        """Returns True if the FakeJsonClient has received the given data"""
+        for method, uri, sent in self.fake_client.requests:
+            if method == 'PUT':
+                self.assertEquals(sent, data)
+                return True
+
+        return False
+
     def test_updateSubscriptions_returnsTimestamp(self):
         self.set_http_response_value("""
         {"timestamp": 1262103016}
@@ -235,12 +244,38 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEquals(changes.since, self.SINCE)
         self.assert_http_request_count(1)
 
-    def test_updateDeviceSettings_returnsTrue(self):
+    def test_updateDeviceSettings_withNothing(self):
+        self.set_http_response_value('')
+        result = self.client.update_device_settings(DEVICE_ID_1)
+        self.assertEquals(result, True)
+        self.assert_http_request_count(1)
+        self.assert_(self.has_put_json_data({}))
+
+    def test_updateDeviceSettings_withCaption(self):
+        self.set_http_response_value('')
+        result = self.client.update_device_settings(DEVICE_ID_1,
+                caption='Poodonkis')
+        self.assertEquals(result, True)
+        self.assert_http_request_count(1)
+        self.assert_(self.has_put_json_data({'caption': 'Poodonkis'}))
+
+    def test_updateDeviceSettings_withType(self):
+        self.set_http_response_value('')
+        result = self.client.update_device_settings(DEVICE_ID_1,
+                type='desktop')
+        self.assertEquals(result, True)
+        self.assert_http_request_count(1)
+        self.assert_(self.has_put_json_data({'type': 'desktop'}))
+
+    def test_updateDeviceSettings_withCaptionAndType(self):
         self.set_http_response_value('')
         result = self.client.update_device_settings(DEVICE_ID_1,
                 'My Unit Testing Device', 'desktop')
         self.assertEquals(result, True)
         self.assert_http_request_count(1)
+        self.assert_(self.has_put_json_data({
+            'caption': 'My Unit Testing Device',
+            'type': 'desktop'}))
 
     def test_getDevices_raisesInvalidResponse_onEmptyResponse(self):
         self.set_http_response_value('')

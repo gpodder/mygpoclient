@@ -203,7 +203,12 @@ class MygPodderClient(simple.SimpleClient):
         Returns True if the request succeeded, False otherwise.
         """
         uri = self._locator.device_settings_uri(device_id)
-        return False
+        data = {}
+        if caption is not None:
+            data['caption'] = caption
+        if type is not None:
+            data['type'] = type
+        return (self._client.PUT(uri, data) is None)
 
     def get_devices(self):
         """Returns a list of this user's PodcastDevice objects
