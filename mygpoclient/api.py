@@ -180,7 +180,21 @@ class MygPodderClient(simple.SimpleClient):
         Returns the timestamp that can be used for retrieving changes.
         """
         uri = self._locator.upload_episode_actions_uri()
-        return 0
+        actions = [action.to_dictionary() for action in actions]
+        response = self._client.POST(uri, actions)
+
+        if response is None:
+            raise InvalidResponse('Got empty response')
+
+        if 'timestamp' not in response:
+            raise InvalidResponse('Response does not contain timestamp')
+
+        try:
+            since = int(response['timestamp'])
+        except ValueError:
+            raise InvalidResponse('Invalid value for timestamp in response')
+
+        return since
 
     def download_episode_actions(self, since=None,
             podcast=None, device_id=None):
@@ -193,6 +207,9 @@ class MygPodderClient(simple.SimpleClient):
         uri = self._locator.download_episode_actions_uri(since,
                 podcast, device_id)
         data = self._client.GET(uri)
+
+        if data is None:
+            raise InvalidResponse('Got empty response')
 
         if 'actions' not in data:
             raise InvalidResponse('Response does not contain actions')

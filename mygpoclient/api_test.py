@@ -167,6 +167,11 @@ class Test_MygPodderClient(unittest.TestCase):
             api.EpisodeAction(FEED_URL_2, EPISODE_URL_3, 'play'),
             api.EpisodeAction(FEED_URL_2, EPISODE_URL_4, 'delete'),
     ]
+    ACTIONS_AS_JSON_UPLOAD = [
+            {'podcast': FEED_URL_1, 'episode': EPISODE_URL_1, 'action': 'download'},
+            {'podcast': FEED_URL_2, 'episode': EPISODE_URL_3, 'action': 'play'},
+            {'podcast': FEED_URL_2, 'episode': EPISODE_URL_4, 'action': 'delete'},
+    ]
     USERNAME = 'user01'
     PASSWORD = 's3cret'
     SINCE = 1262103016
@@ -182,14 +187,18 @@ class Test_MygPodderClient(unittest.TestCase):
     def assert_http_request_count(self, count):
         self.assertEquals(len(self.fake_client.requests), count)
 
-    def has_put_json_data(self, data):
+    def has_put_json_data(self, data, required_method='PUT'):
         """Returns True if the FakeJsonClient has received the given data"""
         for method, uri, sent in self.fake_client.requests:
-            if method == 'PUT':
+            if method == required_method:
                 self.assertEquals(sent, data)
                 return True
 
         return False
+
+    def has_posted_json_data(self, data):
+        """Same as has_put_json_data, but require a POST request"""
+        return self.has_put_json_data(data, required_method='POST')
 
     def test_updateSubscriptions_returnsTimestamp(self):
         self.set_http_response_value("""
@@ -217,6 +226,23 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEquals(changes.since, self.SINCE)
         self.assert_http_request_count(1)
 
+    def test_uploadEpisodeActions_raisesInvalidResponse_onEmptyResponse(self):
+        self.set_http_response_value('')
+        self.assertRaises(api.InvalidResponse,
+                self.client.upload_episode_actions, self.ACTIONS)
+
+    def test_uploadEpisodeActions_raisesInvalidResponse_onMissingTimestamp(self):
+        self.set_http_response_value('{}')
+        self.assertRaises(api.InvalidResponse,
+                self.client.upload_episode_actions, self.ACTIONS)
+
+    def test_uploadEpisodeActions_raisesInvalidResponse_onInvalidTimestamp(self):
+        self.set_http_response_value("""
+        {"timestamp": "just nothin'.."}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.upload_episode_actions, self.ACTIONS)
+
     def test_uploadEpisodeActions_returnsTimestamp(self):
         self.set_http_response_value("""
         {"timestamp": 1262103016}
@@ -224,6 +250,11 @@ class Test_MygPodderClient(unittest.TestCase):
         result = self.client.upload_episode_actions(self.ACTIONS)
         self.assertEquals(result, self.SINCE)
         self.assert_http_request_count(1)
+        self.assert_(self.has_posted_json_data(self.ACTIONS_AS_JSON_UPLOAD))
+
+    def test_downloadEpisodeActions_raisesInvalidResponse_onEmptyResponse(self):
+        self.set_http_response_value('')
+        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
 
     def test_downloadEpisodeActions_raisesInvalidResponse_onMissingActions(self):
         self.set_http_response_value("""
