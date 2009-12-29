@@ -162,6 +162,10 @@ class Test_MygPodderClient(unittest.TestCase):
             FEED_URL_2,
             FEED_URL_4,
     ]
+    ADD_REMOVE_AS_JSON_UPLOAD = {
+            'add': [FEED_URL_1, FEED_URL_3],
+            'remove': [FEED_URL_2, FEED_URL_4],
+    }
     ACTIONS = [
             api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'download'),
             api.EpisodeAction(FEED_URL_2, EPISODE_URL_3, 'play'),
@@ -200,13 +204,45 @@ class Test_MygPodderClient(unittest.TestCase):
         """Same as has_put_json_data, but require a POST request"""
         return self.has_put_json_data(data, required_method='POST')
 
+    def test_updateSubscriptions_raisesValueError_onInvalidAddList(self):
+        self.assertRaises(ValueError,
+                self.client.update_subscriptions, DEVICE_ID_2,
+                [FEED_URL_1, 123, FEED_URL_3], self.REMOVE)
+
+    def test_updateSubscriptions_raisesValueError_onInvalidRemoveList(self):
+        self.assertRaises(ValueError,
+                self.client.update_subscriptions, DEVICE_ID_2,
+                self.ADD, [FEED_URL_2, FEED_URL_4, [1,2,3]])
+
+    def test_updateSubscriptions_raisesInvalidResponse_onEmptyResponse(self):
+        self.set_http_response_value('')
+        self.assertRaises(api.InvalidResponse,
+                self.client.update_subscriptions, DEVICE_ID_1,
+                self.ADD, self.REMOVE)
+
+    def test_updateSubscriptions_raisesInvalidResponse_onMissingTimestamp(self):
+        self.set_http_response_value('{}')
+        self.assertRaises(api.InvalidResponse,
+                self.client.update_subscriptions, DEVICE_ID_1,
+                self.ADD, self.REMOVE)
+
+    def test_updateSubscriptions_raisesInvalidResponse_onInvalidTimestamp(self):
+        self.set_http_response_value("""
+        {"timestamp": "not gonna happen"}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.update_subscriptions, DEVICE_ID_1,
+                self.ADD, self.REMOVE)
+
     def test_updateSubscriptions_returnsTimestamp(self):
         self.set_http_response_value("""
         {"timestamp": 1262103016}
         """)
-        result = self.client.update_subscriptions(DEVICE_ID_1, self.ADD, self.REMOVE)
+        result = self.client.update_subscriptions(DEVICE_ID_1,
+                self.ADD, self.REMOVE)
         self.assertEquals(result, self.SINCE)
         self.assert_http_request_count(1)
+        self.assert_(self.has_posted_json_data(self.ADD_REMOVE_AS_JSON_UPLOAD))
 
     def test_pullSubscriptions_raisesInvalidResponse_onEmptyResponse(self):
         self.set_http_response_value('')

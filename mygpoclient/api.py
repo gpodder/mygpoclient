@@ -158,7 +158,28 @@ class MygPodderClient(simple.SimpleClient):
         Returns the timestamp that can be used for retrieving changes.
         """
         uri = self._locator.add_remove_subscriptions_uri(device_id)
-        return 0
+
+        if not all(isinstance(x, str) for x in add_urls):
+            raise ValueError('add_urls must be a list of strings')
+
+        if not all(isinstance(x, str) for x in remove_urls):
+            raise ValueError('remove_urls must be a list of strings')
+
+        data = {'add': add_urls, 'remove': remove_urls}
+        response = self._client.POST(uri, data)
+
+        if response is None:
+            raise InvalidResponse('Got empty response')
+
+        if 'timestamp' not in response:
+            raise InvalidResponse('Response does not contain timestamp')
+
+        try:
+            since = int(response['timestamp'])
+        except ValueError:
+            raise InvalidResponse('Invalid value for timestamp in response')
+
+        return since
 
     def pull_subscriptions(self, device_id, since=None):
         """Downloads subscriptions since the time of the last update
