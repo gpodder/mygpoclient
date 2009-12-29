@@ -125,6 +125,11 @@ class EpisodeAction(object):
         self.timestamp = timestamp
         self.position = position
 
+    @classmethod
+    def from_dictionary(cls, d):
+        return cls(d['podcast'], d['episode'], d['action'],
+                   d.get('device'), d.get('timestamp'), d.get('position'))
+
     def to_dictionary(self):
         d = {}
 
@@ -187,7 +192,27 @@ class MygPodderClient(simple.SimpleClient):
         """
         uri = self._locator.download_episode_actions_uri(since,
                 podcast, device_id)
-        return EpisodeActionChanges([], 0)
+        data = self._client.GET(uri)
+
+        if 'actions' not in data:
+            raise InvalidResponse('Response does not contain actions')
+
+        if 'timestamp' not in data:
+            raise InvalidResponse('Response does not contain timestamp')
+
+        try:
+            since = int(data['timestamp'])
+        except ValueError:
+            raise InvalidResponse('Invalid value for timestamp: ' +
+                    data['timestamp'])
+
+        dicts = data['actions']
+        try:
+            actions = [EpisodeAction.from_dictionary(d) for d in dicts]
+        except KeyError:
+            raise InvalidResponse('Missing keys in action list response')
+
+        return EpisodeActionChanges(actions, since)
 
     def update_device_settings(self, device_id, caption=None, type=None):
         """Update the description of a device on the server

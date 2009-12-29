@@ -225,11 +225,44 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEquals(result, self.SINCE)
         self.assert_http_request_count(1)
 
+    def test_downloadEpisodeActions_raisesInvalidResponse_onMissingActions(self):
+        self.set_http_response_value("""
+        {"timestamp": 1262103016}
+        """)
+        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
+
+    def test_downloadEpisodeActions_raisesInvalidResponse_onMissingTimestamp(self):
+        self.set_http_response_value("""
+        {"actions": [
+            {"podcast": "a", "episode": "b", "action": "download"},
+            {"podcast": "x", "episode": "y", "action": "play"}
+        ]}
+        """)
+        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
+
+    def test_downloadEpisodeActions_raisesInvalidResponse_onInvalidTimestamp(self):
+        self.set_http_response_value("""
+        {"actions": [
+            {"podcast": "a", "episode": "b", "action": "download"},
+            {"podcast": "x", "episode": "y", "action": "play"}
+        ], "timestamp": "right now"}
+        """)
+        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
+
+    def test_downloadEpisodeActions_raisesInvalidResponse_onIncompleteActions(self):
+        self.set_http_response_value("""
+        {"actions": [
+            {"podcast": "a", "episode": "b", "action": "download"},
+            {"podcast": "x", "episode": "y"}
+        ], "timestamp": 1262103016}
+        """)
+        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
+
     def test_downloadEpisodeActions_returnsActionList(self):
         self.set_http_response_value("""
         {"actions": [
             {"podcast": "a", "episode": "b", "action": "download"},
-            {"podcast": "x", "episode": "y", "action": "play"},
+            {"podcast": "x", "episode": "y", "action": "play"}
         ], "timestamp": 1262103016}
         """)
         changes = self.client.download_episode_actions()
