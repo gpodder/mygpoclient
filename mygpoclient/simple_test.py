@@ -15,11 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from mygpoclient import http
 from mygpoclient import simple
+from mygpoclient import testing
 
 import unittest
-import minimock
 
 class Test_SimpleClient(unittest.TestCase):
     USERNAME = 'a'
@@ -35,22 +34,19 @@ class Test_SimpleClient(unittest.TestCase):
     """
 
     def setUp(self):
-        self.client = simple.SimpleClient(self.USERNAME, self.PASSWORD)
-
-    def tearDown(self):
-        minimock.restore()
-
-    def mock_setHttpResponse(self, value):
-        http.HttpClient._request = minimock.Mock('http.HttpClient._request')
-        http.HttpClient._request.mock_returns = value
+        self.fake_client = testing.FakeJsonClient()
+        self.client = simple.SimpleClient(self.USERNAME, self.PASSWORD,
+                client_class=self.fake_client)
 
     def test_putSubscriptions(self):
-        self.mock_setHttpResponse('')
+        self.fake_client.response_value = ''
         result = self.client.put_subscriptions(self.DEVICE_NAME, self.SUBSCRIPTIONS)
         self.assertEquals(result, True)
+        self.assertEquals(len(self.fake_client.requests), 1)
 
     def test_getSubscriptions(self):
-        self.mock_setHttpResponse(self.SUBSCRIPTIONS_JSON)
+        self.fake_client.response_value = self.SUBSCRIPTIONS_JSON
         subscriptions = self.client.get_subscriptions(self.DEVICE_NAME)
         self.assertEquals(subscriptions, self.SUBSCRIPTIONS)
+        self.assertEquals(len(self.fake_client.requests), 1)
 
