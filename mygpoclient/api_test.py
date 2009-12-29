@@ -208,15 +208,103 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEquals(result, self.SINCE)
         self.assert_http_request_count(1)
 
+    def test_pullSubscriptions_raisesInvalidResponse_onEmptyResponse(self):
+        self.set_http_response_value('')
+        self.assertRaises(api.InvalidResponse,
+                self.client.pull_subscriptions, DEVICE_ID_2)
+
+    def test_pullSubscriptions_raisesInvalidResponse_onMissingTimestamp(self):
+        self.set_http_response_value("""
+        {"add": [
+            "http://example.com/test.rss",
+            "http://feeds.example.org/1/feed.atom"
+        ],
+        "remove": [
+            "http://example.co.uk/episodes.xml",
+            "http://pod.cast/test.xml"
+        ]}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.pull_subscriptions, DEVICE_ID_2)
+
+    def test_pullSubscriptions_raisesInvalidResponse_onMissingAddList(self):
+        self.set_http_response_value("""
+        {"remove": [
+            "http://example.co.uk/episodes.xml",
+            "http://pod.cast/test.xml"
+        ],
+        "timestamp": 1262103016}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.pull_subscriptions, DEVICE_ID_2)
+
+    def test_pullSubscriptions_raisesInvalidResponse_onMissingRemoveList(self):
+        self.set_http_response_value("""
+        {"add": [
+            "http://example.com/test.rss",
+            "http://feeds.example.org/1/feed.atom"
+        ],
+        "timestamp": 1262103016}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.pull_subscriptions, DEVICE_ID_2)
+
+    def test_pullSubscriptions_raisesInvalidResponse_onInvalidTimestamp(self):
+        self.set_http_response_value("""
+        {"add": [
+            "http://example.com/test.rss",
+            "http://feeds.example.org/1/feed.atom"
+        ],
+        "remove": [
+            "http://example.co.uk/episodes.xml",
+            "http://pod.cast/test.xml"
+        ],
+        "timestamp": "should not work"}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.pull_subscriptions, DEVICE_ID_2)
+
+    def test_pullSubscriptions_raisesInvalidResponse_onInvalidAddList(self):
+        self.set_http_response_value("""
+        {"add": [
+            "http://example.com/test.rss",
+            1234,
+            "http://feeds.example.org/1/feed.atom"
+        ],
+        "remove": [
+            "http://example.co.uk/episodes.xml",
+            "http://pod.cast/test.xml"
+        ],
+        "timestamp": 1262103016}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.pull_subscriptions, DEVICE_ID_2)
+
+    def test_pullSubscriptions_raisesInvalidResponse_onInvalidRemoveList(self):
+        self.set_http_response_value("""
+        {"add": [
+            "http://example.com/test.rss",
+            "http://feeds.example.org/1/feed.atom"
+        ],
+        "remove": [
+            "http://example.co.uk/episodes.xml",
+            ["should", "not", "work", "either"],
+            "http://pod.cast/test.xml"
+        ],
+        "timestamp": 1262103016}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.pull_subscriptions, DEVICE_ID_2)
+
     def test_pullSubscriptions_returnsChangesListAndTimestamp(self):
         self.set_http_response_value("""
         {"add": [
             "http://example.com/test.rss",
-            "http://feeds.example.org/1/feed.atom",
+            "http://feeds.example.org/1/feed.atom"
         ],
         "remove": [
             "http://example.co.uk/episodes.xml",
-            "http://pod.cast/test.xml",
+            "http://pod.cast/test.xml"
         ],
         "timestamp": 1262103016}
         """)

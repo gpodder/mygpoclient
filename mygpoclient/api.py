@@ -172,7 +172,32 @@ class MygPodderClient(simple.SimpleClient):
         that can be used for future calls to this method.
         """
         uri = self._locator.subscription_updates_uri(device_id, since)
-        return SubscriptionChanges([], [], 0)
+        data = self._client.GET(uri)
+
+        if data is None:
+            raise InvalidResponse('Got empty response')
+
+        if 'add' not in data:
+            raise InvalidResponse('List of added podcasts not in response')
+
+        if 'remove' not in data:
+            raise InvalidResponse('List of removed podcasts not in response')
+
+        if 'timestamp' not in data:
+            raise InvalidResponse('Timestamp missing from response')
+
+        if not all(isinstance(x, str) for x in data['add']):
+            raise InvalidResponse('Invalid value in list of added podcasts')
+
+        if not all(isinstance(x, str) for x in data['remove']):
+            raise InvalidResponse('Invalid value in list of removed podcasts')
+
+        try:
+            since = int(data['timestamp'])
+        except ValueError:
+            raise InvalidResponse('Timestamp has invalid format in response')
+
+        return SubscriptionChanges(data['add'], data['remove'], since)
 
     def upload_episode_actions(self, actions=[]):
         """Uploads a list of EpisodeAction objects to the server
