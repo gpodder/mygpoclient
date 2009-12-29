@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import urllib2
+import cookielib
 import mygpoclient
 
 class SimpleHttpPasswordManager(urllib2.HTTPPasswordMgr):
@@ -78,12 +79,14 @@ class HttpClient(object):
     def __init__(self, username=None, password=None):
         self._username = username
         self._password = password
+        self._cookie_jar = cookielib.CookieJar()
+        cookie_handler = urllib2.HTTPCookieProcessor(self._cookie_jar)
         if username is not None and password is not None:
             password_manager = SimpleHttpPasswordManager(username, password)
             auth_handler = urllib2.HTTPBasicAuthHandler(password_manager)
-            self._opener = urllib2.build_opener(auth_handler)
+            self._opener = urllib2.build_opener(auth_handler, cookie_handler)
         else:
-            self._opener = urllib2.build_opener()
+            self._opener = urllib2.build_opener(cookie_handler)
 
     def _request(self, method, uri, data):
         """Request and exception handling
