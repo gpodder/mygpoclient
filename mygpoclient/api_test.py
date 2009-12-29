@@ -242,6 +242,23 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEquals(result, True)
         self.assert_http_request_count(1)
 
+    def test_getDevices_raisesInvalidResponse_onEmptyResponse(self):
+        self.set_http_response_value('')
+        self.assertRaises(api.InvalidResponse, self.client.get_devices)
+
+    def test_getDevices_raisesInvalidResponse_onMissingKeys(self):
+        self.set_http_response_value("""
+        [
+            {"id": "gpodder.on.my.phone",
+             "type": "mobile",
+             "subscriptions": 42},
+            {"id": "95dce59cf340123fa",
+             "caption": "The Lappy",
+             "subscriptions": 4711}
+        ]
+        """)
+        self.assertRaises(api.InvalidResponse, self.client.get_devices)
+
     def test_getDevices_returnsDeviceList(self):
         self.set_http_response_value("""
         [
@@ -252,7 +269,7 @@ class Test_MygPodderClient(unittest.TestCase):
             {"id": "95dce59cf340123fa",
              "caption": "The Lappy",
              "type": "laptop",
-             "subscriptions": 4711},
+             "subscriptions": 4711}
         ]
         """)
         devices = self.client.get_devices()

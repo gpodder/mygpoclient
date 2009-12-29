@@ -75,6 +75,10 @@ class PodcastDevice(object):
         self.type = type
         self.subscriptions = int(subscriptions)
 
+    @classmethod
+    def from_dictionary(cls, d):
+        return cls(d['id'], d['caption'], d['type'], d['subscriptions'])
+
 class EpisodeAction(object):
     """This class encapsulates an episode action
 
@@ -208,7 +212,14 @@ class MygPodderClient(simple.SimpleClient):
         list to the user or to determine device IDs to pull
         the subscription list from.
         """
-        return []
+        uri = self._locator.device_list_uri()
+        dicts = self._client.GET(uri)
+        if dicts is None:
+            raise InvalidResponse('No response received')
 
+        try:
+            return [PodcastDevice.from_dictionary(d) for d in dicts]
+        except KeyError:
+            raise InvalidResponse('Missing keys in device list response')
 
 
