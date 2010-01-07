@@ -19,9 +19,16 @@ test:
 	nosetests --cover-erase --with-coverage --with-doctest \
 	    --cover-package=mygpoclient
 
+docs:
+	epydoc -n 'my.gpodder.org API Client Library' -o docs/ mygpoclient -v --exclude='.*_test'
+
+upload-docs: clean docs
+	rsync -rpav --delete-after docs/ dev.gpodder.org:/var/www/mygpoclient-apidocs/
+
 clean:
 	find -name '*.pyc' -exec rm '{}' \;
 	rm -f .coverage
+	rm -rf docs/
 
-.PHONY: test clean
+.PHONY: test docs clean
 

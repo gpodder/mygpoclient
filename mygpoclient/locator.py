@@ -111,8 +111,8 @@ class Locator(object):
 
         Both "podcast" and "device_id" are optional and exclusive:
 
-            "podcast" should be a podcast URL
-            "device_id" should be a device ID
+        "podcast" should be a podcast URL
+        "device_id" should be a device ID
 
         >>> locator = Locator('steve')
         >>> locator.download_episode_actions_uri()

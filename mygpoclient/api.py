@@ -28,9 +28,9 @@ class SubscriptionChanges(object):
     """Container for subscription changes
 
     Attributes:
-        add - A list of URLs that have been added
-        remove - A list of URLs that have been removed
-        since - A timestamp value for use in future requests
+    add - A list of URLs that have been added
+    remove - A list of URLs that have been removed
+    since - A timestamp value for use in future requests
     """
     def __init__(self, add, remove, since):
         self.add = add
@@ -41,8 +41,8 @@ class EpisodeActionChanges(object):
     """Container for added episode actions
 
     Attributes:
-        actions - A list of EpisodeAction objects
-        since - A timestamp value for use in future requests
+    actions - A list of EpisodeAction objects
+    since - A timestamp value for use in future requests
     """
     def __init__(self, actions, since):
         self.actions = actions
@@ -52,10 +52,10 @@ class PodcastDevice(object):
     """This class encapsulates a podcast device
 
     Attributes:
-        device_id - The ID used to refer to this device
-        caption - A user-defined "name" for this device
-        type - A valid type of podcast device (see VALID_TYPES)
-        subscriptions - The number of podcasts this device is subscribed to
+    device_id - The ID used to refer to this device
+    caption - A user-defined "name" for this device
+    type - A valid type of podcast device (see VALID_TYPES)
+    subscriptions - The number of podcasts this device is subscribed to
     """
     VALID_TYPES = ('desktop', 'laptop', 'mobile', 'server', 'other')
 
@@ -93,14 +93,14 @@ class EpisodeAction(object):
     """This class encapsulates an episode action
 
     The mandatory attributes are:
-        podcast - The feed URL of the podcast
-        episode - The enclosure URL or GUID of the episode
-        action - One of 'download', 'play', 'delete' or 'new'
+    podcast - The feed URL of the podcast
+    episode - The enclosure URL or GUID of the episode
+    action - One of 'download', 'play', 'delete' or 'new'
 
     The optional attributes are:
-        device - The device_id on which the action has taken place
-        timestamp - When the action took place (in XML time format)
-        position - The current play position in HH:MM:SS format
+    device - The device_id on which the action has taken place
+    timestamp - When the action took place (in XML time format)
+    position - The current play position in HH:MM:SS format
 
     The attribute "position" is only valid for "play" action types.
     """
