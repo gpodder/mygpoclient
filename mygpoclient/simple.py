@@ -20,6 +20,48 @@ import mygpoclient
 from mygpoclient import locator
 from mygpoclient import json
 
+class Podcast(object):
+    """Container class for a podcast
+
+    Encapsulates the metadata for a podcast.
+
+    Attributes:
+    url - The URL of the podcast feed
+    title - The title of the podcast
+    description - The description of the podcast
+    """
+    REQUIRED_FIELDS = ('url', 'title', 'description')
+
+    def __init__(self, url, title, description):
+        self.url = url
+        self.title = title
+        self.description = description
+
+    @classmethod
+    def from_dict(cls, d):
+        for key in cls.REQUIRED_FIELDS:
+            if key not in d:
+                raise ValueError('Missing keys for toplist podcast')
+
+        return cls(*(d.get(k) for k in cls.REQUIRED_FIELDS))
+
+    def __eq__(self, other):
+        """Test two Podcast objects for equality
+
+        >>> Podcast('a', 'b', 'c') == Podcast('a', 'b', 'c')
+        True
+        >>> Podcast('a', 'b', 'c') == Podcast('x', 'y', 'z')
+        False
+        >>> Podcast('a', 'b', 'c') == 'a'
+        False
+        """
+        if not isinstance(other, self.__class__):
+            return False
+
+        return all(getattr(self, k) == getattr(other, k) \
+                for k in self.REQUIRED_FIELDS)
+
+
 class SimpleClient(object):
     """Client for the my.gpodder.org Simple API
 
@@ -73,4 +115,19 @@ class SimpleClient(object):
         """
         uri = self._locator.subscriptions_uri(device_id, self.FORMAT)
         return (self._client.PUT(uri, urls) == None)
+
+    def get_suggestions(self, count=10):
+        """Get podcast suggestions for the user
+
+        Returns a list of Podcast objects that are
+        to be suggested to the user.
+
+        The parameter count is optional and if
+        specified has to be a value between 1
+        and 100 (with 10 being the default), and
+        determines how much search results are
+        returned (at maximum).
+        """
+        uri = self._locator.suggestions_uri(count, self.FORMAT)
+        return [Podcast.from_dict(x) for x in self._client.GET(uri)]
 

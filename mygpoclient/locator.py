@@ -61,6 +61,58 @@ class Locator(object):
         return os.path.join(self._simple_base,
                 'subscriptions', self._username, filename)
 
+    def toplist_uri(self, count=50, format='opml'):
+        """Get the Simple API URI for the toplist
+
+        >>> locator = Locator(None)
+        >>> locator.toplist_uri()
+        'http://my.gpodder.org/toplist/50.opml'
+        >>> locator.toplist_uri(70)
+        'http://my.gpodder.org/toplist/70.opml'
+        >>> locator.toplist_uri(10, 'json')
+        'http://my.gpodder.org/toplist/10.json'
+        """
+        if format not in self.SIMPLE_FORMATS:
+            raise ValueError('Unsupported file format')
+
+        filename = 'toplist/%(count)d.%(format)s' % locals()
+        return os.path.join(self._simple_base, filename)
+
+    def suggestions_uri(self, count=10, format='opml'):
+        """Get the Simple API URI for user suggestions
+
+        >>> locator = Locator('john')
+        >>> locator.suggestions_uri()
+        'http://my.gpodder.org/suggestions/10.opml'
+        >>> locator.suggestions_uri(50)
+        'http://my.gpodder.org/suggestions/50.opml'
+        >>> locator.suggestions_uri(70, 'json')
+        'http://my.gpodder.org/suggestions/70.json'
+        """
+        if format not in self.SIMPLE_FORMATS:
+            raise ValueError('Unsupported file format')
+
+        filename = 'suggestions/%(count)d.%(format)s' % locals()
+        return os.path.join(self._simple_base, filename)
+
+    def search_uri(self, query, format='opml'):
+        """Get the Simple API URI for podcast search
+
+        >>> locator = Locator(None)
+        >>> locator.search_uri('outlaws')
+        'http://my.gpodder.org/search.opml?q=outlaws'
+        >>> locator.search_uri(':something?', 'txt')
+        'http://my.gpodder.org/search.txt?q=%3Asomething%3F'
+        >>> locator.search_uri('software engineering', 'json')
+        'http://my.gpodder.org/search.json?q=software+engineering'
+        """
+        if format not in self.SIMPLE_FORMATS:
+            raise ValueError('Unsupported file format')
+
+        query = urllib.quote_plus(query)
+        filename = 'search.%(format)s?q=%(query)s' % locals()
+        return os.path.join(self._simple_base, filename)
+
     def add_remove_subscriptions_uri(self, device_id):
         """Get the Advanced API URI for uploading list diffs
 

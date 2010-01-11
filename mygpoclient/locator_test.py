@@ -27,6 +27,21 @@ class Test_Exceptions(unittest.TestCase):
         self.assertRaises(ValueError,
                 self.locator.subscriptions_uri, 'gpodder', 'html')
 
+    def test_toplist_uri_exceptions(self):
+        """Test if unsupported formats raise a ValueError"""
+        self.assertRaises(ValueError,
+                self.locator.toplist_uri, 10, 'html')
+
+    def test_suggestions_uri_exceptions(self):
+        """Test if unsupported formats raise a ValueError"""
+        self.assertRaises(ValueError,
+                self.locator.suggestions_uri, 20, 'jpeg')
+
+    def test_search_uri_exception(self):
+        """Test if unsupported formats raise a ValueError"""
+        self.assertRaises(ValueError,
+                self.locator.search_uri, 30, 'mp3')
+
     def test_subscription_updates_uri_exceptions(self):
         """Test if wrong "since" values raise a ValueError"""
         self.assertRaises(ValueError,
