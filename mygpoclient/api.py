@@ -24,6 +24,17 @@ from mygpoclient import simple
 class InvalidResponse(Exception): pass
 
 
+class UpdateResult(object):
+    """Container for subscription update results
+
+    Attributes:
+    update_urls - A list of (old_url, new_url) tuples
+    since - A timestamp value for use in future requests
+    """
+    def __init__(self, update_urls, since):
+        self.update_urls = update_urls
+        self.since = since
+
 class SubscriptionChanges(object):
     """Container for subscription changes
 
@@ -176,7 +187,13 @@ class MygPodderClient(simple.SimpleClient):
     def update_subscriptions(self, device_id, add_urls=[], remove_urls=[]):
         """Update the subscription list for a given device.
 
-        Returns the timestamp that can be used for retrieving changes.
+        Returns a UpdateResult object that contains a list of (sanitized)
+        URLs and a "since" value that can be used for future calls to
+        pull_subscriptions.
+
+        For every (old_url, new_url) tuple in the updated_urls list of
+        the resulting object, the client should rewrite the URL in its
+        subscription list so that new_url is used instead of old_url.
         """
         uri = self._locator.add_remove_subscriptions_uri(device_id)
 
@@ -200,7 +217,19 @@ class MygPodderClient(simple.SimpleClient):
         except ValueError:
             raise InvalidResponse('Invalid value for timestamp in response')
 
-        return since
+        if 'update_urls' not in response:
+            raise InvalidResponse('Response does not contain update_urls')
+
+        try:
+            update_urls = [(a, b) for a, b in response['update_urls']]
+        except:
+            raise InvalidResponse('Invalid format of update_urls in response')
+
+        if not all(isinstance(a, str) and isinstance(b, str) \
+                for a, b in update_urls):
+            raise InvalidResponse('Invalid format of update_urls in response')
+
+        return UpdateResult(update_urls, since)
 
     def pull_subscriptions(self, device_id, since=None):
         """Downloads subscriptions since the time of the last update

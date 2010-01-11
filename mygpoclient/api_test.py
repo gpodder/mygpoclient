@@ -247,13 +247,59 @@ class Test_MygPodderClient(unittest.TestCase):
                 self.client.update_subscriptions, DEVICE_ID_1,
                 self.ADD, self.REMOVE)
 
-    def test_updateSubscriptions_returnsTimestamp(self):
+    def test_updateSubscriptions_raisesInvalidResponse_withoutUpdateUrls(self):
         self.set_http_response_value("""
         {"timestamp": 1262103016}
         """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.update_subscriptions, DEVICE_ID_1,
+                self.ADD, self.REMOVE)
+
+    def test_updateSubscriptions_raisesInvalidResponse_withNonStringList(self):
+        self.set_http_response_value("""
+        {"timestamp": 1262103016, "update_urls": [
+            ["http://example.com/", 2],
+            [56, "http://example.org/"]
+        ]}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.update_subscriptions, DEVICE_ID_2,
+                self.ADD, self.REMOVE)
+
+    def test_updateSubscriptions_raisesInvalidResponse_withInvalidList(self):
+        self.set_http_response_value("""
+        {"timestamp": 1262103016, "update_urls": [
+            ["test", "test2", "test3"],
+            ["test", "test2"]
+        ]}
+        """)
+        self.assertRaises(api.InvalidResponse,
+                self.client.update_subscriptions, DEVICE_ID_2,
+                self.ADD, self.REMOVE)
+
+    def test_updateSubscriptions_returnsUpdateResult(self):
+        self.set_http_response_value("""
+        {"timestamp": 1262103016, "update_urls": [
+            ["http://test2.invalid/feed.rss",
+             "http://test2.invalid/feed.rss"],
+            ["http://x.invalid/episodes.xml?format=2",
+             "http://x.invalid/episodes.xml"]
+        ]}
+        """)
+        update_urls_expected = [
+                ('http://test2.invalid/feed.rss',
+                 'http://test2.invalid/feed.rss'),
+                ('http://x.invalid/episodes.xml?format=2',
+                 'http://x.invalid/episodes.xml'),
+        ]
+
         result = self.client.update_subscriptions(DEVICE_ID_1,
                 self.ADD, self.REMOVE)
-        self.assertEquals(result, self.SINCE)
+        # result is a UpdateResult object
+        self.assert_(hasattr(result, 'since'))
+        self.assert_(hasattr(result, 'update_urls'))
+        self.assertEquals(result.since, self.SINCE)
+        self.assertEquals(result.update_urls, update_urls_expected)
         self.assert_http_request_count(1)
         self.assert_(self.has_posted_json_data(self.ADD_REMOVE_AS_JSON_UPLOAD))
 
