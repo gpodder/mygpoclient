@@ -21,6 +21,7 @@ __url__ = 'http://repo.or.cz/w/mygpoclient.git'
 # Default settings for the API client (server hostname and API version)
 HOST = 'my.gpodder.org'
 VERSION = 1
+TOPLIST_DEFAULT = 50
 
 # You can overwrite this value from your application if you want
 user_agent = 'mygpoclient/%s (+%s)' % (__version__, __url__)

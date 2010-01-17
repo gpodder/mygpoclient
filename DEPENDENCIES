@@ -10,3 +10,6 @@ http://pypi.python.org/pypi/MiniMock
 Epydoc (python-epydoc)
 http://epydoc.sourceforge.net/
 
+Coverage (python-coverage)
+http://www.nedbatchelder.com/code/modules/coverage.html
+

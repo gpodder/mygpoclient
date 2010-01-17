@@ -45,6 +45,22 @@ class ToplistPodcast(object):
         self.subscribers = int(subscribers)
         self.subscribers_last_week = int(subscribers_last_week)
 
+    def __eq__(self, other):
+        """Test two ToplistPodcast objects for equality
+
+        >>> ToplistPodcast('u', 't', 'd', 10, 12) == ToplistPodcast('u', 't', 'd', 10, 12)
+        True
+        >>> ToplistPodcast('u', 't', 'd', 10, 12) == ToplistPodcast('a', 'b', 'c', 13, 14)
+        False
+        >>> ToplistPodcast('u', 't', 'd', 10, 12) == 'x'
+        False
+        """
+        if not isinstance(other, self.__class__):
+            return False
+
+        return all(getattr(self, k) == getattr(other, k) \
+                for k in self.REQUIRED_KEYS)
+
     @classmethod
     def from_dict(cls, d):
         for key in cls.REQUIRED_KEYS:
@@ -75,9 +91,9 @@ class PublicClient(object):
         as the json.JsonClient class in mygpoclient.
         """
         self._locator = locator.Locator(None, host)
-        self._client = client_class(username, password)
+        self._client = client_class(None, None)
 
-    def get_toplist(self, count=50):
+    def get_toplist(self, count=mygpoclient.TOPLIST_DEFAULT):
         """Get a list of most-subscribed podcasts
 
         Returns a list of ToplistPodcast objects.
