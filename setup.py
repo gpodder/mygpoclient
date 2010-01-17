@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 # my.gpodder.org API Client
 # Copyright (C) 2009-2010 Thomas Perl
 #
@@ -15,24 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-test:
-	nosetests --cover-erase --with-coverage --with-doctest \
-	    --cover-package=mygpoclient
+from distutils.core import setup
 
-docs:
-	epydoc -n 'my.gpodder.org API Client Library' -o docs/ mygpoclient -v --exclude='.*_test'
-
-upload-docs: clean docs
-	rsync -rpav --delete-after docs/ dev.gpodder.org:/var/www/mygpoclient-apidocs/
-
-clean:
-	find -name '*.pyc' -exec rm '{}' \;
-	rm -f .coverage
-	rm -rf docs/ build/
-
-distclean:
-	rm -f MANIFEST
-	rm -rf dist/
-
-.PHONY: test docs clean distclean
+setup(name='mygpoclient',
+      version='1.0',
+      description='Library for accessing my.gpodder.org web services.',
+      author='Thomas Perl',
+      author_email='thp@gpodder.org',
+      url='http://repo.or.cz/w/mygpoclient.git/',
+      packages=['mygpoclient'])
 

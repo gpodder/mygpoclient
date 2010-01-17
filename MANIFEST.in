@@ -1,0 +1,5 @@
+include AUTHORS
+include COPYING
+include DEPENDENCIES
+include SPECIFICATION
+include makefile

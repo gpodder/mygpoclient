@@ -1,0 +1,31 @@
+
+-----------------------------------------------------------
+The my.gpodder.org Client Library
+-----------------------------------------------------------
+
+This library provides an easy and structured way to access the
+my.gpodder.org web services. In addition to subscription list
+synchronization and storage, the advanced API support allows
+to upload and download episode status changes.
+
+The API specification for the my.gpodder.org webservice can
+be found at
+
+    http://wiki.gpodder.org/wiki/Web_Services/API
+
+The source of this library is managed in a Git repository at
+
+    http://repo.or.cz/w/mygpoclient.git
+
+If you have any questions, please don't hesitate to contact
+the gPodder developers mailing list at
+
+    gpodder-devel@lists.berlios.de
+
+You can report bugs and problems that you find by using our
+Bugzilla installation at
+
+    http://bugs.gpodder.org/
+
+Thank you for your interest in the mygpoclient library!
+
