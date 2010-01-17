@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # my.gpodder.org API Client
-# Copyright (C) 2009 Thomas Perl
+# Copyright (C) 2009-2010 Thomas Perl
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
