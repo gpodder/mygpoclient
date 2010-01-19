@@ -346,7 +346,7 @@ class MygPodderClient(simple.SimpleClient):
             data['caption'] = caption
         if type is not None:
             data['type'] = type
-        return (self._client.PUT(uri, data) is None)
+        return (self._client.POST(uri, data) is None)
 
     def get_devices(self):
         """Returns a list of this user's PodcastDevice objects
