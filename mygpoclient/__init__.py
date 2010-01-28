@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __version__ = '1.0'
-__url__ = 'http://repo.or.cz/w/mygpoclient.git'
+__url__ = 'http://thpinfo.com/2010/mygpoclient/'
 
 # Default settings for the API client (server hostname and API version)
 HOST = 'my.gpodder.org'
