@@ -17,7 +17,15 @@
 
 import mygpoclient
 
-import simplejson as json
+try:
+    # Prefer the usage of the simplejson module, as it
+    # is most likely newer if it's installed as module
+    # than the built-in json module (and is mandatory
+    # in Python versions before 2.6, anyway).
+    import simplejson as json
+except ImportError:
+    # Python 2.6 ships the "json" module by default
+    import json
 
 from mygpoclient import http
 
