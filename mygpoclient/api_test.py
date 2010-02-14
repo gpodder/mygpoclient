@@ -496,7 +496,7 @@ class Test_MygPodderClient(unittest.TestCase):
         result = self.client.update_device_settings(DEVICE_ID_1)
         self.assertEquals(result, True)
         self.assert_http_request_count(1)
-        self.assert_(self.has_put_json_data({}))
+        self.assert_(self.has_posted_json_data({}))
 
     def test_updateDeviceSettings_withCaption(self):
         self.set_http_response_value('')
@@ -504,7 +504,7 @@ class Test_MygPodderClient(unittest.TestCase):
                 caption='Poodonkis')
         self.assertEquals(result, True)
         self.assert_http_request_count(1)
-        self.assert_(self.has_put_json_data({'caption': 'Poodonkis'}))
+        self.assert_(self.has_posted_json_data({'caption': 'Poodonkis'}))
 
     def test_updateDeviceSettings_withType(self):
         self.set_http_response_value('')
@@ -512,7 +512,7 @@ class Test_MygPodderClient(unittest.TestCase):
                 type='desktop')
         self.assertEquals(result, True)
         self.assert_http_request_count(1)
-        self.assert_(self.has_put_json_data({'type': 'desktop'}))
+        self.assert_(self.has_posted_json_data({'type': 'desktop'}))
 
     def test_updateDeviceSettings_withCaptionAndType(self):
         self.set_http_response_value('')
@@ -520,7 +520,7 @@ class Test_MygPodderClient(unittest.TestCase):
                 'My Unit Testing Device', 'desktop')
         self.assertEquals(result, True)
         self.assert_http_request_count(1)
-        self.assert_(self.has_put_json_data({
+        self.assert_(self.has_posted_json_data({
             'caption': 'My Unit Testing Device',
             'type': 'desktop'}))
 
