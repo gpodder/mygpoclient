@@ -8,6 +8,10 @@ my.gpodder.org web services. In addition to subscription list
 synchronization and storage, the advanced API support allows
 to upload and download episode status changes.
 
+See the mygpoclient homepage for up-to-date information:
+
+    http://thpinfo.com/2010/mygpoclient/
+
 The API specification for the my.gpodder.org webservice can
 be found at
 

@@ -18,10 +18,10 @@
 from distutils.core import setup
 
 setup(name='mygpoclient',
-      version='1.0',
+      version='1.1',
       description='Library for accessing my.gpodder.org web services.',
       author='Thomas Perl',
       author_email='thp@gpodder.org',
-      url='http://repo.or.cz/w/mygpoclient.git/',
+      url='http://thpinfo.com/2010/mygpoclient/',
       packages=['mygpoclient'])
 
