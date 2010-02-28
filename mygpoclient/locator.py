@@ -20,6 +20,8 @@ import mygpoclient
 import os
 import urllib
 
+from mygpoclient import util
+
 class Locator(object):
     """URI Locator for API endpoints
 
@@ -58,7 +60,7 @@ class Locator(object):
             raise ValueError('Unsupported file format')
 
         filename = '%(device_id)s.%(format)s' % locals()
-        return os.path.join(self._simple_base,
+        return util.join(self._simple_base,
                 'subscriptions', self._username, filename)
 
     def toplist_uri(self, count=50, format='opml'):
@@ -76,7 +78,7 @@ class Locator(object):
             raise ValueError('Unsupported file format')
 
         filename = 'toplist/%(count)d.%(format)s' % locals()
-        return os.path.join(self._simple_base, filename)
+        return util.join(self._simple_base, filename)
 
     def suggestions_uri(self, count=10, format='opml'):
         """Get the Simple API URI for user suggestions
@@ -93,7 +95,7 @@ class Locator(object):
             raise ValueError('Unsupported file format')
 
         filename = 'suggestions/%(count)d.%(format)s' % locals()
-        return os.path.join(self._simple_base, filename)
+        return util.join(self._simple_base, filename)
 
     def search_uri(self, query, format='opml'):
         """Get the Simple API URI for podcast search
@@ -111,7 +113,7 @@ class Locator(object):
 
         query = urllib.quote_plus(query)
         filename = 'search.%(format)s?q=%(query)s' % locals()
-        return os.path.join(self._simple_base, filename)
+        return util.join(self._simple_base, filename)
 
     def add_remove_subscriptions_uri(self, device_id):
         """Get the Advanced API URI for uploading list diffs
@@ -121,7 +123,7 @@ class Locator(object):
         'http://my.gpodder.org/api/1/subscriptions/bill/n810.json'
         """
         filename = '%(device_id)s.json' % locals()
-        return os.path.join(self._base,
+        return util.join(self._base,
                 'subscriptions', self._username, filename)
 
     def subscription_updates_uri(self, device_id, since=None):
@@ -141,7 +143,7 @@ class Locator(object):
             since = self._convert_since(since)
             filename += '?since=%(since)d' % locals()
 
-        return os.path.join(self._base,
+        return util.join(self._base,
                 'subscriptions', self._username, filename)
 
     def upload_episode_actions_uri(self):
@@ -152,7 +154,7 @@ class Locator(object):
         'http://my.gpodder.org/api/1/episodes/thp.json'
         """
         filename = self._username + '.json'
-        return os.path.join(self._base, 'episodes', filename)
+        return util.join(self._base, 'episodes', filename)
 
     def download_episode_actions_uri(self, since=None,
             podcast=None, device_id=None):
@@ -199,7 +201,7 @@ class Locator(object):
         if params:
             filename += '?' + '&'.join('%s=%s' % (key, urllib.quote(value)) for key, value in params)
 
-        return os.path.join(self._base, 'episodes', filename)
+        return util.join(self._base, 'episodes', filename)
 
     def device_settings_uri(self, device_id):
         """Get the Advanced API URI for setting per-device settings uploads
@@ -209,7 +211,7 @@ class Locator(object):
         'http://my.gpodder.org/api/1/devices/mike/ipod.json'
         """
         filename = '%(device_id)s.json' % locals()
-        return os.path.join(self._base, 'devices', self._username, filename)
+        return util.join(self._base, 'devices', self._username, filename)
 
     def device_list_uri(self):
         """Get the Advanced API URI for retrieving the device list
@@ -219,6 +221,6 @@ class Locator(object):
         'http://my.gpodder.org/api/1/devices/jeff.json'
         """
         filename = self._username + '.json'
-        return os.path.join(self._base, 'devices', filename)
+        return util.join(self._base, 'devices', filename)
 
 

@@ -19,6 +19,10 @@ import mygpoclient
 
 import datetime
 
+def join(*args):
+    """Join separate URL parts to a ful URL"""
+    return '/'.join(args)
+
 def iso8601_to_datetime(s):
     """Convert a ISO8601-formatted string to datetime
 
