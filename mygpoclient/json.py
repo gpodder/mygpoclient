@@ -17,6 +17,9 @@
 
 import mygpoclient
 
+# Fix gPodder bug 900 (so "import json" doesn't import this module)
+from __future__ import absolute_import
+
 try:
     # Prefer the usage of the simplejson module, as it
     # is most likely newer if it's installed as module
