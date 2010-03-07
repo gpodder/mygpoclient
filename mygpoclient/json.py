@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import mygpoclient
-
 # Fix gPodder bug 900 (so "import json" doesn't import this module)
 from __future__ import absolute_import
+
+import mygpoclient
 
 try:
     # Prefer the usage of the simplejson module, as it
