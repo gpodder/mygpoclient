@@ -18,7 +18,7 @@
 from distutils.core import setup
 
 setup(name='mygpoclient',
-      version='1.1',
+      version='1.2',
       description='Library for accessing my.gpodder.org web services.',
       author='Thomas Perl',
       author_email='thp@gpodder.org',
