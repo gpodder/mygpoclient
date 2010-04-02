@@ -17,11 +17,14 @@
 
 from distutils.core import setup
 
+import glob
+
 setup(name='mygpoclient',
       version='1.2',
       description='Library for accessing my.gpodder.org web services.',
       author='Thomas Perl',
       author_email='thp@gpodder.org',
       url='http://thpinfo.com/2010/mygpoclient/',
-      packages=['mygpoclient'])
+      packages=['mygpoclient'],
+      scripts=glob.glob('scripts/*'))
 

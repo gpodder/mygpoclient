@@ -1,0 +1,79 @@
+#!/usr/bin/python
+# BashPodder <-> gpodder.net sync client
+# Copyright (c) 2010-04-02 Thomas Perl <thpinfo.com>
+# Licensed under the same terms as the "mygpoclient" library
+# See: http://thpinfo.com/2010/mygpoclient/
+
+import mygpoclient
+from mygpoclient import simple
+
+import os
+import sys
+
+class BPSync(object):
+    def __init__(self, filename, host=mygpoclient.HOST, device='bp'):
+        self.filename = filename
+        self.device = device
+        username = os.environ['MYGPO_USERNAME']
+        password = os.environ['MYGPO_PASSWORD']
+        host = os.environ.get('MYGPO_HOSTNAME', host)
+        self.client = simple.SimpleClient(username, password, host)
+
+    def put(self):
+        lines = open(self.filename).read().strip().splitlines()
+        podcasts = [line.strip() for line in lines if line.strip()]
+        self.client.put_subscriptions(self.device, podcasts)
+
+    def get(self):
+        podcasts = self.client.get_subscriptions(self.device)
+        open(self.filename, 'w').write('\n'.join(podcasts+['']))
+
+def usage(s=None):
+    print >>sys.stderr, """
+    Usage: %s (put|get) [device-id]
+
+    e.g %s put ........ Upload bp.conf as device "bp"
+        %s get ........ Download subscriptions for device "bp"
+        %s get mydev .. Download subscriptions for device "mydev"
+
+    The following environment variables need to be set:
+
+      MYGPO_USERNAME .. Username for the web service
+      MYGPO_PASSWORD .. Password for the web service
+
+    The following environment variables are optional:
+
+      BPSYNC_BP_CONF .. Path to your bp.conf file
+      MYGPO_HOSTNAME .. Host of the web service to use
+    """ % ((os.path.basename(sys.argv[0]),)*4)
+    if s is not None:
+        print >>sys.stderr, s
+    sys.exit(1)
+
+if __name__ == '__main__':
+    if len(sys.argv) not in (2, 3):
+        usage('Wrong parameter count')
+
+    if 'MYGPO_USERNAME' not in os.environ or \
+            'MYGPO_PASSWORD' not in os.environ:
+       usage('MYGPO_USERNAME or MYGPO_PASSWORD not set!')
+
+    filename = os.environ.get('BPSYNC_BP_CONF', 'bp.conf')
+
+    if not os.path.exists(filename):
+        usage('File not found: ' + filename)
+
+    command = sys.argv[1]
+
+    if len(sys.argv) == 3:
+        client = BPSync(filename, device=sys.argv[2])
+    else:
+        client = BPSync(filename)
+
+    if command == 'put':
+        client.put()
+    elif command == 'get':
+        client.get()
+    else:
+        usage('Unknown command')
+
