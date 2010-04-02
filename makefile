@@ -30,7 +30,7 @@ clean:
 	rm -f .coverage
 	rm -rf docs/ build/
 
-distclean:
+distclean: clean
 	rm -f MANIFEST
 	rm -rf dist/
 
