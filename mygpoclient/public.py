@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# my.gpodder.org API Client
+# gpodder.net API Client
 # Copyright (C) 2009-2010 Thomas Perl
 #
 # This program is free software: you can redistribute it and/or modify
@@ -71,10 +71,10 @@ class ToplistPodcast(object):
 
 
 class PublicClient(object):
-    """Client for the my.gpodder.org "anonymous" API
+    """Client for the gpodder.net "anonymous" API
 
     This is the API client implementation that provides a
-    pythonic interface to the parts of the my.gpodder.org
+    pythonic interface to the parts of the gpodder.net
     Simple API that don't need user authentication.
     """
     FORMAT = 'json'

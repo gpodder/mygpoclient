@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# my.gpodder.org API Client
+# gpodder.net API Client
 # Copyright (C) 2009-2010 Thomas Perl
 #
 # This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import glob
 
 setup(name='mygpoclient',
       version='1.2',
-      description='Library for accessing my.gpodder.org web services.',
+      description='Library for accessing gpodder.net web services.',
       author='Thomas Perl',
       author_email='thp@gpodder.org',
       url='http://thpinfo.com/2010/mygpoclient/',

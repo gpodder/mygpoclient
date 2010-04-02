@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# my.gpodder.org API Client
+# gpodder.net API Client
 # Copyright (C) 2009-2010 Thomas Perl
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@ __version__ = '1.2'
 __url__ = 'http://thpinfo.com/2010/mygpoclient/'
 
 # Default settings for the API client (server hostname and API version)
-HOST = 'my.gpodder.org'
+HOST = 'gpodder.net'
 VERSION = 1
 TOPLIST_DEFAULT = 50
 

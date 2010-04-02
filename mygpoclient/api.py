@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# my.gpodder.org API Client
+# gpodder.net API Client
 # Copyright (C) 2009-2010 Thomas Perl
 #
 # This program is free software: you can redistribute it and/or modify
@@ -167,10 +167,10 @@ class EpisodeAction(object):
 
 
 class MygPodderClient(simple.SimpleClient):
-    """my.gpodder.org API Client
+    """gpodder.net API Client
 
     This is the API client that implements both the Simple and
-    Advanced API of my.gpodder.org. See the SimpleClient class
+    Advanced API of gpodder.net. See the SimpleClient class
     for a smaller class that only implements the Simple API.
     """
 

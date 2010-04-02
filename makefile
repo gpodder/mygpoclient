@@ -1,5 +1,5 @@
 
-# my.gpodder.org API Client
+# gpodder.net API Client
 # Copyright (C) 2009-2010 Thomas Perl
 #
 # This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ test:
 	    --cover-package=mygpoclient
 
 docs:
-	epydoc -n 'my.gpodder.org API Client Library' -o docs/ mygpoclient -v --exclude='.*_test'
+	epydoc -n 'gpodder.net API Client Library' -o docs/ mygpoclient -v --exclude='.*_test'
 
 upload-docs: clean docs
 	rsync -rpav --delete-after docs/ dev.gpodder.org:/var/www/mygpoclient-apidocs/

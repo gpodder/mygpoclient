@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# my.gpodder.org API Client
+# gpodder.net API Client
 # Copyright (C) 2009-2010 Thomas Perl
 #
 # This program is free software: you can redistribute it and/or modify
@@ -63,10 +63,10 @@ class Podcast(object):
 
 
 class SimpleClient(object):
-    """Client for the my.gpodder.org Simple API
+    """Client for the gpodder.net Simple API
 
     This is the API client implementation that provides a
-    pythonic interface to the my.gpodder.org Simple API.
+    pythonic interface to the gpodder.net Simple API.
     """
     FORMAT = 'json'
 
