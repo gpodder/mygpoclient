@@ -20,7 +20,7 @@ __url__ = 'http://thpinfo.com/2010/mygpoclient/'
 
 # Default settings for the API client (server hostname and API version)
 HOST = 'gpodder.net'
-VERSION = 1
+VERSION = 2
 TOPLIST_DEFAULT = 50
 
 # You can overwrite this value from your application if you want
