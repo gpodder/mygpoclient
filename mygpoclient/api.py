@@ -111,45 +111,74 @@ class EpisodeAction(object):
     The optional attributes are:
     device - The device_id on which the action has taken place
     timestamp - When the action took place (in XML time format)
-    position - The current play position in HH:MM:SS format
+    started - The start time of a play event in seconds
+    position - The current position of a play event in seconds
+    total - The total time of the episode (for play events)
 
     The attribute "position" is only valid for "play" action types.
     """
     VALID_ACTIONS = ('download', 'play', 'delete', 'new')
 
     def __init__(self, podcast, episode, action,
-            device=None, timestamp=None, position=None):
+            device=None, timestamp=None,
+            started=None, position=None, total=None):
         # Check if the action is valid
         if action not in self.VALID_ACTIONS:
             raise ValueError('Invalid action type (see VALID_TYPES)')
 
-        # Do not allow position changes on non-play actions
-        if action != 'play' and position is not None:
-            raise ValueError('Position can only be set for the "play" action')
+        # Disallow play-only attributes for non-play actions
+        if action != 'play':
+            if started is not None:
+                raise ValueError('Started can only be set for the "play" action')
+            elif position is not None:
+                raise ValueError('Position can only be set for the "play" action')
+            elif total is not None:
+                raise ValueError('Total can only be set for the "play" action')
 
         # Check the format of the timestamp value
         if timestamp is not None:
             if util.iso8601_to_datetime(timestamp) is None:
                 raise ValueError('Timestamp has to be in ISO 8601 format')
 
-        # Check the format of the position value
+        # Check if we have a "position" value if we have started or total
+        if position is None and (started is not None or total is not None):
+            raise ValueError('Started or total set, but no position given')
+
+        # Check that "started" is a number if it's set
+        if started is not None:
+            try:
+                started = int(started)
+            except ValueError:
+                raise ValueError('Started must be an integer value (seconds)')
+
+        # Check that "position" is a number if it's set
         if position is not None:
             try:
-                util.position_to_seconds(position)
+                position = int(position)
             except ValueError:
-                raise ValueError('Position has to be in HH:MM:SS format')
+                raise ValueError('Position must be an integer value (seconds)')
+
+        # Check that "total" is a number if it's set
+        if total is not None:
+            try:
+                total = int(total)
+            except ValueError:
+                raise ValueError('Total must be an integer value (seconds)')
 
         self.podcast = podcast
         self.episode = episode
         self.action = action
         self.device = device
         self.timestamp = timestamp
+        self.started = started
         self.position = position
+        self.total = total
 
     @classmethod
     def from_dictionary(cls, d):
         return cls(d['podcast'], d['episode'], d['action'],
-                   d.get('device'), d.get('timestamp'), d.get('position'))
+                   d.get('device'), d.get('timestamp'),
+                   d.get('started'), d.get('position'), d.get('total'))
 
     def to_dictionary(self):
         d = {}
@@ -158,7 +187,8 @@ class EpisodeAction(object):
             value = getattr(self, mandatory)
             d[mandatory] = value
 
-        for optional in ('device', 'timestamp', 'position'):
+        for optional in ('device', 'timestamp',
+                'started', 'position', 'total'):
             value = getattr(self, optional)
             if value is not None:
                 d[optional] = value

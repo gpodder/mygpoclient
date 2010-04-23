@@ -91,17 +91,22 @@ class Test_PodcastDevice(unittest.TestCase):
 
 class Test_EpisodeAction(unittest.TestCase):
     XML_TIMESTAMP = '2009-12-12T09:00:00'
-    VALID_POSITION = '02:30:04'
+    VALID_STARTED = 100
+    VALID_POSITION = 123
+    VALID_TOTAL = 321
 
     def test_initSetsCorrectAttributes(self):
         action = api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'play',
-                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_POSITION)
+                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED,
+                self.VALID_POSITION, self.VALID_TOTAL)
         self.assertEquals(action.podcast, FEED_URL_1)
         self.assertEquals(action.episode, EPISODE_URL_1)
         self.assertEquals(action.action, 'play')
         self.assertEquals(action.device, DEVICE_ID_1)
         self.assertEquals(action.timestamp, self.XML_TIMESTAMP)
+        self.assertEquals(action.started, self.VALID_STARTED)
         self.assertEquals(action.position, self.VALID_POSITION)
+        self.assertEquals(action.total, self.VALID_TOTAL)
 
     def test_invalidAction_raisesValueError(self):
         self.assertRaises(ValueError,
@@ -136,21 +141,26 @@ class Test_EpisodeAction(unittest.TestCase):
 
     def test_toDictionary_containsAllAttributes(self):
         action = api.EpisodeAction(FEED_URL_3, EPISODE_URL_4, 'play',
-                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_POSITION)
+                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED,
+                self.VALID_POSITION, self.VALID_TOTAL)
         dictionary = action.to_dictionary()
-        self.assertEquals(len(dictionary.keys()), 6)
+        self.assertEquals(len(dictionary.keys()), 8)
         self.assert_('podcast' in dictionary)
         self.assert_('episode' in dictionary)
         self.assert_('action' in dictionary)
         self.assert_('device' in dictionary)
         self.assert_('timestamp' in dictionary)
+        self.assert_('started' in dictionary)
         self.assert_('position' in dictionary)
+        self.assert_('total' in dictionary)
         self.assertEquals(dictionary['podcast'], FEED_URL_3)
         self.assertEquals(dictionary['episode'], EPISODE_URL_4)
         self.assertEquals(dictionary['action'], 'play')
         self.assertEquals(dictionary['device'], DEVICE_ID_1)
         self.assertEquals(dictionary['timestamp'], self.XML_TIMESTAMP)
+        self.assertEquals(dictionary['started'], self.VALID_STARTED)
         self.assertEquals(dictionary['position'], self.VALID_POSITION)
+        self.assertEquals(dictionary['total'], self.VALID_TOTAL)
 
 
 class Test_MygPodderClient(unittest.TestCase):

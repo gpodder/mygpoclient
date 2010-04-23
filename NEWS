@@ -1,0 +1,23 @@
+Fri, 23 Apr 2010 17:43:03 +0200
+-------------------------------
+
+The parameter signature for the EpisodeAction constructor has been updated.
+It now contains not only the optional "position" argument, but two new
+arguments as well. The order of these parameters is:
+
+  started
+  position
+  total
+
+If one of "started" or "total" is set, "position" becomes mandatory. This
+means that the following combinations are now possible:
+
+  None
+  position
+  position and started
+  position and total
+  position and started and total
+
+Also, the format has been changed. Instead of having a "HH:MM:SS" timestamp
+format, we now only accept integer values (the number of seconds).
+
