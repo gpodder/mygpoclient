@@ -1,3 +1,16 @@
+Sun, 25 Apr 2010 23:51:38 +0200
+-------------------------------
+
+You can use the "require_version" function in mygpoclient to require a minimum
+version of the mygpoclient library. The "require_version" function has been
+added in version 1.3, so you have to check (e.g. with hasattr) if mygpoclient
+has got a "require_version" attribute. You can then do the version check like
+this:
+
+if not hasattr(mygpoclient, 'require_version') or \
+        not mygpoclient.require_version('1.3'):
+    # Show error message and tell user to upgrade to version 1.3
+
 Fri, 23 Apr 2010 17:43:03 +0200
 -------------------------------
 

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__version__ = '1.2'
+__version__ = '1.3'
 __url__ = 'http://thpinfo.com/2010/mygpoclient/'
 
 # Default settings for the API client (server hostname and API version)
@@ -25,4 +25,16 @@ TOPLIST_DEFAULT = 50
 
 # You can overwrite this value from your application if you want
 user_agent = 'mygpoclient/%s (+%s)' % (__version__, __url__)
+
+# Version checking
+def require_version(minimum_required):
+    """Require a minimum version of the library
+
+    Returns True if the minimum library version constraint is
+    satisfied, False otherwise. Use this to check for newer API
+    methods and changes in the public API as described in NEWS.
+    """
+    this_version = [int(x) for x in __version__.split('.')]
+    minimum_required = [int(x) for x in minimum_required.split('.')]
+    return minimum_required <= this_version
 

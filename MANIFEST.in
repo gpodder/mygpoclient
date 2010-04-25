@@ -2,4 +2,5 @@ include AUTHORS
 include COPYING
 include DEPENDENCIES
 include SPECIFICATION
+include NEWS
 include makefile
