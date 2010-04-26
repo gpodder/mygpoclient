@@ -120,7 +120,7 @@ class Locator(object):
 
         >>> locator = Locator('bill')
         >>> locator.add_remove_subscriptions_uri('n810')
-        'http://gpodder.net/api/1/subscriptions/bill/n810.json'
+        'http://gpodder.net/api/2/subscriptions/bill/n810.json'
         """
         filename = '%(device_id)s.json' % locals()
         return util.join(self._base,
@@ -134,9 +134,9 @@ class Locator(object):
 
         >>> locator = Locator('jen')
         >>> locator.subscription_updates_uri('n900')
-        'http://gpodder.net/api/1/subscriptions/jen/n900.json'
+        'http://gpodder.net/api/2/subscriptions/jen/n900.json'
         >>> locator.subscription_updates_uri('n900', 1234)
-        'http://gpodder.net/api/1/subscriptions/jen/n900.json?since=1234'
+        'http://gpodder.net/api/2/subscriptions/jen/n900.json?since=1234'
         """
         filename = '%(device_id)s.json' % locals()
         if since is not None:
@@ -151,7 +151,7 @@ class Locator(object):
 
         >>> locator = Locator('thp')
         >>> locator.upload_episode_actions_uri()
-        'http://gpodder.net/api/1/episodes/thp.json'
+        'http://gpodder.net/api/2/episodes/thp.json'
         """
         filename = self._username + '.json'
         return util.join(self._base, 'episodes', filename)
@@ -170,17 +170,17 @@ class Locator(object):
 
         >>> locator = Locator('steve')
         >>> locator.download_episode_actions_uri()
-        'http://gpodder.net/api/1/episodes/steve.json'
+        'http://gpodder.net/api/2/episodes/steve.json'
         >>> locator.download_episode_actions_uri(since=1337)
-        'http://gpodder.net/api/1/episodes/steve.json?since=1337'
+        'http://gpodder.net/api/2/episodes/steve.json?since=1337'
         >>> locator.download_episode_actions_uri(podcast='http://example.org/episodes.rss')
-        'http://gpodder.net/api/1/episodes/steve.json?podcast=http%3A//example.org/episodes.rss'
+        'http://gpodder.net/api/2/episodes/steve.json?podcast=http%3A//example.org/episodes.rss'
         >>> locator.download_episode_actions_uri(since=2000, podcast='http://example.com/')
-        'http://gpodder.net/api/1/episodes/steve.json?since=2000&podcast=http%3A//example.com/'
+        'http://gpodder.net/api/2/episodes/steve.json?since=2000&podcast=http%3A//example.com/'
         >>> locator.download_episode_actions_uri(device_id='ipod')
-        'http://gpodder.net/api/1/episodes/steve.json?device=ipod'
+        'http://gpodder.net/api/2/episodes/steve.json?device=ipod'
         >>> locator.download_episode_actions_uri(since=54321, device_id='ipod')
-        'http://gpodder.net/api/1/episodes/steve.json?since=54321&device=ipod'
+        'http://gpodder.net/api/2/episodes/steve.json?since=54321&device=ipod'
         """
         if podcast is not None and device_id is not None:
             raise ValueError('must not specify both "podcast" and "device_id"')
@@ -208,7 +208,7 @@ class Locator(object):
 
         >>> locator = Locator('mike')
         >>> locator.device_settings_uri('ipod')
-        'http://gpodder.net/api/1/devices/mike/ipod.json'
+        'http://gpodder.net/api/2/devices/mike/ipod.json'
         """
         filename = '%(device_id)s.json' % locals()
         return util.join(self._base, 'devices', self._username, filename)
@@ -218,7 +218,7 @@ class Locator(object):
 
         >>> locator = Locator('jeff')
         >>> locator.device_list_uri()
-        'http://gpodder.net/api/1/devices/jeff.json'
+        'http://gpodder.net/api/2/devices/jeff.json'
         """
         filename = self._username + '.json'
         return util.join(self._base, 'devices', filename)

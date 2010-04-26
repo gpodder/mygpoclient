@@ -20,7 +20,7 @@ from distutils.core import setup
 import glob
 
 setup(name='mygpoclient',
-      version='1.3',
+      version='1.4',
       description='Library for accessing gpodder.net web services.',
       author='Thomas Perl',
       author_email='thp@gpodder.org',
