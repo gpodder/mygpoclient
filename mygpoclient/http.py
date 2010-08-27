@@ -26,11 +26,19 @@ class SimpleHttpPasswordManager(urllib2.HTTPPasswordMgr):
     is passed to it as constructor argument, independent of the realm
     or authuri that is used.
     """
+
+    # The maximum number of authentication retries
+    MAX_RETRIES = 3
+
     def __init__(self, username, password):
         self._username = username
         self._password = password
+        self._count = 0
 
     def find_user_password(self, realm, authuri):
+        self._count += 1
+        if self._count > self.MAX_RETRIES:
+            return (None, None)
         return (self._username, self._password)
 
 class HttpRequest(urllib2.Request):
