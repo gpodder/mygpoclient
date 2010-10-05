@@ -287,11 +287,11 @@ class MygPodderClient(simple.SimpleClient):
         if 'timestamp' not in data:
             raise InvalidResponse('Timestamp missing from response')
 
-        if not all(isinstance(x, str) for x in data['add']):
-            raise InvalidResponse('Invalid value in list of added podcasts')
+        if not all(isinstance(x, str) or isinstance(x, unicode) for x in data['add']):
+            raise InvalidResponse('Invalid value(s) in list of added podcasts')
 
-        if not all(isinstance(x, str) for x in data['remove']):
-            raise InvalidResponse('Invalid value in list of removed podcasts')
+        if not all(isinstance(x, str) or isinstance(x, unicode) for x in data['remove']):
+            raise InvalidResponse('Invalid value(s) in list of removed podcasts')
 
         try:
             since = int(data['timestamp'])
