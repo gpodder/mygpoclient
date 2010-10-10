@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__version__ = '1.4'
+__version__ = '1.5'
 __url__ = 'http://thpinfo.com/2010/mygpoclient/'
 
 # Default settings for the API client (server hostname and API version)
