@@ -108,7 +108,7 @@ def http_server(port, username, password, response):
         def log_request(*args):
             pass
 
-    BaseHTTPServer.HTTPServer(('', port), Handler).serve_forever()
+    BaseHTTPServer.HTTPServer(('127.0.0.1', port), Handler).serve_forever()
 
 class Test_HttpClient(unittest.TestCase):
     USERNAME = 'john'
