@@ -255,8 +255,9 @@ class MygPodderClient(simple.SimpleClient):
         except:
             raise InvalidResponse('Invalid format of update_urls in response')
 
-        if not all(isinstance(a, str) and isinstance(b, str) \
-                for a, b in update_urls):
+        if not all((isinstance(a, str) or (isinstance(a, unicode))) \
+	        and (isinstance(b, str) or (isinstance(b, unicode))) \
+                    for a, b in update_urls):
             raise InvalidResponse('Invalid format of update_urls in response')
 
         return UpdateResult(update_urls, since)
