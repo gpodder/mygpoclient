@@ -227,10 +227,10 @@ class MygPodderClient(simple.SimpleClient):
         """
         uri = self._locator.add_remove_subscriptions_uri(device_id)
 
-        if not all(isinstance(x, str) for x in add_urls):
+        if not all(isinstance(x, basestring) for x in add_urls):
             raise ValueError('add_urls must be a list of strings')
 
-        if not all(isinstance(x, str) for x in remove_urls):
+        if not all(isinstance(x, basestring) for x in remove_urls):
             raise ValueError('remove_urls must be a list of strings')
 
         data = {'add': add_urls, 'remove': remove_urls}
@@ -255,8 +255,7 @@ class MygPodderClient(simple.SimpleClient):
         except:
             raise InvalidResponse('Invalid format of update_urls in response')
 
-        if not all((isinstance(a, str) or (isinstance(a, unicode))) \
-	        and (isinstance(b, str) or (isinstance(b, unicode))) \
+        if not all(isinstance(a, basestring) and isinstance(b, basestring)) \
                     for a, b in update_urls):
             raise InvalidResponse('Invalid format of update_urls in response')
 
@@ -288,10 +287,10 @@ class MygPodderClient(simple.SimpleClient):
         if 'timestamp' not in data:
             raise InvalidResponse('Timestamp missing from response')
 
-        if not all(isinstance(x, str) or isinstance(x, unicode) for x in data['add']):
+        if not all(isinstance(x, basestring) for x in data['add']):
             raise InvalidResponse('Invalid value(s) in list of added podcasts')
 
-        if not all(isinstance(x, str) or isinstance(x, unicode) for x in data['remove']):
+        if not all(isinstance(x, basestring) for x in data['remove']):
             raise InvalidResponse('Invalid value(s) in list of removed podcasts')
 
         try:
