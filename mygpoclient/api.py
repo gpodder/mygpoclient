@@ -73,13 +73,13 @@ class PodcastDevice(object):
     def __init__(self, device_id, caption, type, subscriptions):
         # Check if the device type is valid
         if type not in self.VALID_TYPES:
-            raise ValueError('Invalid device type (see VALID_TYPES)')
+            raise ValueError('Invalid device type "%s" (see VALID_TYPES)' % type)
 
         # Check if subsciptions is a numeric value
         try:
             int(subscriptions)
         except:
-            raise ValueError('Subscription must be a numeric value')
+            raise ValueError('Subscription must be a numeric value but was %s' % subscriptions)
 
         self.device_id = device_id
         self.caption = caption
@@ -124,7 +124,7 @@ class EpisodeAction(object):
             started=None, position=None, total=None):
         # Check if the action is valid
         if action not in self.VALID_ACTIONS:
-            raise ValueError('Invalid action type (see VALID_TYPES)')
+            raise ValueError('Invalid action type "%s" (see VALID_TYPES)' % action)
 
         # Disallow play-only attributes for non-play actions
         if action != 'play':
@@ -138,7 +138,7 @@ class EpisodeAction(object):
         # Check the format of the timestamp value
         if timestamp is not None:
             if util.iso8601_to_datetime(timestamp) is None:
-                raise ValueError('Timestamp has to be in ISO 8601 format')
+                raise ValueError('Timestamp has to be in ISO 8601 format but was %s' % timestamp)
 
         # Check if we have a "position" value if we have started or total
         if position is None and (started is not None or total is not None):
@@ -149,21 +149,21 @@ class EpisodeAction(object):
             try:
                 started = int(started)
             except ValueError:
-                raise ValueError('Started must be an integer value (seconds)')
+                raise ValueError('Started must be an integer value (seconds) but was %s' % started)
 
         # Check that "position" is a number if it's set
         if position is not None:
             try:
                 position = int(position)
             except ValueError:
-                raise ValueError('Position must be an integer value (seconds)')
+                raise ValueError('Position must be an integer value (seconds) but was %s' % position)
 
         # Check that "total" is a number if it's set
         if total is not None:
             try:
                 total = int(total)
             except ValueError:
-                raise ValueError('Total must be an integer value (seconds)')
+                raise ValueError('Total must be an integer value (seconds) but was %s' % total)
 
         self.podcast = podcast
         self.episode = episode
@@ -228,10 +228,10 @@ class MygPodderClient(simple.SimpleClient):
         uri = self._locator.add_remove_subscriptions_uri(device_id)
 
         if not all(isinstance(x, basestring) for x in add_urls):
-            raise ValueError('add_urls must be a list of strings')
+            raise ValueError('add_urls must be a list of strings but was %s' % add_urls)
 
         if not all(isinstance(x, basestring) for x in remove_urls):
-            raise ValueError('remove_urls must be a list of strings')
+            raise ValueError('remove_urls must be a list of strings but was %s' % remove_urls)
 
         data = {'add': add_urls, 'remove': remove_urls}
         response = self._client.POST(uri, data)
@@ -245,7 +245,7 @@ class MygPodderClient(simple.SimpleClient):
         try:
             since = int(response['timestamp'])
         except ValueError:
-            raise InvalidResponse('Invalid value for timestamp in response')
+            raise InvalidResponse('Invalid value %s for timestamp in response' % response['timestamp'])
 
         if 'update_urls' not in response:
             raise InvalidResponse('Response does not contain update_urls')
@@ -253,11 +253,11 @@ class MygPodderClient(simple.SimpleClient):
         try:
             update_urls = [(a, b) for a, b in response['update_urls']]
         except:
-            raise InvalidResponse('Invalid format of update_urls in response')
+            raise InvalidResponse('Invalid format of update_urls in response: %s' % response['update_urls'])
 
-        if not all(isinstance(a, basestring) and isinstance(b, basestring)) \
+        if not all(isinstance(a, basestring) and isinstance(b, basestring) \
                     for a, b in update_urls):
-            raise InvalidResponse('Invalid format of update_urls in response')
+            raise InvalidResponse('Invalid format of update_urls in response: %s' % update_urls)
 
         return UpdateResult(update_urls, since)
 
@@ -288,15 +288,15 @@ class MygPodderClient(simple.SimpleClient):
             raise InvalidResponse('Timestamp missing from response')
 
         if not all(isinstance(x, basestring) for x in data['add']):
-            raise InvalidResponse('Invalid value(s) in list of added podcasts')
+            raise InvalidResponse('Invalid value(s) in list of added podcasts: %s' % data['add'])
 
         if not all(isinstance(x, basestring) for x in data['remove']):
-            raise InvalidResponse('Invalid value(s) in list of removed podcasts')
+            raise InvalidResponse('Invalid value(s) in list of removed podcasts: %s' % data['remove'])
 
         try:
             since = int(data['timestamp'])
         except ValueError:
-            raise InvalidResponse('Timestamp has invalid format in response')
+            raise InvalidResponse('Timestamp has invalid format in response: %s' % data['timestamp'])
 
         return SubscriptionChanges(data['add'], data['remove'], since)
 
@@ -318,7 +318,7 @@ class MygPodderClient(simple.SimpleClient):
         try:
             since = int(response['timestamp'])
         except ValueError:
-            raise InvalidResponse('Invalid value for timestamp in response')
+            raise InvalidResponse('Invalid value %s for timestamp in response' % response['timestamp'])
 
         return since
 
