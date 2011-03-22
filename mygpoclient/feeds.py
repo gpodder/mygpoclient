@@ -18,6 +18,7 @@
 import urllib, urllib2, urlparse, time
 from datetime import datetime
 from email import utils
+import mygpoclient
 
 try:
     # Prefer the usage of the simplejson module, as it
@@ -63,8 +64,8 @@ class FeedServiceResponse(object):
 
 
 
-def parse_feeds(feed_urls, strip_html=None, use_cache=None, inline_logo=None,
-                scale_logo=None, logo_format=None):
+def parse_feeds(feed_urls, last_modified=None, strip_html=None, use_cache=None,
+                inline_logo=None, scale_logo=None, logo_format=None):
     """
     Passes the given feed-urls to mygpo-feedservice to be parsed
     and returns the response
@@ -74,7 +75,7 @@ def parse_feeds(feed_urls, strip_html=None, use_cache=None, inline_logo=None,
                 inline_logo=inline_logo, scale_logo=scale_logo,
                 logo_format=logo_format)
 
-    resp = send_request(feed_urls, url)
+    resp = send_request(feed_urls, url, last_modified)
 
     last_modified = parse_header_date(resp.headers['last-modified'])
 
@@ -101,12 +102,18 @@ def build_url(**kwargs):
     return url
 
 
-def send_request(feed_urls, url):
+def send_request(feed_urls, url, last_modified=None):
     """
     Adds all required headers, sends the request and returns the response
     """
 
     req = urllib2.Request(url)
+    req.add_header('User-Agent', mygpoclient.user_agent)
+    req.add_header('Accept', 'application/json')
+    req.add_header('Accept-Encoding', 'gzip')
+
+    if last_modified is not None:
+        req.add_header('If-Modified-Since', format_header_date(last_modified))
 
     post_data = [('url', feed_url) for feed_url in feed_urls]
     data = urllib.urlencode(post_data)
@@ -123,3 +130,9 @@ def parse_header_date(date_str):
         return None
     ts = time.mktime(utils.parsedate(date_str))
     return datetime.utcfromtimestamp(ts)
+
+def format_header_date(datetime_obj):
+    """
+    Formats the given datetime object for use in HTTP headers
+    """
+    return utils.formatdate(time.mktime(datetime_obj.timetuple()))
