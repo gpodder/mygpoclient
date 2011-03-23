@@ -36,13 +36,13 @@ except ImportError:
 BASE_URL='http://mygpo-feedservice.appspot.com'
 
 
-class FeedServiceResponse(object):
+class FeedServiceResponse(list):
     """
     Encapsulates the relevant data of a mygpo-feedservice response
     """
 
     def __init__(self, feeds, last_modified, feed_urls):
-        self.feeds = feeds
+        super(FeedServiceResponse, self).__init__(feeds)
         self.last_modified = last_modified
         self.feed_urls = feed_urls
         self.indexed_feeds = {}
