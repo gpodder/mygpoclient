@@ -66,8 +66,8 @@ class FeedServiceResponse(list):
 
 
 
-def parse_feeds(feed_urls, last_modified=None, strip_html=None, use_cache=None,
-                inline_logo=None, scale_logo=None, logo_format=None):
+def parse_feeds(feed_urls, last_modified=None, strip_html=False, use_cache=True,
+                inline_logo=False, scale_logo=None, logo_format=None):
     """
     Passes the given feed-urls to mygpo-feedservice to be parsed
     and returns the response
