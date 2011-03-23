@@ -55,7 +55,7 @@ class FeedServiceResponse(list):
         """
         Returns the parsed feeds in order of the initial request
         """
-        return [self.get_feed(url) for url in self.feed_urls]
+        return (self.get_feed(url) for url in self.feed_urls)
 
 
     def get_feed(self, url):
