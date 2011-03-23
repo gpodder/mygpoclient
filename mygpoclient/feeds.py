@@ -98,9 +98,9 @@ def build_url(**kwargs):
 
     # boolean flags are represented as 1 and 0 in the query-string
     args = map(lambda (k, v): (k, int(v) if isinstance(v, bool) else v), args)
-    args = ['%s=%s' % i for i in args]
+    args = urllib.urlencode(dict(args))
 
-    url = '%s?%s' % (query_url, '&'.join(args))
+    url = '%s?%s' % (query_url, args)
     return url
 
 
