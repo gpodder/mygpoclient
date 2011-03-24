@@ -17,10 +17,11 @@
 
 from __future__ import absolute_import
 
-import urllib, urllib2, urlparse, time
+import urllib, urlparse, time
 from datetime import datetime
 from email import utils
-import mygpoclient
+
+import mygpoclient.json
 
 try:
     # Prefer the usage of the simplejson module, as it
@@ -65,76 +66,95 @@ class FeedServiceResponse(list):
         return self.indexed_feeds.get(url, None)
 
 
+class FeedserviceClient(mygpoclient.json.JsonClient):
+    """A special-cased JsonClient for mygpo-feedservice"""
 
-def parse_feeds(feed_urls, last_modified=None, strip_html=False, use_cache=True,
-                inline_logo=False, scale_logo=None, logo_format=None):
-    """
-    Passes the given feed-urls to mygpo-feedservice to be parsed
-    and returns the response
-    """
+    def __init__(self, username=None, password=None, base_url=BASE_URL):
+        self._base_url = base_url
+        super(FeedserviceClient, self).__init__(username, password)
 
-    url = build_url(strip_html=strip_html, use_cache=use_cache,
+    def _prepare_request(self, method, uri, data):
+        """Sets headers required by mygpo-feedservice
+
+        Expects a dict with keys feed_urls and (optionally) last_modified"""
+
+        # send URLs as POST data to avoid any length
+        # restrictions for the query parameters
+        post_data = [('url', feed_url) for feed_url in data['feed_urls']]
+        post_data = urllib.urlencode(post_data)
+
+        # call _prepare_request directly from HttpClient, because
+        # JsonClient would JSON-encode our POST-data
+        request = mygpoclient.http.HttpClient._prepare_request(method, uri, post_data)
+        request.add_header('Accept', 'application/json')
+        request.add_header('Accept-Encoding', 'gzip')
+
+        last_modified = data.get('last_modified', None)
+        if last_modified is not None:
+            request.add_header('If-Modified-Since', self.format_header_date(last_modified))
+
+        return request
+
+
+    def _process_response(self, response):
+        """ Extract Last-modified header and passes response body
+            to JsonClient for decoding"""
+
+        last_modified = self.parse_header_date(response.headers['last-modified'])
+        feeds = super(FeedserviceClient, self)._process_response(response)
+        return feeds, last_modified
+
+
+    def parse_feeds(self, feed_urls, last_modified=None, strip_html=False,
+                use_cache=True, inline_logo=False, scale_logo=None,
+                logo_format=None):
+        """
+        Passes the given feed-urls to mygpo-feedservice to be parsed
+        and returns the response
+        """
+
+        url = self.build_url(strip_html=strip_html, use_cache=use_cache,
                 inline_logo=inline_logo, scale_logo=scale_logo,
                 logo_format=logo_format)
 
-    resp = send_request(feed_urls, url, last_modified)
+        request_data = dict(feed_urls=feed_urls, last_modified=last_modified)
 
-    last_modified = parse_header_date(resp.headers['last-modified'])
+        feeds, last_modified = self.POST(url, request_data)
 
-    feeds = json.loads(resp.read())
-
-    return FeedServiceResponse(feeds, last_modified, feed_urls)
+        return FeedServiceResponse(feeds, last_modified, feed_urls)
 
 
-def build_url(**kwargs):
-    """
-    Parameter such as strip_html, scale_logo, etc are pased as kwargs
-    """
+    def build_url(self, **kwargs):
+        """
+        Parameter such as strip_html, scale_logo, etc are pased as kwargs
+        """
 
-    query_url = urlparse.urljoin(BASE_URL, 'parse')
+        query_url = urlparse.urljoin(self._base_url, 'parse')
 
-    args = kwargs.items()
-    args = filter(lambda (k, v): v is not None, args)
+        args = kwargs.items()
+        args = filter(lambda (k, v): v is not None, args)
 
-    # boolean flags are represented as 1 and 0 in the query-string
-    args = map(lambda (k, v): (k, int(v) if isinstance(v, bool) else v), args)
-    args = urllib.urlencode(dict(args))
+        # boolean flags are represented as 1 and 0 in the query-string
+        args = map(lambda (k, v): (k, int(v) if isinstance(v, bool) else v), args)
+        args = urllib.urlencode(dict(args))
 
-    url = '%s?%s' % (query_url, args)
-    return url
-
-
-def send_request(feed_urls, url, last_modified=None):
-    """
-    Adds all required headers, sends the request and returns the response
-    """
-
-    req = urllib2.Request(url)
-    req.add_header('User-Agent', mygpoclient.user_agent)
-    req.add_header('Accept', 'application/json')
-    req.add_header('Accept-Encoding', 'gzip')
-
-    if last_modified is not None:
-        req.add_header('If-Modified-Since', format_header_date(last_modified))
-
-    post_data = [('url', feed_url) for feed_url in feed_urls]
-    data = urllib.urlencode(post_data)
-    req.add_data(data)
-
-    return urllib2.urlopen(req)
+        url = '%s?%s' % (query_url, args)
+        return url
 
 
-def parse_header_date(date_str):
-    """
-    Parses dates in RFC2822 format to datetime objects
-    """
-    if not date_str:
-        return None
-    ts = time.mktime(utils.parsedate(date_str))
-    return datetime.utcfromtimestamp(ts)
+    @staticmethod
+    def parse_header_date(date_str):
+        """
+        Parses dates in RFC2822 format to datetime objects
+        """
+        if not date_str:
+            return None
+        ts = time.mktime(utils.parsedate(date_str))
+        return datetime.utcfromtimestamp(ts)
 
-def format_header_date(datetime_obj):
-    """
-    Formats the given datetime object for use in HTTP headers
-    """
-    return utils.formatdate(time.mktime(datetime_obj.timetuple()))
+    @staticmethod
+    def format_header_date(datetime_obj):
+        """
+        Formats the given datetime object for use in HTTP headers
+        """
+        return utils.formatdate(time.mktime(datetime_obj.timetuple()))

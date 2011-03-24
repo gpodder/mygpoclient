@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from StringIO import StringIO
+import urllib2
+
 from mygpoclient import http
 from mygpoclient import json
 
@@ -26,30 +29,35 @@ class Test_JsonClient(unittest.TestCase):
     PASSWORD = 'secret'
 
     def setUp(self):
-        self.client = json.JsonClient(self.USERNAME, self.PASSWORD)
+        self.mockopener = minimock.Mock('urllib2.OpenerDirector')
+        urllib2.build_opener = minimock.Mock('urllib2.build_opener')
+        urllib2.build_opener.mock_returns = self.mockopener
 
     def tearDown(self):
         minimock.restore()
 
     def mock_setHttpResponse(self, value):
-        http.HttpClient._request = minimock.Mock('http.HttpClient._request')
-        http.HttpClient._request.mock_returns = value
+        self.mockopener.open.mock_returns = StringIO(value)
 
     def test_parseResponse_worksWithDictionary(self):
+        client = json.JsonClient(self.USERNAME, self.PASSWORD)
         self.mock_setHttpResponse('{"a": "B", "c": "D"}')
-        items = list(sorted(self.client.GET('/').items()))
+        items = list(sorted(client.GET('/').items()))
         self.assertEquals(items, [('a', 'B'), ('c', 'D')])
 
     def test_parseResponse_worksWithIntegerList(self):
+        client = json.JsonClient(self.USERNAME, self.PASSWORD)
         self.mock_setHttpResponse('[1,2,3,6,7]')
-        self.assertEquals(self.client.GET('/'), [1,2,3,6,7])
+        self.assertEquals(client.GET('/'), [1,2,3,6,7])
 
     def test_parseResponse_emptyString_returnsNone(self):
+        client = json.JsonClient(self.USERNAME, self.PASSWORD)
         self.mock_setHttpResponse('')
-        self.assertEquals(self.client.GET('/'), None)
+        self.assertEquals(client.GET('/'), None)
 
     def test_invalidContent_raisesJsonException(self):
+        client = json.JsonClient(self.USERNAME, self.PASSWORD)
         self.mock_setHttpResponse('this is not a valid json string')
-        self.assertRaises(json.JsonException, self.client.GET, '/')
+        self.assertRaises(json.JsonException, client.GET, '/')
 
 

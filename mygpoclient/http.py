@@ -96,19 +96,29 @@ class HttpClient(object):
         else:
             self._opener = urllib2.build_opener(cookie_handler)
 
-    def _request(self, method, uri, data):
+    @staticmethod
+    def _prepare_request(method, uri, data):
+        """Prepares the HttpRequest object"""
+
+        request = HttpRequest(uri, data)
+        request.set_method(method)
+        request.add_header('User-agent', mygpoclient.user_agent)
+        return request
+
+    @staticmethod
+    def _process_response(response):
+        return response.read()
+
+    def _request(self, method, uri, data, **kwargs):
         """Request and exception handling
 
         Carries out a request with a given method (GET, POST, PUT) on
         a given URI with optional data (data only makes sense for POST
         and PUT requests and should be None for GET requests).
         """
-        request = HttpRequest(uri, data)
-        request.set_method(method)
-        request.add_header('User-agent', mygpoclient.user_agent)
+        request = self._prepare_request(method, uri, data)
         try:
             response = self._opener.open(request)
-            return response.read()
         except urllib2.HTTPError, http_error:
             if http_error.code == 404:
                 raise NotFound()
@@ -118,6 +128,7 @@ class HttpClient(object):
                 raise BadRequest()
             else:
                 raise UnknownResponse(http_error.code)
+        return self._process_response(response)
 
     def GET(self, uri):
         """Convenience method for carrying out a GET request"""

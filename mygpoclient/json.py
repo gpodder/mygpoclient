@@ -79,8 +79,12 @@ class JsonClient(http.HttpClient):
             except ValueError, ve:
                 raise JsonException('Value error while parsing response: ' + data)
 
-    def _request(self, method, uri, data):
-        data = self.encode(data)
-        response = http.HttpClient._request(self, method, uri, data)
-        return self.decode(response)
+    @staticmethod
+    def _prepare_request(method, uri, data):
+        data = JsonClient.encode(data)
+        return http.HttpClient._prepare_request(method, uri, data)
 
+    @staticmethod
+    def _process_response(response):
+        data = http.HttpClient._process_response(response)
+        return JsonClient.decode(data)
