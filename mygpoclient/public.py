@@ -21,38 +21,28 @@ from mygpoclient import locator
 from mygpoclient import json
 from mygpoclient import simple
 
-class ToplistPodcast(object):
-    """Container class for a toplist entry
-
-    This class encapsulates the metadata for a podcast
-    in the podcast toplist.
+class Tag(object):
+    """Container class for a tag in the top tag list
 
     Attributes:
-    url - The feed URL of the podcast
-    title - The title of the podcast
-    description - The description of the podcast
-    subscribers - The current subscriber count
-    subscribers_last_week - Last week's subscriber count
+    tag - The name of the tag
+    usage - Usage of the tag
     """
-    REQUIRED_KEYS = ('url', 'title', 'description', \
-                     'subscribers', 'subscribers_last_week')
 
-    def __init__(self, url, title, description,
-            subscribers, subscribers_last_week):
-        self.url = url
-        self.title = title
-        self.description = description
-        self.subscribers = int(subscribers)
-        self.subscribers_last_week = int(subscribers_last_week)
+    REQUIRED_KEYS = ('tag','usage')
+
+    def __init__(self, tag, usage):
+        self.tag = tag
+        self.usage = usage
 
     def __eq__(self, other):
-        """Test two ToplistPodcast objects for equality
+        """Test two tag objects for equality
 
-        >>> ToplistPodcast('u', 't', 'd', 10, 12) == ToplistPodcast('u', 't', 'd', 10, 12)
+        >>> Tag('u', 123) == ToplistPodcast('u', 123)
         True
-        >>> ToplistPodcast('u', 't', 'd', 10, 12) == ToplistPodcast('a', 'b', 'c', 13, 14)
+        >>> Tag('u', 123) == Tag('a', 345)
         False
-        >>> ToplistPodcast('u', 't', 'd', 10, 12) == 'x'
+        >>> Tag('u', 123) == 'x'
         False
         """
         if not isinstance(other, self.__class__):
@@ -65,10 +55,9 @@ class ToplistPodcast(object):
     def from_dict(cls, d):
         for key in cls.REQUIRED_KEYS:
             if key not in d:
-                raise ValueError('Missing keys for toplist podcast')
+                raise ValueError('Missing keys for tag')
 
         return cls(*(d.get(k) for k in cls.REQUIRED_KEYS))
-
 
 class PublicClient(object):
     """Client for the gpodder.net "anonymous" API
@@ -96,7 +85,7 @@ class PublicClient(object):
     def get_toplist(self, count=mygpoclient.TOPLIST_DEFAULT):
         """Get a list of most-subscribed podcasts
 
-        Returns a list of ToplistPodcast objects.
+        Returns a list of simple.Podcast objects.
 
         The parameter "count" is optional and describes
         the amount of podcasts that are returned. The
@@ -104,7 +93,7 @@ class PublicClient(object):
         the maximum value is 100.
         """
         uri = self._locator.toplist_uri(count, self.FORMAT)
-        return [ToplistPodcast.from_dict(x) for x in self._client.GET(uri)]
+        return [simple.Podcast.from_dict(x) for x in self._client.GET(uri)]
 
     def search_podcasts(self, query):
         """Search for podcasts on the webservice
@@ -117,3 +106,30 @@ class PublicClient(object):
         uri = self._locator.search_uri(query, self.FORMAT)
         return [simple.Podcast.from_dict(x) for x in self._client.GET(uri)]
 
+    def get_podcasts_of_a_tag(self, tag, count=mygpoclient.TOPLIST_DEFAULT):
+        """Get a list of most-subscribed podcasts of a Tag
+
+        Returns a list of simple.Podcast objects.
+
+        The parameter "tag" specifies the tag as a String
+
+        The parameter "count" is optional and describes
+        the amount of podcasts that are returned. The
+        default value is 50, the minimum value is 1 and
+        the maximum value is 100.
+        """
+        uri = self._locator.podcasts_of_a_tag_uri(tag, count)
+        return [simple.Podcast.from_dict(x) for x in self._client.GET(uri)]
+
+    def get_toptags(self, count=mygpoclient.TOPLIST_DEFAULT):
+        """Get a list of most-used tags
+
+        Returns a list of Tag objects.
+
+        The parameter "count" is optional and describes
+        the amount of podcasts that are returned. The
+        default value is 50, the minimum value is 1 and
+        the maximum value is 100.
+        """
+        uri = self._locator.toptags_uri(count)
+        return [Tag.from_dict(x) for x in self._client.GET(uri)]

@@ -223,4 +223,27 @@ class Locator(object):
         filename = self._username + '.json'
         return util.join(self._base, 'devices', filename)
 
+    def toptags_uri(self, count = 50):
+        """Get the Advanced API URI for retrieving the top Tags
+
+        >>> locator = Locator(None)
+        >>> locator.toptags_uri()
+        'http://gpodder.net/api/2/tags/50.json'
+        >>> locator.toptags_uri(70)
+        'http://gpodder.net/api/2/tags/70.json'
+        """
+        filename = '%(count)d.json' % locals()
+        return util.join(self._base, 'tags', filename)
+
+    def podcasts_of_a_tag_uri(self, tag, count = 50):
+        """Get the Advanced API URI for retrieving the top Podcasts of a Tag
+
+        >>> locator = Locator(None)
+        >>> locator.podcasts_of_a_tag_uri('linux')
+        'http://gpodder.net/api/2/tag/linux/50.json'
+        >>> locator.podcasts_of_a_tag_uri('linux',70)
+        'http://gpodder.net/api/2/tag/linux/70.json'
+        """
+        filename = '%(tag)s/%(count)d.json' % locals()
+        return util.join(self._base, 'tag', filename)
 
