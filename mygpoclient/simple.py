@@ -30,12 +30,18 @@ class Podcast(object):
     title - The title of the podcast
     description - The description of the podcast
     """
-    REQUIRED_FIELDS = ('url', 'title', 'description')
+    REQUIRED_FIELDS = ('url', 'title', 'description', 'website', 'subscribers',
+                       'subscribers_last_week', 'mygpo_link', 'logo_url')
 
-    def __init__(self, url, title, description):
+    def __init__(self, url, title, description, website, subscribers, subscribers_last_week, mygpo_link, logo_url):
         self.url = url
         self.title = title
         self.description = description
+        self.website = website
+        self.subscribers = subscribers
+        self.subscribers_last_week = subscribers_last_week
+        self.mygpo_link = mygpo_link
+        self.logo_url = logo_url
 
     @classmethod
     def from_dict(cls, d):
@@ -48,11 +54,11 @@ class Podcast(object):
     def __eq__(self, other):
         """Test two Podcast objects for equality
 
-        >>> Podcast('a', 'b', 'c') == Podcast('a', 'b', 'c')
+        >>> Podcast('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h') == Podcast('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
         True
-        >>> Podcast('a', 'b', 'c') == Podcast('x', 'y', 'z')
+        >>> Podcast('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h') == Podcast('s', 't', 'u', 'v', 'w', 'x', 'y', 'z')
         False
-        >>> Podcast('a', 'b', 'c') == 'a'
+        >>> Podcast('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h') == 'a'
         False
         """
         if not isinstance(other, self.__class__):
