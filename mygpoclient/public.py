@@ -38,7 +38,7 @@ class Tag(object):
     def __eq__(self, other):
         """Test two tag objects for equality
 
-        >>> Tag('u', 123) == ToplistPodcast('u', 123)
+        >>> Tag('u', 123) == Tag('u', 123)
         True
         >>> Tag('u', 123) == Tag('a', 345)
         False

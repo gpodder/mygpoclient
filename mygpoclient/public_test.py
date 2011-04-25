@@ -21,58 +21,82 @@ from mygpoclient import testing
 
 import unittest
 
-class Test_ToplistPodcast(unittest.TestCase):
-    def test_toplistPodcastFromDict_raisesValueError_missingKey(self):
-        d = {
-                'url': 'http://example.org/feeds/podcast.rss',
-                'title': 'My Example Podcast Feed',
-        }
-        self.assertRaises(ValueError,
-                public.ToplistPodcast.from_dict, d)
-
-
 class Test_PublicClient(unittest.TestCase):
     TOPLIST_JSON = """
-    [{"url": "http://twit.tv/node/4350/feed",
-     "title": "FLOSS Weekly",
-     "description": "Free, Libre and Open Source Software with Leo.",
-     "subscribers": 4711,
-     "subscribers_last_week": 4700
-    },
-    {"url": "http://feeds.feedburner.com/LinuxOutlaws",
-     "title": "The Linux Outlaws",
-     "description": "A podcast about Linux with Dan and Fab.",
-     "subscribers": 1337,
-     "subscribers_last_week": 1330
+    [{
+    "website": "http://linuxoutlaws.com/podcast", 
+    "description": "Open source talk with a serious attitude", 
+    "title": "Linux Outlaws", 
+    "url": "http://feeds.feedburner.com/linuxoutlaws", 
+    "subscribers_last_week": 1736, 
+    "subscribers": 1736, 
+    "mygpo_link": "http://www.gpodder.net/podcast/11092", 
+    "logo_url": "http://linuxoutlaws.com/files/albumart-itunes.jpg"
+    }, 
+    {
+    "website": "http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c", 
+    "description": "We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.", 
+    "title": "FLOSS Weekly Video (large)", 
+    "url": "http://feeds.twit.tv/floss_video_large",
+    "subscribers_last_week": 50, 
+    "subscribers": 50, 
+    "mygpo_link": "http://www.gpodder.net/podcast/31991", 
+    "logo_url": "http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png"
     }]
     """
     TOPLIST = [
-            public.ToplistPodcast('http://twit.tv/node/4350/feed',
-                'FLOSS Weekly',
-                'Free, Libre and Open Source Software with Leo.',
-                4711, 4700),
-            public.ToplistPodcast('http://feeds.feedburner.com/LinuxOutlaws',
-                'The Linux Outlaws',
-                'A podcast about Linux with Dan and Fab.',
-                1337, 1330),
+            simple.Podcast('http://feeds.feedburner.com/linuxoutlaws',
+                'Linux Outlaws',
+                'Open source talk with a serious attitude',
+                'http://linuxoutlaws.com/podcast',
+                1736, 1736,
+                'http://www.gpodder.net/podcast/11092',
+                'http://linuxoutlaws.com/files/albumart-itunes.jpg'),
+            simple.Podcast('http://feeds.twit.tv/floss_video_large',
+                'FLOSS Weekly Video (large)',
+                'We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.',
+                'http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c',
+                50, 50,
+                'http://www.gpodder.net/podcast/31991',
+                'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
     ]
     SEARCHRESULT_JSON = """
-    [{"url": "http://twit.tv/node/4350/feed",
-      "title": "FLOSS Weekly",
-      "description": "Free, Libre and Open Source Software with Leo."
-    },
-    {"url": "http://feeds.feedburner.com/LinuxOutlaws",
-      "title": "The Linux Outlaws",
-      "description": "A podcast about Linux with Dan and Fab."
+    [{
+    "website": "http://linuxoutlaws.com/podcast", 
+    "description": "Open source talk with a serious attitude", 
+    "title": "Linux Outlaws", 
+    "url": "http://feeds.feedburner.com/linuxoutlaws", 
+    "subscribers_last_week": 1736, 
+    "subscribers": 1736, 
+    "mygpo_link": "http://www.gpodder.net/podcast/11092", 
+    "logo_url": "http://linuxoutlaws.com/files/albumart-itunes.jpg"
+    }, 
+    {
+    "website": "http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c", 
+    "description": "We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.", 
+    "title": "FLOSS Weekly Video (large)", 
+    "url": "http://feeds.twit.tv/floss_video_large",
+    "subscribers_last_week": 50, 
+    "subscribers": 50, 
+    "mygpo_link": "http://www.gpodder.net/podcast/31991", 
+    "logo_url": "http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png"
     }]
     """
     SEARCHRESULT = [
-            simple.Podcast('http://twit.tv/node/4350/feed',
-                'FLOSS Weekly',
-                'Free, Libre and Open Source Software with Leo.'),
-            simple.Podcast('http://feeds.feedburner.com/LinuxOutlaws',
-                'The Linux Outlaws',
-                'A podcast about Linux with Dan and Fab.'),
+            simple.Podcast('http://feeds.feedburner.com/linuxoutlaws',
+                'Linux Outlaws',
+                'Open source talk with a serious attitude',
+                'http://linuxoutlaws.com/podcast',
+                1736, 1736,
+                'http://www.gpodder.net/podcast/11092',
+                'http://linuxoutlaws.com/files/albumart-itunes.jpg'),
+            simple.Podcast('http://feeds.twit.tv/floss_video_large',
+                'FLOSS Weekly Video (large)',
+                'We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.',
+                'http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c',
+                50, 50,
+                'http://www.gpodder.net/podcast/31991',
+                'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
     ]
 
     def setUp(self):
