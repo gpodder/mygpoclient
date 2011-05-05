@@ -247,3 +247,22 @@ class Locator(object):
         filename = '%(tag)s/%(count)d.json' % locals()
         return util.join(self._base, 'tag', filename)
 
+    def podcast_data_uri(self, podcast_url):
+        """Get the Advanced API URI for retrieving Podcast Data
+
+        >>> locator = Locator(None)
+        >>> locator.podcast_data_uri('http://podcast.com')
+        'http://gpodder.net/api/2/data/podcast.json?url=http%3A//podcast.com'
+        """
+        filename = 'podcast.json?url=%s' % urllib.quote(podcast_url) 
+        return util.join(self._base, 'data', filename)
+    
+    def episode_data_uri(self, podcast_url, episode_url):
+        """Get the Advanced API URI for retrieving Episode Data
+
+        >>> locator = Locator(None)
+        >>> locator.episode_data_uri('http://podcast.com','http://podcast.com/foo')
+        'http://gpodder.net/api/2/data/episode.json?podcast=http%3A//podcast.com&url=http%3A//podcast.com/foo'
+        """
+        filename = 'episode.json?podcast=%s&url=%s' % (urllib.quote(podcast_url),urllib.quote(episode_url))
+        return util.join(self._base, 'data', filename)
