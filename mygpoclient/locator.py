@@ -31,6 +31,8 @@ class Locator(object):
     """
     SIMPLE_FORMATS = ('opml', 'json', 'txt')
 
+    SETTINGS_TYPES = ('account','device','podcast','episode')
+
     def __init__(self, username, host=mygpoclient.HOST,
             version=mygpoclient.VERSION):
         self._username = username
@@ -276,3 +278,38 @@ class Locator(object):
         """
         filename = self._username + '.json'
         return util.join(self._base, 'favorites', filename)
+
+    def settings_uri(self, type, scope_param1, scope_param2 ):
+        """Get the Advanced API URI for retrieving or saving Settings
+
+        >>> locator = Locator('joe')
+        >>> locator.settings_uri('account',None,None)
+        'http://gpodder.net/api/2/settings/joe/account.json'
+        >>> locator.settings_uri('device','foodevice',None)
+        'http://gpodder.net/api/2/settings/joe/device.json?device=foodevice'
+        >>> locator.settings_uri('podcast','http://podcast.com',None)
+        'http://gpodder.net/api/2/settings/joe/podcast.json?podcast=http%3A//podcast.com'
+        >>> locator.settings_uri('episode','http://podcast.com','http://podcast.com/foo')
+        'http://gpodder.net/api/2/settings/joe/episode.json?podcast=http%3A//podcast.com&episode=http%3A//podcast.com/foo'
+        """
+        if type not in self.SETTINGS_TYPES:
+            raise ValueError('Unsupported Setting Type')
+
+        filename = self._username + '/%(type)s.json' % locals()
+
+        if type is 'device':
+            if scope_param1 is None:
+                raise ValueError('Devicename not specified')
+            filename += '?device=%(scope_param1)s' % locals()
+
+        if type is 'podcast':
+            if scope_param1 is None:
+                raise ValueError('Podcast URL not specified')
+            filename += '?podcast=%s' % urllib.quote(scope_param1)
+
+        if type is 'episode':
+            if (scope_param1 is None) or (scope_param2 is None):
+                raise ValueError('Podcast or Episode URL not specified')
+            filename += '?podcast=%s&episode=%s' % (urllib.quote(scope_param1),urllib.quote(scope_param2))
+
+        return util.join(self._base, 'settings' , filename)
