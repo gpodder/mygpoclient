@@ -19,6 +19,7 @@ import mygpoclient
 
 from mygpoclient import util
 from mygpoclient import simple
+from mygpoclient import public
 
 # Additional error types for the advanced API client
 class InvalidResponse(Exception): pass
@@ -395,4 +396,8 @@ class MygPodderClient(simple.SimpleClient):
         except KeyError:
             raise InvalidResponse('Missing keys in device list response')
 
-
+    def get_favorite_episodes(self):
+        """Returns a List of Episode Objects containing the Users
+        favorite Episodes"""
+        uri = self._locator.favorite_episodes_uri()
+        return [public.Episode.from_dict(d) for d in self._client.GET(uri)]

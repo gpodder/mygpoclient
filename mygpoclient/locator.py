@@ -266,3 +266,13 @@ class Locator(object):
         """
         filename = 'episode.json?podcast=%s&url=%s' % (urllib.quote(podcast_url),urllib.quote(episode_url))
         return util.join(self._base, 'data', filename)
+
+    def favorite_episodes_uri(self):
+        """Get the Advanced API URI for listing favorite episodes
+
+        >>> locator = Locator('mike')
+        >>> locator.favorite_episodes_uri()
+        'http://gpodder.net/api/2/favorites/mike.json'
+        """
+        filename = self._username + '.json'
+        return util.join(self._base, 'favorites', filename)
