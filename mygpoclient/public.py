@@ -29,7 +29,7 @@ class Tag(object):
     usage - Usage of the tag
     """
 
-    REQUIRED_KEYS = ('tag','usage')
+    REQUIRED_KEYS = ('tag', 'usage')
 
     def __init__(self, tag, usage):
         self.tag = tag
@@ -75,10 +75,10 @@ class Episode(object):
     mygpo_link -
     """
     
-    REQUIRED_KEYS = ('title','url','podcast_title','podcast_url',
-                     'description','website','released','mygpo_link')
+    REQUIRED_KEYS = ('title', 'url', 'podcast_title', 'podcast_url',
+                     'description', 'website', 'released', 'mygpo_link')
     
-    def __init__(self,title,url,podcast_title,podcast_url,description,website,released,mygpo_link):
+    def __init__(self, title, url, podcast_title, podcast_url, description, website, released, mygpo_link):
         self.title = title
         self.url = url
         self.podcast_title = podcast_title
@@ -96,7 +96,7 @@ class Episode(object):
             
             return cls(*(d.get(k) for k in cls.REQUIRED_KEYS))
         
-    def __eq__(self,other):
+    def __eq__(self, other):
         """Test two Episode objects for equality
             
         >>> Episode('a','b','c','d','e','f','g','h') == Episode('a','b','c','d','e','f','g','h')
@@ -187,7 +187,7 @@ class PublicClient(object):
         uri = self._locator.toptags_uri(count)
         return [Tag.from_dict(x) for x in self._client.GET(uri)]
     
-    def get_podcast_data(self, podcast_uri ):
+    def get_podcast_data(self, podcast_uri):
         """Get Metadata for the specified Podcast
         
         Returns a simple.Podcast object.
@@ -197,7 +197,7 @@ class PublicClient(object):
         uri = self._locator.podcast_data_uri(podcast_uri)
         return simple.Podcast.from_dict(self._client.GET(uri))
     
-    def get_episode_data(self, podcast_uri, episode_uri ):
+    def get_episode_data(self, podcast_uri, episode_uri):
         """Get Metadata for the specified Episode
         
         Returns a Episode object.

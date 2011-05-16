@@ -31,7 +31,7 @@ class Locator(object):
     """
     SIMPLE_FORMATS = ('opml', 'json', 'txt')
 
-    SETTINGS_TYPES = ('account','device','podcast','episode')
+    SETTINGS_TYPES = ('account', 'device', 'podcast', 'episode')
 
     def __init__(self, username, host=mygpoclient.HOST,
             version=mygpoclient.VERSION):
@@ -187,7 +187,7 @@ class Locator(object):
         if podcast is not None and device_id is not None:
             raise ValueError('must not specify both "podcast" and "device_id"')
 
-        filename = self._username+'.json'
+        filename = self._username + '.json'
 
         params = []
         if since is not None:
@@ -225,7 +225,7 @@ class Locator(object):
         filename = self._username + '.json'
         return util.join(self._base, 'devices', filename)
 
-    def toptags_uri(self, count = 50):
+    def toptags_uri(self, count=50):
         """Get the Advanced API URI for retrieving the top Tags
 
         >>> locator = Locator(None)
@@ -237,7 +237,7 @@ class Locator(object):
         filename = '%(count)d.json' % locals()
         return util.join(self._base, 'tags', filename)
 
-    def podcasts_of_a_tag_uri(self, tag, count = 50):
+    def podcasts_of_a_tag_uri(self, tag, count=50):
         """Get the Advanced API URI for retrieving the top Podcasts of a Tag
 
         >>> locator = Locator(None)
@@ -266,7 +266,7 @@ class Locator(object):
         >>> locator.episode_data_uri('http://podcast.com','http://podcast.com/foo')
         'http://gpodder.net/api/2/data/episode.json?podcast=http%3A//podcast.com&url=http%3A//podcast.com/foo'
         """
-        filename = 'episode.json?podcast=%s&url=%s' % (urllib.quote(podcast_url),urllib.quote(episode_url))
+        filename = 'episode.json?podcast=%s&url=%s' % (urllib.quote(podcast_url), urllib.quote(episode_url))
         return util.join(self._base, 'data', filename)
 
     def favorite_episodes_uri(self):
@@ -279,7 +279,7 @@ class Locator(object):
         filename = self._username + '.json'
         return util.join(self._base, 'favorites', filename)
 
-    def settings_uri(self, type, scope_param1, scope_param2 ):
+    def settings_uri(self, type, scope_param1, scope_param2):
         """Get the Advanced API URI for retrieving or saving Settings
         
         Depending on the Type of setting scope_param2 or scope_param1 and scope_param2 are
@@ -313,6 +313,6 @@ class Locator(object):
         if type is 'episode':
             if (scope_param1 is None) or (scope_param2 is None):
                 raise ValueError('Podcast or Episode URL not specified')
-            filename += '?podcast=%s&episode=%s' % (urllib.quote(scope_param1),urllib.quote(scope_param2))
+            filename += '?podcast=%s&episode=%s' % (urllib.quote(scope_param1), urllib.quote(scope_param2))
 
         return util.join(self._base, 'settings' , filename)

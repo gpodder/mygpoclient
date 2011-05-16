@@ -346,7 +346,7 @@ class MygPodderClient(simple.SimpleClient):
         try:
             since = int(data['timestamp'])
         except ValueError:
-            raise InvalidResponse('Invalid value for timestamp: ' +
+            raise InvalidResponse('Invalid value for timestamp: ' + 
                     data['timestamp'])
 
         dicts = data['actions']
@@ -406,10 +406,10 @@ class MygPodderClient(simple.SimpleClient):
         uri = self._locator.settings_uri(type, scope_param1, scope_param2)
         return self._client.GET(uri)
     
-    def set_settings(self, type, scope_param1, scope_param2, set = {}, remove = [] ):
+    def set_settings(self, type, scope_param1, scope_param2, set={}, remove=[]):
         """Returns a Dictionary with the set settings for the type & specified scope"""
         uri = self._locator.settings_uri(type, scope_param1, scope_param2)
         data = {}
         data["set"] = set
         data["remove"] = remove
-        return self._client.POST(uri,data)
+        return self._client.POST(uri, data)
