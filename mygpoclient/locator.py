@@ -281,6 +281,9 @@ class Locator(object):
 
     def settings_uri(self, type, scope_param1, scope_param2 ):
         """Get the Advanced API URI for retrieving or saving Settings
+        
+        Depending on the Type of setting scope_param2 or scope_param1 and scope_param2 are
+        not necessary.
 
         >>> locator = Locator('joe')
         >>> locator.settings_uri('account',None,None)
