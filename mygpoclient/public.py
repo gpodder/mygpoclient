@@ -94,7 +94,7 @@ class Episode(object):
             if key not in d:
                 raise ValueError('Missing keys for episode')
             
-            return cls(*(d.get(k) for k in cls.REQUIRED_KEYS))
+        return cls(*(d.get(k) for k in cls.REQUIRED_KEYS))
         
     def __eq__(self, other):
         """Test two Episode objects for equality
