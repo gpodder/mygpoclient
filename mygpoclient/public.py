@@ -41,7 +41,7 @@ class Tag(object):
             if key not in d:
                 raise ValueError('Missing keys for tag')
 
-            return cls(*(d.get(k) for k in cls.REQUIRED_KEYS))
+        return cls(*(d.get(k) for k in cls.REQUIRED_KEYS))
 
     def __eq__(self, other):
         """Test two tag objects for equality
