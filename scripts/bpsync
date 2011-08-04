@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # BashPodder <-> gpodder.net sync client
-# Copyright (c) 2010-04-02 Thomas Perl <thpinfo.com>
+# Copyright (c) 2010-04-02 Thomas Perl <thp@gpodder.org>
 # Licensed under the same terms as the "mygpoclient" library
-# See: http://thpinfo.com/2010/mygpoclient/
+# See: http://thp.io/2010/mygpoclient/
 
 import mygpoclient
 from mygpoclient import simple

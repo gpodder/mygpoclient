@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # gpodder.net API Client
-# Copyright (C) 2009-2010 Thomas Perl
+# Copyright (C) 2009-2011 Thomas Perl and the gPodder Team
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,8 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__version__ = '1.5'
-__url__ = 'http://thpinfo.com/2010/mygpoclient/'
+"""gpodder.net API Client Library
+
+This is mygpoclient, the gpodder.net API Client Library for Python.
+"""
+
+__author__ = 'Thomas Perl <thp@gpodder.org>'
+__version__ = '1.6'
+__website__ = 'http://thp.io/2010/mygpoclient/'
+__license__ = 'GNU General Public License v3 or later'
 
 # Default settings for the API client (server hostname and API version)
 HOST = 'gpodder.net'
@@ -24,7 +31,7 @@ VERSION = 2
 TOPLIST_DEFAULT = 50
 
 # You can overwrite this value from your application if you want
-user_agent = 'mygpoclient/%s (+%s)' % (__version__, __url__)
+user_agent = 'mygpoclient/%s (+%s)' % (__version__, __website__)
 
 # Version checking
 def require_version(minimum_required):
