@@ -15,10 +15,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from functools import wraps
+
 import mygpoclient
 
 from mygpoclient import locator
 from mygpoclient import json
+
+
+class MissingCredentials(Exception):
+    """ Raised when instantiating a SimpleClient without credentials """
+
+
+def needs_credentials(f):
+    """ apply to all methods that initiate requests that require credentials """
+
+    @wraps(f)
+    def _wrapper(self, *args, **kwargs):
+        if not self.username or not self.password:
+            raise MissingCredentials
+
+        return f(self, *args, **kwargs)
+
+    return _wrapper
+
+
 
 class Podcast(object):
     """Container class for a podcast
@@ -90,6 +111,7 @@ class SimpleClient(object):
         self._locator = locator.Locator(username, host)
         self._client = client_class(username, password)
 
+    @needs_credentials
     def get_subscriptions(self, device_id):
         """Get a list of subscriptions for a device
 
@@ -102,6 +124,7 @@ class SimpleClient(object):
         uri = self._locator.subscriptions_uri(device_id, self.FORMAT)
         return self._client.GET(uri)
 
+    @needs_credentials
     def put_subscriptions(self, device_id, urls):
         """Update a device's subscription list
 
@@ -116,6 +139,7 @@ class SimpleClient(object):
         uri = self._locator.subscriptions_uri(device_id, self.FORMAT)
         return (self._client.PUT(uri, urls) == None)
 
+    @needs_credentials
     def get_suggestions(self, count=10):
         """Get podcast suggestions for the user
 
