@@ -204,16 +204,19 @@ class MygPodderClient(simple.SimpleClient):
     for a smaller class that only implements the Simple API.
     """
 
+    @simple.needs_credentials
     def get_subscriptions(self, device):
         # Overloaded to accept PodcastDevice objects as arguments
         device = getattr(device, 'device_id', device)
         return simple.SimpleClient.get_subscriptions(self, device)
 
+    @simple.needs_credentials
     def put_subscriptions(self, device, urls):
         # Overloaded to accept PodcastDevice objects as arguments
         device = getattr(device, 'device_id', device)
         return simple.SimpleClient.put_subscriptions(self, device, urls)
 
+    @simple.needs_credentials
     def update_subscriptions(self, device_id, add_urls=[], remove_urls=[]):
         """Update the subscription list for a given device.
 
@@ -261,6 +264,7 @@ class MygPodderClient(simple.SimpleClient):
 
         return UpdateResult(update_urls, since)
 
+    @simple.needs_credentials
     def pull_subscriptions(self, device_id, since=None):
         """Downloads subscriptions since the time of the last update
 
@@ -300,6 +304,7 @@ class MygPodderClient(simple.SimpleClient):
 
         return SubscriptionChanges(data['add'], data['remove'], since)
 
+    @simple.needs_credentials
     def upload_episode_actions(self, actions=[]):
         """Uploads a list of EpisodeAction objects to the server
 
@@ -322,6 +327,7 @@ class MygPodderClient(simple.SimpleClient):
 
         return since
 
+    @simple.needs_credentials
     def download_episode_actions(self, since=None,
             podcast=None, device_id=None):
         """Downloads a list of EpisodeAction objects from the server
@@ -357,6 +363,7 @@ class MygPodderClient(simple.SimpleClient):
 
         return EpisodeActionChanges(actions, since)
 
+    @simple.needs_credentials
     def update_device_settings(self, device_id, caption=None, type=None):
         """Update the description of a device on the server
 
@@ -378,6 +385,7 @@ class MygPodderClient(simple.SimpleClient):
             data['type'] = type
         return (self._client.POST(uri, data) is None)
 
+    @simple.needs_credentials
     def get_devices(self):
         """Returns a list of this user's PodcastDevice objects
 
