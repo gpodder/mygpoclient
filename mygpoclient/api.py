@@ -19,6 +19,7 @@ import mygpoclient
 
 from mygpoclient import util
 from mygpoclient import simple
+from mygpoclient import public
 
 # Additional error types for the advanced API client
 class InvalidResponse(Exception): pass
@@ -195,7 +196,6 @@ class EpisodeAction(object):
 
         return d
 
-
 class MygPodderClient(simple.SimpleClient):
     """gpodder.net API Client
 
@@ -352,7 +352,7 @@ class MygPodderClient(simple.SimpleClient):
         try:
             since = int(data['timestamp'])
         except ValueError:
-            raise InvalidResponse('Invalid value for timestamp: ' +
+            raise InvalidResponse('Invalid value for timestamp: ' + 
                     data['timestamp'])
 
         dicts = data['actions']
@@ -403,4 +403,21 @@ class MygPodderClient(simple.SimpleClient):
         except KeyError:
             raise InvalidResponse('Missing keys in device list response')
 
-
+    def get_favorite_episodes(self):
+        """Returns a List of Episode Objects containing the Users
+        favorite Episodes"""
+        uri = self._locator.favorite_episodes_uri()
+        return [public.Episode.from_dict(d) for d in self._client.GET(uri)]
+    
+    def get_settings(self, type, scope_param1=None, scope_param2=None):
+        """Returns a Dictionary with the set settings for the type & specified scope"""
+        uri = self._locator.settings_uri(type, scope_param1, scope_param2)
+        return self._client.GET(uri)
+    
+    def set_settings(self, type, scope_param1, scope_param2, set={}, remove=[]):
+        """Returns a Dictionary with the set settings for the type & specified scope"""
+        uri = self._locator.settings_uri(type, scope_param1, scope_param2)
+        data = {}
+        data["set"] = set
+        data["remove"] = remove
+        return self._client.POST(uri, data)

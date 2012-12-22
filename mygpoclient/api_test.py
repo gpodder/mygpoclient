@@ -113,20 +113,45 @@ class Test_EpisodeAction(unittest.TestCase):
                 api.EpisodeAction, FEED_URL_2, EPISODE_URL_3, 'invalidaction',
                 DEVICE_ID_2, self.XML_TIMESTAMP)
 
+    def test_startedIsSetWithNoPlayAction_raisesValueError(self):
+        self.assertRaises(ValueError,
+                api.EpisodeAction, FEED_URL_4, EPISODE_URL_2, 'download',
+                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED)
+        
     def test_positionIsSetWithNoPlayAction_raisesValueError(self):
         self.assertRaises(ValueError,
                 api.EpisodeAction, FEED_URL_4, EPISODE_URL_2, 'download',
-                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_POSITION)
-
+                DEVICE_ID_1, self.XML_TIMESTAMP, None, self.VALID_POSITION)
+    
+    def test_totalIsSetWithNoPlayAction_raisesValueError(self):
+        self.assertRaises(ValueError,
+                api.EpisodeAction, FEED_URL_4, EPISODE_URL_2, 'download',
+                DEVICE_ID_1, self.XML_TIMESTAMP, None, None, self.VALID_TOTAL)
+        
     def test_invalidTimestampFormat_raisesValueError(self):
         self.assertRaises(ValueError,
                 api.EpisodeAction, FEED_URL_3, EPISODE_URL_3, 'delete',
                 DEVICE_ID_2, 'today')
 
+    def test_onlyStartedSet_raisesValueError(self):
+        self.assertRaises(ValueError,
+                api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
+                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED)
+
+    def test_invalidStartedFormat_raisesValueError(self):
+        self.assertRaises(ValueError,
+                api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
+                DEVICE_ID_1, self.XML_TIMESTAMP, '10 minutes into the show', self.VALID_POSITION)
+        
     def test_invalidPositionFormat_raisesValueError(self):
         self.assertRaises(ValueError,
                 api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
-                DEVICE_ID_1, self.XML_TIMESTAMP, '10 minutes into the show')
+                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED, '15 minutes later')
+
+    def test_invalidTotalFormat_raisesValueError(self):
+        self.assertRaises(ValueError,
+                api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
+                DEVICE_ID_1, self.XML_TIMESTAMP, None, self.VALID_POSITION, '30 minutes total')
 
     def test_toDictionary_containsMandatoryAttributes(self):
         action = api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'play')
@@ -235,7 +260,7 @@ class Test_MygPodderClient(unittest.TestCase):
     def test_updateSubscriptions_raisesValueError_onInvalidRemoveList(self):
         self.assertRaises(ValueError,
                 self.client.update_subscriptions, DEVICE_ID_2,
-                self.ADD, [FEED_URL_2, FEED_URL_4, [1,2,3]])
+                self.ADD, [FEED_URL_2, FEED_URL_4, [1, 2, 3]])
 
     def test_updateSubscriptions_raisesInvalidResponse_onEmptyResponse(self):
         self.set_http_response_value('')
@@ -576,5 +601,37 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEquals(device2.type, 'laptop')
         self.assertEquals(device2.subscriptions, 4711)
         self.assert_http_request_count(1)
-
-
+        
+    def test_getFavoriteEpisodes_returnsEpisodeList(self):
+        self.set_http_response_value("""
+        [
+            {"title": "TWiT 245: No Hitler For You",
+             "url": "http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3",
+             "podcast_title": "this WEEK in TECH - MP3 Edition",
+             "podcast_url": "http://leo.am/podcasts/twit", 
+             "description": "[...]",
+             "website": "http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3", 
+             "released": "2010-12-25T00:30:00",
+             "mygpo_link": "http://gpodder.net/episode/1046492"},
+            {"website": "http://feedproxy.google.com/~r/coverville/~3/5UK8-PZmmMQ/", 
+             "podcast_title": "Coverville", 
+             "description": "Bob Dylan turned 70 this week. Bob Dylan has done a lot of songs. A lot of people have covered Bob&#8217;s songs. Did I mention Bob Dylan turned 70 this week? All this adds up to a Cover Story. Let me play you it. 59 minutes &#124; Featuring: Title Artist Album Original Artist 1 Blowin&#8217; [...]", 
+             "title": "Coverville 774: The Bob Dylan Cover Story VI", 
+             "url": "http://feedproxy.google.com/~r/coverville/~5/iV_RxVU1Jek/Coverville-110527.mp3", 
+             "podcast_url": "http://feeds.feedburner.com/coverville", 
+             "released": "2011-05-28T01:08:59", 
+             "mygpo_link": "http://gpodder.net/episode/5329203"}
+        ]
+        """)
+        favorites = self.client.get_favorite_episodes()
+        self.assertEquals(len(favorites), 2)
+        episode1, episode2 = favorites
+        self.assertEquals(episode1.title, 'TWiT 245: No Hitler For You')
+        self.assertEquals(episode1.url, 'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
+        self.assertEquals(episode1.podcast_title, 'this WEEK in TECH - MP3 Edition')
+        self.assertEquals(episode1.podcast_url, 'http://leo.am/podcasts/twit')
+        self.assertEquals(episode1.description, '[...]')
+        self.assertEquals(episode1.website, 'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
+        self.assertEquals(episode1.released, '2010-12-25T00:30:00')
+        self.assertEquals(episode1.mygpo_link, 'http://gpodder.net/episode/1046492')
+        self.assertEquals(episode2.website, 'http://feedproxy.google.com/~r/coverville/~3/5UK8-PZmmMQ/')

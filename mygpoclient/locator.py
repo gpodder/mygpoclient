@@ -31,6 +31,8 @@ class Locator(object):
     """
     SIMPLE_FORMATS = ('opml', 'json', 'txt')
 
+    SETTINGS_TYPES = ('account', 'device', 'podcast', 'episode')
+
     def __init__(self, username, host=mygpoclient.HOST,
             version=mygpoclient.VERSION):
         self._username = username
@@ -185,7 +187,7 @@ class Locator(object):
         if podcast is not None and device_id is not None:
             raise ValueError('must not specify both "podcast" and "device_id"')
 
-        filename = self._username+'.json'
+        filename = self._username + '.json'
 
         params = []
         if since is not None:
@@ -223,4 +225,94 @@ class Locator(object):
         filename = self._username + '.json'
         return util.join(self._base, 'devices', filename)
 
+    def toptags_uri(self, count=50):
+        """Get the Advanced API URI for retrieving the top Tags
 
+        >>> locator = Locator(None)
+        >>> locator.toptags_uri()
+        'http://gpodder.net/api/2/tags/50.json'
+        >>> locator.toptags_uri(70)
+        'http://gpodder.net/api/2/tags/70.json'
+        """
+        filename = '%(count)d.json' % locals()
+        return util.join(self._base, 'tags', filename)
+
+    def podcasts_of_a_tag_uri(self, tag, count=50):
+        """Get the Advanced API URI for retrieving the top Podcasts of a Tag
+
+        >>> locator = Locator(None)
+        >>> locator.podcasts_of_a_tag_uri('linux')
+        'http://gpodder.net/api/2/tag/linux/50.json'
+        >>> locator.podcasts_of_a_tag_uri('linux',70)
+        'http://gpodder.net/api/2/tag/linux/70.json'
+        """
+        filename = '%(tag)s/%(count)d.json' % locals()
+        return util.join(self._base, 'tag', filename)
+
+    def podcast_data_uri(self, podcast_url):
+        """Get the Advanced API URI for retrieving Podcast Data
+
+        >>> locator = Locator(None)
+        >>> locator.podcast_data_uri('http://podcast.com')
+        'http://gpodder.net/api/2/data/podcast.json?url=http%3A//podcast.com'
+        """
+        filename = 'podcast.json?url=%s' % urllib.quote(podcast_url) 
+        return util.join(self._base, 'data', filename)
+    
+    def episode_data_uri(self, podcast_url, episode_url):
+        """Get the Advanced API URI for retrieving Episode Data
+
+        >>> locator = Locator(None)
+        >>> locator.episode_data_uri('http://podcast.com','http://podcast.com/foo')
+        'http://gpodder.net/api/2/data/episode.json?podcast=http%3A//podcast.com&url=http%3A//podcast.com/foo'
+        """
+        filename = 'episode.json?podcast=%s&url=%s' % (urllib.quote(podcast_url), urllib.quote(episode_url))
+        return util.join(self._base, 'data', filename)
+
+    def favorite_episodes_uri(self):
+        """Get the Advanced API URI for listing favorite episodes
+
+        >>> locator = Locator('mike')
+        >>> locator.favorite_episodes_uri()
+        'http://gpodder.net/api/2/favorites/mike.json'
+        """
+        filename = self._username + '.json'
+        return util.join(self._base, 'favorites', filename)
+
+    def settings_uri(self, type, scope_param1, scope_param2):
+        """Get the Advanced API URI for retrieving or saving Settings
+        
+        Depending on the Type of setting scope_param2 or scope_param1 and scope_param2 are
+        not necessary.
+
+        >>> locator = Locator('joe')
+        >>> locator.settings_uri('account',None,None)
+        'http://gpodder.net/api/2/settings/joe/account.json'
+        >>> locator.settings_uri('device','foodevice',None)
+        'http://gpodder.net/api/2/settings/joe/device.json?device=foodevice'
+        >>> locator.settings_uri('podcast','http://podcast.com',None)
+        'http://gpodder.net/api/2/settings/joe/podcast.json?podcast=http%3A//podcast.com'
+        >>> locator.settings_uri('episode','http://podcast.com','http://podcast.com/foo')
+        'http://gpodder.net/api/2/settings/joe/episode.json?podcast=http%3A//podcast.com&episode=http%3A//podcast.com/foo'
+        """
+        if type not in self.SETTINGS_TYPES:
+            raise ValueError('Unsupported Setting Type')
+
+        filename = self._username + '/%(type)s.json' % locals()
+
+        if type is 'device':
+            if scope_param1 is None:
+                raise ValueError('Devicename not specified')
+            filename += '?device=%(scope_param1)s' % locals()
+
+        if type is 'podcast':
+            if scope_param1 is None:
+                raise ValueError('Podcast URL not specified')
+            filename += '?podcast=%s' % urllib.quote(scope_param1)
+
+        if type is 'episode':
+            if (scope_param1 is None) or (scope_param2 is None):
+                raise ValueError('Podcast or Episode URL not specified')
+            filename += '?podcast=%s&episode=%s' % (urllib.quote(scope_param1), urllib.quote(scope_param2))
+
+        return util.join(self._base, 'settings' , filename)
