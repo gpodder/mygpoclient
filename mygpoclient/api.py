@@ -118,7 +118,7 @@ class EpisodeAction(object):
 
     The attribute "position" is only valid for "play" action types.
     """
-    VALID_ACTIONS = ('download', 'play', 'delete', 'new')
+    VALID_ACTIONS = ('download', 'play', 'delete', 'new', 'flattr')
 
     def __init__(self, podcast, episode, action,
             device=None, timestamp=None,
