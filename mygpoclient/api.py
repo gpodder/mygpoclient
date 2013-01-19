@@ -118,14 +118,14 @@ class EpisodeAction(object):
 
     The attribute "position" is only valid for "play" action types.
     """
-    VALID_ACTIONS = ('download', 'play', 'delete', 'new')
+    VALID_ACTIONS = ('download', 'play', 'delete', 'new', 'flattr')
 
     def __init__(self, podcast, episode, action,
             device=None, timestamp=None,
             started=None, position=None, total=None):
         # Check if the action is valid
         if action not in self.VALID_ACTIONS:
-            raise ValueError('Invalid action type "%s" (see VALID_TYPES)' % action)
+            raise ValueError('Invalid action type "%s" (see VALID_ACTIONS)' % action)
 
         # Disallow play-only attributes for non-play actions
         if action != 'play':
