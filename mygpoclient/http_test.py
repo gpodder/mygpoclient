@@ -122,6 +122,8 @@ class Test_HttpClient(unittest.TestCase):
         self.server_process = multiprocessing.Process(target=http_server,
                 args=(self.PORT, self.USERNAME, self.PASSWORD, self.RESPONSE))
         self.server_process.start()
+        import time
+        time.sleep(.1)
 
     def tearDown(self):
         self.server_process.terminate()
