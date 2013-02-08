@@ -99,3 +99,23 @@ class Test_SimpleClient(unittest.TestCase):
         self.assertEquals(suggestions, self.SUGGESTIONS)
         self.assertEquals(len(self.fake_client.requests), 1)
 
+
+class Test_MissingCredentials(unittest.TestCase):
+    DEVICE_NAME = 'unit-test-device'
+
+    def test_getSubscriptions_UserAndPassAreNone(self):
+        client = simple.SimpleClient(None, None, client_class=testing.FakeJsonClient())
+        self.assertRaises(simple.MissingCredentials, client.get_subscriptions, (self.DEVICE_NAME,))
+
+    def test_getSubscriptions_EmptyUserAndPass(self):
+        client = simple.SimpleClient('', '', client_class=testing.FakeJsonClient())
+        self.assertRaises(simple.MissingCredentials, client.get_subscriptions, (self.DEVICE_NAME,))
+
+    def test_getSubscriptions_EmptyPassword(self):
+        client = simple.SimpleClient('user', '', client_class=testing.FakeJsonClient())
+        self.assertRaises(simple.MissingCredentials, client.get_subscriptions, (self.DEVICE_NAME,))
+
+    def test_getSubscriptions_EmptyUsername(self):
+        client = simple.SimpleClient('', 'pass', client_class=testing.FakeJsonClient())
+        self.assertRaises(simple.MissingCredentials, client.get_subscriptions, (self.DEVICE_NAME,))
+
