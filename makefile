@@ -22,9 +22,6 @@ test:
 docs:
 	epydoc -n 'gpodder.net API Client Library' -o docs/ mygpoclient -v --exclude='.*_test'
 
-upload-docs: clean docs
-	rsync -rpav --delete-after docs/ dev.gpodder.org:/var/www/mygpoclient-apidocs/
-
 clean:
 	find -name '*.pyc' -exec rm '{}' \;
 	rm -f .coverage
