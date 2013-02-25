@@ -36,6 +36,10 @@ else:
 # Extract name and e-mail ("Firstname Lastname <mail@example.org>")
 AUTHOR, EMAIL = re.match(r'(.*) <(.*)>', AUTHOR_EMAIL).groups()
 
+DATA_FILES = [
+    ('share/man/man1', glob.glob('manpages/*')),
+]
+
 setup(name=PACKAGE,
       version=VERSION,
       description=DESCRIPTION,
@@ -46,5 +50,6 @@ setup(name=PACKAGE,
       url=WEBSITE,
       packages=PACKAGES,
       scripts=SCRIPTS,
+      data_files=DATA_FILES,
       download_url=WEBSITE+PACKAGE+'-'+VERSION+'.tar.gz')
 
