@@ -53,25 +53,25 @@ class Test_Exceptions(unittest.TestCase):
                 self.locator.download_episode_actions_uri,
                 podcast='http://example.org/episodes.rss',
                 device_id='gpodder')
-    
+
     def test_device_settings_uri_exception(self):
         """Test if using no parameter for a device Setting raises a ValueError"""
         self.assertRaises(ValueError,
                           self.locator.settings_uri, type='device',
                           scope_param1=None, scope_param2=None)
-        
+
     def test_podcast_settings_uri_exception(self):
         """Test if using no parameter for a podcast Setting raises a ValueError"""
         self.assertRaises(ValueError,
                           self.locator.settings_uri, type='podcast',
                           scope_param1=None, scope_param2=None)
-        
+
     def test_episode_settings_uri_exception(self):
         """Test if only using one parameter for a episode Setting raises a ValueError"""
         self.assertRaises(ValueError,
                           self.locator.settings_uri, type='episode',
                           scope_param1='http://www.podcast.com', scope_param2=None)
-        
+
     def test_unsupported_settings_uri_exception2(self):
         """Test if unsupported setting type raises a ValueError"""
         self.assertRaises(ValueError,
