@@ -4,6 +4,7 @@
 # Licensed under the same terms as the "mygpoclient" library
 # See: http://thp.io/2010/mygpoclient/
 
+from __future__ import print_function
 import mygpoclient
 from mygpoclient import simple
 
@@ -29,7 +30,7 @@ class BPSync(object):
         open(self.filename, 'w').write('\n'.join(podcasts+['']))
 
 def usage(s=None):
-    print >>sys.stderr, """
+    print("""
     Usage: %s (put|get) [device-id]
 
     e.g %s put ........ Upload bp.conf as device "bp"
@@ -45,9 +46,9 @@ def usage(s=None):
 
       BPSYNC_BP_CONF .. Path to your bp.conf file
       MYGPO_HOSTNAME .. Host of the web service to use
-    """ % ((os.path.basename(sys.argv[0]),)*4)
+    """ % ((os.path.basename(sys.argv[0]),)*4), file=sys.stderr)
     if s is not None:
-        print >>sys.stderr, s
+        print(s, file=sys.stderr)
     sys.exit(1)
 
 if __name__ == '__main__':
