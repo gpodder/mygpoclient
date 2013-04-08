@@ -91,7 +91,7 @@ class PodcastDevice(object):
         """String representation of this device
 
         >>> device = PodcastDevice('mygpo', 'My Device', 'mobile', 10)
-        >>> print device
+        >>> print(device)
         PodcastDevice('mygpo', 'My Device', 'mobile', 10)
         """
         return '%s(%r, %r, %r, %r)' % (self.__class__.__name__,
