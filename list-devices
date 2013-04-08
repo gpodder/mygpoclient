@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+from __future__ import print_function
 import sys
 import getpass
 
@@ -25,9 +26,9 @@ import mygpoclient
 from mygpoclient import api
 
 def usage():
-    print >>sys.stderr, """
+    print("""
     Usage: python %s {username} [host]
-    """ % (sys.argv[0],)
+    """ % (sys.argv[0],), file=sys.stderr)
     sys.exit(1)
 
 if __name__ == '__main__':
@@ -49,8 +50,8 @@ if __name__ == '__main__':
     client = api.MygPodderClient(username, password, host)
 
     for device in client.get_devices():
-        print device
+        print(device)
         for podcast in client.get_subscriptions(device):
-            print '  ', podcast
-        print '-'*50
+            print('  ' + podcast)
+        print('-'*50)
 

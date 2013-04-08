@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+from __future__ import print_function
 import sys
 import getpass
 
@@ -25,9 +26,9 @@ import mygpoclient
 from mygpoclient import simple
 
 def usage():
-    print >>sys.stderr, """
+    print("""
     Usage: python %s {get|put} {username} {device_id} [host]
-    """ % (sys.argv[0],)
+    """ % (sys.argv[0],), file=sys.stderr)
     sys.exit(1)
 
 if __name__ == '__main__':
@@ -54,13 +55,13 @@ if __name__ == '__main__':
 
     if subcommand == 'get':
         # Get the URL list and print it, one per line
-        print '\n'.join(client.get_subscriptions(device_id))
+        print('\n'.join(client.get_subscriptions(device_id)))
     elif subcommand == 'put':
         # Read the URL list from standard input and upload it
-        print >>sys.stderr, 'Enter podcast URLs, one per line.'
+        print('Enter podcast URLs, one per line.', file=sys.stderr)
         urls = sys.stdin.read().splitlines()
         if client.put_subscriptions(device_id, urls):
-            print >>sys.stderr, 'Upload successful.'
+            print('Upload successful.', file=sys.stderr)
         else:
-            print >>sys.stderr, 'Could not upload list.'
+            print('Could not upload list.', file=sys.stderr)
 
