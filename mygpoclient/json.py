@@ -76,7 +76,7 @@ class JsonClient(http.HttpClient):
         else:
             try:
                 return json.loads(data)
-            except ValueError as ve:
+            except ValueError:
                 raise JsonException('Value error while parsing response: ' + data)
 
     @staticmethod
