@@ -55,23 +55,23 @@ class Test_SimpleClient(unittest.TestCase):
     ]
     SUGGESTIONS_JSON = """
     [{
-    "website": "http://linuxoutlaws.com/podcast", 
-    "description": "Open source talk with a serious attitude", 
-    "title": "Linux Outlaws", 
-    "url": "http://feeds.feedburner.com/linuxoutlaws", 
-    "subscribers_last_week": 1736, 
-    "subscribers": 1736, 
-    "mygpo_link": "http://www.gpodder.net/podcast/11092", 
+    "website": "http://linuxoutlaws.com/podcast",
+    "description": "Open source talk with a serious attitude",
+    "title": "Linux Outlaws",
+    "url": "http://feeds.feedburner.com/linuxoutlaws",
+    "subscribers_last_week": 1736,
+    "subscribers": 1736,
+    "mygpo_link": "http://www.gpodder.net/podcast/11092",
     "logo_url": "http://linuxoutlaws.com/files/albumart-itunes.jpg"
-    }, 
+    },
     {
-    "website": "http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c", 
-    "description": "We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.", 
-    "title": "FLOSS Weekly Video (large)", 
+    "website": "http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c",
+    "description": "We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.",
+    "title": "FLOSS Weekly Video (large)",
     "url": "http://feeds.twit.tv/floss_video_large",
-    "subscribers_last_week": 50, 
-    "subscribers": 50, 
-    "mygpo_link": "http://www.gpodder.net/podcast/31991", 
+    "subscribers_last_week": 50,
+    "subscribers": 50,
+    "mygpo_link": "http://www.gpodder.net/podcast/31991",
     "logo_url": "http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png"
     }]
     """
