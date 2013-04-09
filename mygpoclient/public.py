@@ -59,11 +59,11 @@ class Tag(object):
         return all(getattr(self, k) == getattr(other, k) \
                 for k in self.REQUIRED_KEYS)
 
-        
+
 
 class Episode(object):
     """Container Class for Episodes
-    
+
     Attributes:
     title -
     url -
@@ -74,10 +74,10 @@ class Episode(object):
     released -
     mygpo_link -
     """
-    
+
     REQUIRED_KEYS = ('title', 'url', 'podcast_title', 'podcast_url',
                      'description', 'website', 'released', 'mygpo_link')
-    
+
     def __init__(self, title, url, podcast_title, podcast_url, description, website, released, mygpo_link):
         self.title = title
         self.url = url
@@ -87,18 +87,18 @@ class Episode(object):
         self.website = website
         self.released = released
         self.mygpo_link = mygpo_link
-        
+
     @classmethod
     def from_dict(cls, d):
         for key in cls.REQUIRED_KEYS:
             if key not in d:
                 raise ValueError('Missing keys for episode')
-            
+
         return cls(*(d.get(k) for k in cls.REQUIRED_KEYS))
-        
+
     def __eq__(self, other):
         """Test two Episode objects for equality
-            
+
         >>> Episode('a','b','c','d','e','f','g','h') == Episode('a','b','c','d','e','f','g','h')
         True
         >>> Episode('a','b','c','d','e','f','g','h') == Episode('s','t','u','v','w','x','y','z')
@@ -111,7 +111,7 @@ class Episode(object):
 
         return all(getattr(self, k) == getattr(other, k) \
             for k in self.REQUIRED_KEYS)
-                
+
 class PublicClient(object):
     """Client for the gpodder.net "anonymous" API
 
@@ -186,25 +186,25 @@ class PublicClient(object):
         """
         uri = self._locator.toptags_uri(count)
         return [Tag.from_dict(x) for x in self._client.GET(uri)]
-    
+
     def get_podcast_data(self, podcast_uri):
         """Get Metadata for the specified Podcast
-        
+
         Returns a simple.Podcast object.
-        
+
         The parameter "podcast_uri" specifies the URL of the Podcast.
         """
         uri = self._locator.podcast_data_uri(podcast_uri)
         return simple.Podcast.from_dict(self._client.GET(uri))
-    
+
     def get_episode_data(self, podcast_uri, episode_uri):
         """Get Metadata for the specified Episode
-        
+
         Returns a Episode object.
-        
+
         The parameter "podcast_uri" specifies the URL of the Podcast,
         which this Episode belongs to
-        
+
         The parameter "episode_uri" specifies the URL of the Episode
         """
         uri = self._locator.episode_data_uri(podcast_uri, episode_uri)

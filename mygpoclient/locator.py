@@ -258,7 +258,7 @@ class Locator(object):
         """
         filename = 'podcast.json?url=%s' % urllib.quote(podcast_url) 
         return util.join(self._base, 'data', filename)
-    
+
     def episode_data_uri(self, podcast_url, episode_url):
         """Get the Advanced API URI for retrieving Episode Data
 
@@ -281,7 +281,7 @@ class Locator(object):
 
     def settings_uri(self, type, scope_param1, scope_param2):
         """Get the Advanced API URI for retrieving or saving Settings
-        
+
         Depending on the Type of setting scope_param2 or scope_param1 and scope_param2 are
         not necessary.
 

@@ -119,7 +119,7 @@ class HttpClient(object):
         request = self._prepare_request(method, uri, data)
         try:
             response = self._opener.open(request)
-        except urllib2.HTTPError, http_error:
+        except urllib2.HTTPError as http_error:
             if http_error.code == 404:
                 raise NotFound()
             elif http_error.code == 401:

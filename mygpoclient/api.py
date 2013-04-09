@@ -91,7 +91,7 @@ class PodcastDevice(object):
         """String representation of this device
 
         >>> device = PodcastDevice('mygpo', 'My Device', 'mobile', 10)
-        >>> print device
+        >>> print(device)
         PodcastDevice('mygpo', 'My Device', 'mobile', 10)
         """
         return '%s(%r, %r, %r, %r)' % (self.__class__.__name__,
@@ -408,12 +408,12 @@ class MygPodderClient(simple.SimpleClient):
         favorite Episodes"""
         uri = self._locator.favorite_episodes_uri()
         return [public.Episode.from_dict(d) for d in self._client.GET(uri)]
-    
+
     def get_settings(self, type, scope_param1=None, scope_param2=None):
         """Returns a Dictionary with the set settings for the type & specified scope"""
         uri = self._locator.settings_uri(type, scope_param1, scope_param2)
         return self._client.GET(uri)
-    
+
     def set_settings(self, type, scope_param1, scope_param2, set={}, remove=[]):
         """Returns a Dictionary with the set settings for the type & specified scope"""
         uri = self._locator.settings_uri(type, scope_param1, scope_param2)
