@@ -17,12 +17,12 @@
 
 try:
     # Python 3
-    from io import StringIO
+    from io import BytesIO
     from urllib import request
 
 except ImportError:
     # Python 2
-    from StringIO import StringIO
+    from StringIO import StringIO as BytesIO
     import urllib2 as request
 
 from mygpoclient import http
@@ -55,27 +55,27 @@ class Test_JsonClient(unittest.TestCase):
         minimock.restore()
 
     def mock_setHttpResponse(self, value):
-        self.mockopener.open.mock_returns = StringIO(value)
+        self.mockopener.open.mock_returns = BytesIO(value)
 
     def test_parseResponse_worksWithDictionary(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
-        self.mock_setHttpResponse('{"a": "B", "c": "D"}')
+        self.mock_setHttpResponse(b'{"a": "B", "c": "D"}')
         items = list(sorted(client.GET(self.URI_BASE + '/').items()))
         self.assertEquals(items, [('a', 'B'), ('c', 'D')])
 
     def test_parseResponse_worksWithIntegerList(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
-        self.mock_setHttpResponse('[1,2,3,6,7]')
+        self.mock_setHttpResponse(b'[1,2,3,6,7]')
         self.assertEquals(client.GET(self.URI_BASE + '/'), [1,2,3,6,7])
 
     def test_parseResponse_emptyString_returnsNone(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
-        self.mock_setHttpResponse('')
+        self.mock_setHttpResponse(b'')
         self.assertEquals(client.GET(self.URI_BASE + '/'), None)
 
     def test_invalidContent_raisesJsonException(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
-        self.mock_setHttpResponse('this is not a valid json string')
+        self.mock_setHttpResponse(b'this is not a valid json string')
         self.assertRaises(json.JsonException, client.GET, self.URI_BASE + '/')
 
 

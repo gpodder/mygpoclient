@@ -108,7 +108,11 @@ class HttpClient(object):
     def _prepare_request(method, uri, data):
         """Prepares the HttpRequest object"""
 
-        request = HttpRequest(uri, data)
+        if data is None:
+            request = HttpRequest(uri)
+        else:
+            request = HttpRequest(uri, data)
+
         request.set_method(method)
         request.add_header('User-agent', mygpoclient.user_agent)
         return request

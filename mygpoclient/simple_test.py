@@ -33,7 +33,7 @@ class Test_SimpleClient(unittest.TestCase):
             'http://lugradio.org/episodes.rss',
             'http://feeds2.feedburner.com/LinuxOutlaws',
     ]
-    SUBSCRIPTIONS_JSON = """
+    SUBSCRIPTIONS_JSON = b"""
       ["http://lugradio.org/episodes.rss",
        "http://feeds2.feedburner.com/LinuxOutlaws"]
     """
@@ -53,7 +53,7 @@ class Test_SimpleClient(unittest.TestCase):
                 'http://www.gpodder.net/podcast/31991',
                 'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
     ]
-    SUGGESTIONS_JSON = """
+    SUGGESTIONS_JSON = b"""
     [{
     "website": "http://linuxoutlaws.com/podcast",
     "description": "Open source talk with a serious attitude",
@@ -82,7 +82,7 @@ class Test_SimpleClient(unittest.TestCase):
                 client_class=self.fake_client)
 
     def test_putSubscriptions(self):
-        self.fake_client.response_value = ''
+        self.fake_client.response_value = b''
         result = self.client.put_subscriptions(self.DEVICE_NAME, self.SUBSCRIPTIONS)
         self.assertEquals(result, True)
         self.assertEquals(len(self.fake_client.requests), 1)
