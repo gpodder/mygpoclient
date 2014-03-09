@@ -21,6 +21,14 @@ from __future__ import absolute_import
 import mygpoclient
 
 try:
+    # Python 3
+    bytes = bytes
+
+except:
+    # Python 2
+    bytes = str
+
+try:
     # Prefer the usage of the simplejson module, as it
     # is most likely newer if it's installed as module
     # than the built-in json module (and is mandatory

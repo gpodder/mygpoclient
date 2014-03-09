@@ -141,11 +141,11 @@ class FeedserviceClient(mygpoclient.json.JsonClient):
 
         query_url = urljoin(self._base_url, 'parse')
 
-        args = kwargs.items()
-        args = filter(lambda (k, v): v is not None, args)
+        args = list(kwargs.items())
+        args = [k_v for k_v in args if k_v[1] is not None]
 
         # boolean flags are represented as 1 and 0 in the query-string
-        args = map(lambda (k, v): (k, int(v) if isinstance(v, bool) else v), args)
+        args = [(k_v1[0], int(k_v1[1]) if isinstance(k_v1[1], bool) else k_v1[1]) for k_v1 in args]
         args = urlencode(dict(args))
 
         url = '%s?%s' % (query_url, args)

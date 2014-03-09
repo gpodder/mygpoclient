@@ -15,6 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+try:
+    # Python 2
+    str = unicode
+except:
+    # Python 3
+    pass
+
 import mygpoclient
 
 from mygpoclient import util
@@ -230,10 +237,10 @@ class MygPodderClient(simple.SimpleClient):
         """
         uri = self._locator.add_remove_subscriptions_uri(device_id)
 
-        if not all(isinstance(x, basestring) for x in add_urls):
+        if not all(isinstance(x, str) for x in add_urls):
             raise ValueError('add_urls must be a list of strings but was %s' % add_urls)
 
-        if not all(isinstance(x, basestring) for x in remove_urls):
+        if not all(isinstance(x, str) for x in remove_urls):
             raise ValueError('remove_urls must be a list of strings but was %s' % remove_urls)
 
         data = {'add': add_urls, 'remove': remove_urls}
@@ -258,7 +265,7 @@ class MygPodderClient(simple.SimpleClient):
         except:
             raise InvalidResponse('Invalid format of update_urls in response: %s' % response['update_urls'])
 
-        if not all(isinstance(a, basestring) and isinstance(b, basestring) \
+        if not all(isinstance(a, str) and isinstance(b, str) \
                     for a, b in update_urls):
             raise InvalidResponse('Invalid format of update_urls in response: %s' % update_urls)
 
@@ -291,10 +298,10 @@ class MygPodderClient(simple.SimpleClient):
         if 'timestamp' not in data:
             raise InvalidResponse('Timestamp missing from response')
 
-        if not all(isinstance(x, basestring) for x in data['add']):
+        if not all(isinstance(x, str) for x in data['add']):
             raise InvalidResponse('Invalid value(s) in list of added podcasts: %s' % data['add'])
 
-        if not all(isinstance(x, basestring) for x in data['remove']):
+        if not all(isinstance(x, str) for x in data['remove']):
             raise InvalidResponse('Invalid value(s) in list of removed podcasts: %s' % data['remove'])
 
         try:

@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import codecs
+import base64
 
 from mygpoclient.http import (HttpClient, Unauthorized, BadRequest,
                               UnknownResponse, NotFound)
@@ -29,6 +31,7 @@ try:
 except ImportError:
     # Python 2
     from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+    str = unicode
 
 
 def http_server(port, username, password, response):
@@ -51,14 +54,14 @@ def http_server(port, username, password, response):
                 if authorization is not None:
                     auth_type, credentials = authorization.split(None, 1)
                     if auth_type.lower() == 'basic':
-                        auth_user, auth_pass = credentials.decode('base64').split(':', 1)
+                        credentials = base64.b64decode(credentials.encode('utf-8'))
+                        auth_user, auth_pass = credentials.decode('utf-8').split(':', 1)
                         if username == auth_user and password == auth_pass:
                             return True
 
                 self.send_response(401)
                 self.send_header('WWW-Authenticate', 'Basic realm="Fake HTTP Server"')
                 self.end_headers()
-                self.wfile.close()
                 return False
 
             return True
@@ -67,17 +70,14 @@ def http_server(port, username, password, response):
             if self.path.startswith('/badrequest'):
                 self.send_response(400)
                 self.end_headers()
-                self.wfile.close()
                 return False
             elif self.path.startswith('/notfound'):
                 self.send_response(404)
                 self.end_headers()
-                self.wfile.close()
                 return False
             elif self.path.startswith('/invaliderror'):
                 self.send_response(444)
                 self.end_headers()
-                self.wfile.close()
                 return False
 
             return True
@@ -89,8 +89,7 @@ def http_server(port, username, password, response):
             input_data = self.rfile.read(int(self.headers.get('content-length')))
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(input_data.encode('rot13'))
-            self.wfile.close()
+            self.wfile.write(codecs.encode(input_data.decode('utf-8'), 'rot-13').encode('utf-8'))
 
         def do_PUT(self):
             if not self._checks():
@@ -100,8 +99,7 @@ def http_server(port, username, password, response):
             storage[self.path] = input_data
             self.send_response(200)
             self.end_headers()
-            self.wfile.write('PUT OK')
-            self.wfile.close()
+            self.wfile.write(b'PUT OK')
 
         def do_GET(self):
             if not self._checks():
@@ -113,7 +111,6 @@ def http_server(port, username, password, response):
                 self.wfile.write(storage[self.path])
             else:
                 self.wfile.write(response)
-            self.wfile.close()
 
         def log_request(*args):
             pass
@@ -125,8 +122,8 @@ class Test_HttpClient(unittest.TestCase):
     PASSWORD = 'secret'
     PORT = 9876
     URI_BASE = 'http://localhost:%(PORT)d' % locals()
-    RESPONSE = 'Test_GET-HTTP-Response-Content'
-    DUMMYDATA = 'fq28cnyp3ya8ltcy;ny2t8ay;iweuycowtc'
+    RESPONSE = b'Test_GET-HTTP-Response-Content'
+    DUMMYDATA = b'fq28cnyp3ya8ltcy;ny2t8ay;iweuycowtc'
 
     def setUp(self):
         self.server_process = multiprocessing.Process(target=http_server,
@@ -178,12 +175,12 @@ class Test_HttpClient(unittest.TestCase):
     def test_POST(self):
         client = HttpClient()
         path = self.URI_BASE+'/noauth'
-        self.assertEquals(client.POST(path, self.DUMMYDATA), self.DUMMYDATA.encode('rot13'))
+        self.assertEquals(client.POST(path, self.DUMMYDATA), codecs.encode(self.DUMMYDATA.decode('utf-8'), 'rot-13').encode('utf-8'))
 
     def test_authenticated_POST(self):
         client = HttpClient(self.USERNAME, self.PASSWORD)
         path = self.URI_BASE+'/auth'
-        self.assertEquals(client.POST(path, self.DUMMYDATA), self.DUMMYDATA.encode('rot13'))
+        self.assertEquals(client.POST(path, self.DUMMYDATA), codecs.encode(self.DUMMYDATA.decode('utf-8'), 'rot-13').encode('utf-8'))
 
     def test_unauthenticated_POST(self):
         client = HttpClient()
@@ -193,13 +190,13 @@ class Test_HttpClient(unittest.TestCase):
     def test_PUT(self):
         client = HttpClient()
         path = self.URI_BASE+'/noauth'
-        self.assertEquals(client.PUT(path, self.DUMMYDATA), 'PUT OK')
+        self.assertEquals(client.PUT(path, self.DUMMYDATA), b'PUT OK')
 
     def test_GET_after_PUT(self):
         client = HttpClient()
         for i in range(10):
             path = self.URI_BASE + '/file.%(i)d.txt' % locals()
-            client.PUT(path, self.RESPONSE + str(i))
-            self.assertEquals(client.GET(path), self.RESPONSE + str(i))
+            client.PUT(path, self.RESPONSE + str(i).encode('utf-8'))
+            self.assertEquals(client.GET(path), self.RESPONSE + str(i).encode('utf-8'))
 
 

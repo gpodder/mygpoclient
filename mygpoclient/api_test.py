@@ -23,18 +23,18 @@ from mygpoclient import testing
 import unittest
 
 # Example data for testing purposes
-FEED_URL_1 = 'http://example.com/test.rss'
-FEED_URL_2 = 'http://feeds.example.org/1/feed.atom'
-FEED_URL_3 = 'http://example.co.uk/episodes.xml'
-FEED_URL_4 = 'http://pod.cast/test.xml'
+FEED_URL_1 = u'http://example.com/test.rss'
+FEED_URL_2 = u'http://feeds.example.org/1/feed.atom'
+FEED_URL_3 = u'http://example.co.uk/episodes.xml'
+FEED_URL_4 = u'http://pod.cast/test.xml'
 
-EPISODE_URL_1 = 'http://dl.example.net/episodes/one.mp3'
-EPISODE_URL_2 = 'http://pod.cast.invalid/downloads/s02e04.ogg'
-EPISODE_URL_3 = 'http://example.org/05-skylarking.m4v'
-EPISODE_URL_4 = 'http://www.example.com/test/me_now.avi'
+EPISODE_URL_1 = u'http://dl.example.net/episodes/one.mp3'
+EPISODE_URL_2 = u'http://pod.cast.invalid/downloads/s02e04.ogg'
+EPISODE_URL_3 = u'http://example.org/05-skylarking.m4v'
+EPISODE_URL_4 = u'http://www.example.com/test/me_now.avi'
 
-DEVICE_ID_1 = 'gpodder.on.my.phone'
-DEVICE_ID_2 = '95dce59cf340123fa'
+DEVICE_ID_1 = u'gpodder.on.my.phone'
+DEVICE_ID_2 = u'95dce59cf340123fa'
 
 class Test_SubscriptionChanges(unittest.TestCase):
     ADD = [
@@ -156,7 +156,7 @@ class Test_EpisodeAction(unittest.TestCase):
     def test_toDictionary_containsMandatoryAttributes(self):
         action = api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'play')
         dictionary = action.to_dictionary()
-        self.assertEquals(len(dictionary.keys()), 3)
+        self.assertEquals(len(list(dictionary.keys())), 3)
         self.assert_('podcast' in dictionary)
         self.assert_('episode' in dictionary)
         self.assert_('action' in dictionary)
@@ -169,7 +169,7 @@ class Test_EpisodeAction(unittest.TestCase):
                 DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED,
                 self.VALID_POSITION, self.VALID_TOTAL)
         dictionary = action.to_dictionary()
-        self.assertEquals(len(dictionary.keys()), 8)
+        self.assertEquals(len(list(dictionary.keys())), 8)
         self.assert_('podcast' in dictionary)
         self.assert_('episode' in dictionary)
         self.assert_('action' in dictionary)
