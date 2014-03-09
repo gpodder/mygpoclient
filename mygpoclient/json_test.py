@@ -15,8 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from StringIO import StringIO
-import urllib2
+try:
+    # Python 3
+    from io import BytesIO
+    from urllib import request
+
+except ImportError:
+    # Python 2
+    from StringIO import StringIO as BytesIO
+    import urllib2 as request
 
 from mygpoclient import http
 from mygpoclient import json
@@ -30,14 +37,14 @@ class Test_JsonClient(unittest.TestCase):
 
     def setUp(self):
         self.mockopener = minimock.Mock('urllib2.OpenerDirector')
-        urllib2.build_opener = minimock.Mock('urllib2.build_opener')
-        urllib2.build_opener.mock_returns = self.mockopener
+        request.build_opener = minimock.Mock('urllib2.build_opener')
+        request.build_opener.mock_returns = self.mockopener
 
     def tearDown(self):
         minimock.restore()
 
     def mock_setHttpResponse(self, value):
-        self.mockopener.open.mock_returns = StringIO(value)
+        self.mockopener.open.mock_returns = BytesIO(value)
 
     def test_parseResponse_worksWithDictionary(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)

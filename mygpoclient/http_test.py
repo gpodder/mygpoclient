@@ -15,17 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from mygpoclient import http
+
+from mygpoclient.http import (HttpClient, Unauthorized, BadRequest,
+                              UnknownResponse, NotFound)
 
 import unittest
 import multiprocessing
-import BaseHTTPServer
+
+try:
+    # Python 3
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+except ImportError:
+    # Python 2
+    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+
 
 def http_server(port, username, password, response):
     storage = {}
-    class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+    class Handler(BaseHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
-            BaseHTTPServer.BaseHTTPRequestHandler.__init__(self, *args, **kwargs)
+            BaseHTTPRequestHandler.__init__(self, *args, **kwargs)
 
         def _checks(self):
             if not self._check_auth():
@@ -108,7 +118,7 @@ def http_server(port, username, password, response):
         def log_request(*args):
             pass
 
-    BaseHTTPServer.HTTPServer(('127.0.0.1', port), Handler).serve_forever()
+    HTTPServer(('127.0.0.1', port), Handler).serve_forever()
 
 class Test_HttpClient(unittest.TestCase):
     USERNAME = 'john'
@@ -131,62 +141,62 @@ class Test_HttpClient(unittest.TestCase):
         time.sleep(.1)
 
     def test_UnknownResponse(self):
-        client = http.HttpClient()
+        client = HttpClient()
         path = self.URI_BASE+'/invaliderror'
-        self.assertRaises(http.UnknownResponse, client.GET, path)
+        self.assertRaises(UnknownResponse, client.GET, path)
 
     def test_NotFound(self):
-        client = http.HttpClient()
+        client = HttpClient()
         path = self.URI_BASE+'/notfound'
-        self.assertRaises(http.NotFound, client.GET, path)
+        self.assertRaises(NotFound, client.GET, path)
 
     def test_Unauthorized(self):
-        client = http.HttpClient('invalid-username', 'invalid-password')
+        client = HttpClient('invalid-username', 'invalid-password')
         path = self.URI_BASE+'/auth'
-        self.assertRaises(http.Unauthorized, client.GET, path)
+        self.assertRaises(Unauthorized, client.GET, path)
 
     def test_BadRequest(self):
-        client = http.HttpClient()
+        client = HttpClient()
         path = self.URI_BASE+'/badrequest'
-        self.assertRaises(http.BadRequest, client.GET, path)
+        self.assertRaises(BadRequest, client.GET, path)
 
     def test_GET(self):
-        client = http.HttpClient()
+        client = HttpClient()
         path = self.URI_BASE+'/noauth'
         self.assertEquals(client.GET(path), self.RESPONSE)
 
     def test_authenticated_GET(self):
-        client = http.HttpClient(self.USERNAME, self.PASSWORD)
+        client = HttpClient(self.USERNAME, self.PASSWORD)
         path = self.URI_BASE+'/auth'
         self.assertEquals(client.GET(path), self.RESPONSE)
 
     def test_unauthenticated_GET(self):
-        client = http.HttpClient()
+        client = HttpClient()
         path = self.URI_BASE+'/auth'
-        self.assertRaises(http.Unauthorized, client.GET, path)
+        self.assertRaises(Unauthorized, client.GET, path)
 
     def test_POST(self):
-        client = http.HttpClient()
+        client = HttpClient()
         path = self.URI_BASE+'/noauth'
         self.assertEquals(client.POST(path, self.DUMMYDATA), self.DUMMYDATA.encode('rot13'))
 
     def test_authenticated_POST(self):
-        client = http.HttpClient(self.USERNAME, self.PASSWORD)
+        client = HttpClient(self.USERNAME, self.PASSWORD)
         path = self.URI_BASE+'/auth'
         self.assertEquals(client.POST(path, self.DUMMYDATA), self.DUMMYDATA.encode('rot13'))
 
     def test_unauthenticated_POST(self):
-        client = http.HttpClient()
+        client = HttpClient()
         path = self.URI_BASE+'/auth'
-        self.assertRaises(http.Unauthorized, client.POST, path, self.DUMMYDATA)
+        self.assertRaises(Unauthorized, client.POST, path, self.DUMMYDATA)
 
     def test_PUT(self):
-        client = http.HttpClient()
+        client = HttpClient()
         path = self.URI_BASE+'/noauth'
         self.assertEquals(client.PUT(path, self.DUMMYDATA), 'PUT OK')
 
     def test_GET_after_PUT(self):
-        client = http.HttpClient()
+        client = HttpClient()
         for i in range(10):
             path = self.URI_BASE + '/file.%(i)d.txt' % locals()
             client.PUT(path, self.RESPONSE + str(i))

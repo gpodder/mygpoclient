@@ -17,7 +17,17 @@
 
 from __future__ import absolute_import
 
-import urllib, urlparse, time
+import time
+
+try:
+    # Python 3
+    from urllib.parse import urljoin, urlencode
+
+except ImportError:
+    # Python 2
+    from urlparse import urljoin
+    from urllib import urlencode
+
 from datetime import datetime
 from email import utils
 
@@ -81,7 +91,7 @@ class FeedserviceClient(mygpoclient.json.JsonClient):
         # send URLs as POST data to avoid any length
         # restrictions for the query parameters
         post_data = [('url', feed_url) for feed_url in data['feed_urls']]
-        post_data = urllib.urlencode(post_data)
+        post_data = urlencode(post_data)
 
         # call _prepare_request directly from HttpClient, because
         # JsonClient would JSON-encode our POST-data
@@ -129,14 +139,14 @@ class FeedserviceClient(mygpoclient.json.JsonClient):
         Parameter such as strip_html, scale_logo, etc are pased as kwargs
         """
 
-        query_url = urlparse.urljoin(self._base_url, 'parse')
+        query_url = urljoin(self._base_url, 'parse')
 
         args = kwargs.items()
         args = filter(lambda (k, v): v is not None, args)
 
         # boolean flags are represented as 1 and 0 in the query-string
         args = map(lambda (k, v): (k, int(v) if isinstance(v, bool) else v), args)
-        args = urllib.urlencode(dict(args))
+        args = urlencode(dict(args))
 
         url = '%s?%s' % (query_url, args)
         return url
