@@ -40,6 +40,20 @@ DATA_FILES = [
     ('share/man/man1', glob.glob('manpages/*')),
 ]
 
+CLASSIFIERS = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 2',
+    'Programming Language :: Python :: 2.6',
+    'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.3',
+    'Programming Language :: Python :: 3.4',
+]
+
 setup(name=PACKAGE,
       version=VERSION,
       description=DESCRIPTION,
@@ -51,5 +65,7 @@ setup(name=PACKAGE,
       packages=PACKAGES,
       scripts=SCRIPTS,
       data_files=DATA_FILES,
-      download_url=WEBSITE+PACKAGE+'-'+VERSION+'.tar.gz')
+      download_url=WEBSITE+PACKAGE+'-'+VERSION+'.tar.gz',
+      classifiers=CLASSIFIERS,
+    )
 

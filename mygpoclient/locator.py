@@ -18,7 +18,14 @@
 import mygpoclient
 
 import os
-import urllib
+
+try:
+    # Python 3
+    from urllib.parse import quote_plus, quote
+
+except ImportError:
+    # Python 2
+    from urllib import quote_plus, quote
 
 from mygpoclient import util
 
@@ -113,7 +120,7 @@ class Locator(object):
         if format not in self.SIMPLE_FORMATS:
             raise ValueError('Unsupported file format')
 
-        query = urllib.quote_plus(query)
+        query = quote_plus(query)
         filename = 'search.%(format)s?q=%(query)s' % locals()
         return util.join(self._simple_base, filename)
 
@@ -201,7 +208,7 @@ class Locator(object):
             params.append(('device', device_id))
 
         if params:
-            filename += '?' + '&'.join('%s=%s' % (key, urllib.quote(value)) for key, value in params)
+            filename += '?' + '&'.join('%s=%s' % (key, quote(value)) for key, value in params)
 
         return util.join(self._base, 'episodes', filename)
 
@@ -256,7 +263,7 @@ class Locator(object):
         >>> locator.podcast_data_uri('http://podcast.com')
         'http://gpodder.net/api/2/data/podcast.json?url=http%3A//podcast.com'
         """
-        filename = 'podcast.json?url=%s' % urllib.quote(podcast_url) 
+        filename = 'podcast.json?url=%s' % quote(podcast_url)
         return util.join(self._base, 'data', filename)
 
     def episode_data_uri(self, podcast_url, episode_url):
@@ -266,7 +273,7 @@ class Locator(object):
         >>> locator.episode_data_uri('http://podcast.com','http://podcast.com/foo')
         'http://gpodder.net/api/2/data/episode.json?podcast=http%3A//podcast.com&url=http%3A//podcast.com/foo'
         """
-        filename = 'episode.json?podcast=%s&url=%s' % (urllib.quote(podcast_url), urllib.quote(episode_url))
+        filename = 'episode.json?podcast=%s&url=%s' % (quote(podcast_url), quote(episode_url))
         return util.join(self._base, 'data', filename)
 
     def favorite_episodes_uri(self):
@@ -308,11 +315,11 @@ class Locator(object):
         if type is 'podcast':
             if scope_param1 is None:
                 raise ValueError('Podcast URL not specified')
-            filename += '?podcast=%s' % urllib.quote(scope_param1)
+            filename += '?podcast=%s' % quote(scope_param1)
 
         if type is 'episode':
             if (scope_param1 is None) or (scope_param2 is None):
                 raise ValueError('Podcast or Episode URL not specified')
-            filename += '?podcast=%s&episode=%s' % (urllib.quote(scope_param1), urllib.quote(scope_param2))
+            filename += '?podcast=%s&episode=%s' % (quote(scope_param1), quote(scope_param2))
 
         return util.join(self._base, 'settings' , filename)

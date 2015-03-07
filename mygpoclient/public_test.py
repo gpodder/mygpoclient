@@ -30,7 +30,7 @@ class Test_Episode(unittest.TestCase):
         self.assertRaises(ValueError,public.Episode.from_dict, {'title':'foobar','podcast_url':'http://www.podcast.com'})
 
 class Test_PublicClient(unittest.TestCase):
-    TOPLIST_JSON = """
+    TOPLIST_JSON = b"""
     [{
     "website": "http://linuxoutlaws.com/podcast",
     "description": "Open source talk with a serious attitude",
@@ -68,7 +68,7 @@ class Test_PublicClient(unittest.TestCase):
                 'http://www.gpodder.net/podcast/31991',
                 'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
     ]
-    SEARCHRESULT_JSON = """
+    SEARCHRESULT_JSON = b"""
     [{
     "website": "http://linuxoutlaws.com/podcast",
     "description": "Open source talk with a serious attitude",
@@ -107,7 +107,7 @@ class Test_PublicClient(unittest.TestCase):
                 'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
     ]
 
-    TOPTAGS_JSON = """
+    TOPTAGS_JSON = b"""
     [
         {"tag": "Technology",
          "usage": 530 },
@@ -120,7 +120,7 @@ class Test_PublicClient(unittest.TestCase):
                public.Tag('Arts',400)
     ]
 
-    PODCAST_JSON = """
+    PODCAST_JSON = b"""
     {
     "website": "http://linuxoutlaws.com/podcast",
     "description": "Open source talk with a serious attitude",
@@ -140,7 +140,7 @@ class Test_PublicClient(unittest.TestCase):
                 'http://www.gpodder.net/podcast/11092',
                 'http://linuxoutlaws.com/files/albumart-itunes.jpg')
 
-    EPISODE_JSON = """
+    EPISODE_JSON = b"""
     {"title": "TWiT 245: No Hitler For You",
     "url": "http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3",
     "podcast_title": "this WEEK in TECH - MP3 Edition",

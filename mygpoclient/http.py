@@ -15,11 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib2
-import cookielib
+try:
+    from urllib import request
+    from urllib.error import HTTPError
+    from http.cookiejar import CookieJar
+
+except ImportError:
+    import urllib2 as request
+    from urllib2 import HTTPError
+    from cookielib import CookieJar
+
 import mygpoclient
 
-class SimpleHttpPasswordManager(urllib2.HTTPPasswordMgr):
+class SimpleHttpPasswordManager(request.HTTPPasswordMgr):
     """Simplified password manager for urllib2
 
     This class always provides the username/password combination that
@@ -41,10 +49,10 @@ class SimpleHttpPasswordManager(urllib2.HTTPPasswordMgr):
             return (None, None)
         return (self._username, self._password)
 
-class HttpRequest(urllib2.Request):
+class HttpRequest(request.Request):
     """Request object with customizable method
 
-    The default behaviour of urllib2.Request is unchanged:
+    The default behaviour of Request is unchanged:
 
     >>> request = HttpRequest('http://example.org/')
     >>> request.get_method()
@@ -67,7 +75,7 @@ class HttpRequest(urllib2.Request):
         if hasattr(self, '_method'):
             return getattr(self, '_method')
         else:
-            return urllib2.Request.get_method(self)
+            return request.Request.get_method(self)
 
 
 # Possible exceptions that will be raised by HttpClient
@@ -87,20 +95,24 @@ class HttpClient(object):
     def __init__(self, username=None, password=None):
         self._username = username
         self._password = password
-        self._cookie_jar = cookielib.CookieJar()
-        cookie_handler = urllib2.HTTPCookieProcessor(self._cookie_jar)
+        self._cookie_jar = CookieJar()
+        cookie_handler = request.HTTPCookieProcessor(self._cookie_jar)
         if username is not None and password is not None:
             password_manager = SimpleHttpPasswordManager(username, password)
-            auth_handler = urllib2.HTTPBasicAuthHandler(password_manager)
-            self._opener = urllib2.build_opener(auth_handler, cookie_handler)
+            auth_handler = request.HTTPBasicAuthHandler(password_manager)
+            self._opener = request.build_opener(auth_handler, cookie_handler)
         else:
-            self._opener = urllib2.build_opener(cookie_handler)
+            self._opener = request.build_opener(cookie_handler)
 
     @staticmethod
     def _prepare_request(method, uri, data):
         """Prepares the HttpRequest object"""
 
-        request = HttpRequest(uri, data)
+        if data is None:
+            request = HttpRequest(uri)
+        else:
+            request = HttpRequest(uri, data)
+
         request.set_method(method)
         request.add_header('User-agent', mygpoclient.user_agent)
         return request
@@ -119,7 +131,7 @@ class HttpClient(object):
         request = self._prepare_request(method, uri, data)
         try:
             response = self._opener.open(request)
-        except urllib2.HTTPError as http_error:
+        except HTTPError as http_error:
             if http_error.code == 404:
                 raise NotFound()
             elif http_error.code == 401:

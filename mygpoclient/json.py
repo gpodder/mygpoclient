@@ -21,14 +21,14 @@ from __future__ import absolute_import
 import mygpoclient
 
 try:
-    # Prefer the usage of the simplejson module, as it
-    # is most likely newer if it's installed as module
-    # than the built-in json module (and is mandatory
-    # in Python versions before 2.6, anyway).
-    import simplejson as json
-except ImportError:
-    # Python 2.6 ships the "json" module by default
-    import json
+    # Python 3
+    bytes = bytes
+
+except:
+    # Python 2
+    bytes = str
+
+import json
 
 from mygpoclient import http
 
@@ -49,35 +49,36 @@ class JsonClient(http.HttpClient):
     def encode(data):
         """Encodes a object into its JSON string repesentation
 
-        >>> JsonClient.encode(None)
-        ''
-        >>> JsonClient.encode([1,2,3])
-        '[1, 2, 3]'
-        >>> JsonClient.encode(42)
-        '42'
+        >>> JsonClient.encode(None) is None
+        True
+        >>> JsonClient.encode([1,2,3]) == b'[1, 2, 3]'
+        True
+        >>> JsonClient.encode(42) == b'42'
+        True
         """
         if data is None:
-            return ''
+            return None
         else:
-            return json.dumps(data)
+            return json.dumps(data).encode('utf-8')
 
     @staticmethod
     def decode(data):
         """Decodes a response string to a Python object
 
-        >>> JsonClient.decode('')
-        >>> JsonClient.decode('[1,2,3]')
+        >>> JsonClient.decode(b'')
+        >>> JsonClient.decode(b'[1,2,3]')
         [1, 2, 3]
-        >>> JsonClient.decode('42')
+        >>> JsonClient.decode(b'42')
         42
         """
-        if data == '':
+        if data == b'':
             return None
-        else:
-            try:
-                return json.loads(data)
-            except ValueError:
-                raise JsonException('Value error while parsing response: ' + data)
+
+        data = data.decode('utf-8')
+        try:
+            return json.loads(data)
+        except ValueError:
+            raise JsonException('Value error while parsing response: ' + data)
 
     @staticmethod
     def _prepare_request(method, uri, data):
