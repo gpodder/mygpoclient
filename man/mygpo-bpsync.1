@@ -1,8 +1,8 @@
 .TH BPSYNC "1" "February 2013" "mygpoclient 1.7" "User Commands"
 .SH NAME
-bpsync \- Synchronize BashPodder subscriptions with gpodder.net
+mygpo-bpsync \- Synchronize BashPodder subscriptions with gpodder.net
 .SH SYNOPSIS
-.B bpsync
+.B mygpo-bpsync
 (\fIput|get\fR)
 [\fIdevice-id\fR]
 
@@ -25,7 +25,7 @@ stored in the BashPodder subscription list.
 
 .PP
 The following environment variables must be set for
-.B bpsync
+.B mygpo-bpsync
 to work:
 
 .PP
@@ -58,19 +58,19 @@ Host of the webservice to use (default: \fIgpodder.net\fR)
 .SH EXAMPLES
 
 .PP
-.B bpsync put
+.B mygpo-bpsync put
 .RS 4
 Upload bp.conf as device "bp"
 .RE
 
 .PP
-.B bpsync get
+.B mygpo-bpsync get
 .RS 4
 Download subscriptions for device "bp"
 .RE
 
 .PP
-.B bpsync get mydev
+.B mygpo-bpsync get mydev
 .RS 4
 Download subscriptions for device "mydev"
 .RE

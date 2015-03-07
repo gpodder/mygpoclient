@@ -20,7 +20,7 @@ PACKAGES = (
         PACKAGE,
 )
 
-SCRIPTS = glob.glob('scripts/*')
+SCRIPTS = glob.glob('bin/*')
 
 # Metadata fields extracted from SCRIPT_FILE
 AUTHOR_EMAIL = metadata['author']
@@ -37,7 +37,7 @@ else:
 AUTHOR, EMAIL = re.match(r'(.*) <(.*)>', AUTHOR_EMAIL).groups()
 
 DATA_FILES = [
-    ('share/man/man1', glob.glob('manpages/*')),
+    ('share/man/man1', glob.glob('man/*')),
 ]
 
 CLASSIFIERS = [
