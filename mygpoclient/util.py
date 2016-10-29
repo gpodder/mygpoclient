@@ -28,12 +28,14 @@ def iso8601_to_datetime(s):
 
     >>> iso8601_to_datetime('2009-12-29T19:25:33')
     datetime.datetime(2009, 12, 29, 19, 25, 33)
+    >>> iso8601_to_datetime('2009-12-29T19:25:33.1')
+    datetime.datetime(2009, 12, 29, 19, 25, 33, 100000)
     >>> iso8601_to_datetime('2009-12-29T19:25:33Z')
     datetime.datetime(2009, 12, 29, 19, 25, 33)
     >>> iso8601_to_datetime('xXxXxXxXxxxxXxxxXxx')
     >>>
     """
-    for format in ('%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%SZ'):
+    for format in ('%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f', '%Y-%m-%dT%H:%M:%SZ'):
         try:
             return datetime.datetime.strptime(s, format)
         except ValueError:
