@@ -78,3 +78,13 @@ class Test_Exceptions(unittest.TestCase):
                           self.locator.settings_uri, type='foobar',
                           scope_param1=None, scope_param2=None)
 
+    def test_subscriptions_uri_no_device(self):
+        """Test that no device returns user subscriptions"""
+        self.assertEquals(self.locator.subscriptions_uri(),
+                          'http://gpodder.net/subscriptions/jane.opml')
+
+    def test_root_uri(self):
+        """Test that root_uri trivially works"""
+        self.assertEquals(self.locator.root_uri(),
+                          'http://gpodder.net')
+
