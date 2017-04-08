@@ -97,15 +97,16 @@ class SimpleClient(object):
     """
     FORMAT = 'json'
 
-    def __init__(self, username, password, host=mygpoclient.HOST,
+    def __init__(self, username, password, root_url=mygpoclient.ROOT_URL,
             client_class=json.JsonClient):
         """Creates a new Simple API client
 
         Username and password must be specified and are
         the user's login data for the webservice.
 
-        The parameter host is optional and defaults to
-        the main webservice.
+        The parameter root_url is optional and defaults to
+        the main webservice. It can be either a hostname or
+        a full URL (to force https, for instance).
 
         The parameter client_class is optional and should
         not need to be changed in normal use cases. If it
@@ -114,7 +115,7 @@ class SimpleClient(object):
         """
         self.username = username
         self.password = password
-        self._locator = locator.Locator(username, host)
+        self._locator = locator.Locator(username, root_url)
         self._client = client_class(username, password)
 
     @needs_credentials

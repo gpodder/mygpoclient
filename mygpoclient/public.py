@@ -121,18 +121,19 @@ class PublicClient(object):
     """
     FORMAT = 'json'
 
-    def __init__(self, host=mygpoclient.HOST, client_class=json.JsonClient):
+    def __init__(self, root_url=mygpoclient.ROOT_URL, client_class=json.JsonClient):
         """Creates a new Public API client
 
-        The parameter host is optional and defaults to
-        the main webservice.
+        The parameter root_url is optional and defaults to
+        the main webservice. It can be either a hostname or
+        a full URL (to force https, for instance).
 
         The parameter client_class is optional and should
         not need to be changed in normal use cases. If it
         is changed, it should provide the same interface
         as the json.JsonClient class in mygpoclient.
         """
-        self._locator = locator.Locator(None, host)
+        self._locator = locator.Locator(None, root_url)
         self._client = client_class(None, None)
 
     def get_toplist(self, count=mygpoclient.TOPLIST_DEFAULT):

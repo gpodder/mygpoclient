@@ -40,11 +40,17 @@ class Locator(object):
 
     SETTINGS_TYPES = ('account', 'device', 'podcast', 'episode')
 
-    def __init__(self, username, host=mygpoclient.HOST,
+    def __init__(self, username, root_url=mygpoclient.ROOT_URL,
             version=mygpoclient.VERSION):
         self._username = username
-        self._simple_base = 'http://%(host)s' % locals()
-        self._base = 'http://%(host)s/api/%(version)s' % locals()
+        if root_url.endswith('/'):
+            root_url = root_url[:-1]
+        if root_url.startswith('http'):
+            self._simple_base = root_url
+            self._base = '%(root_url)s/api/%(version)s' % locals()
+        else:
+            self._simple_base = 'http://%(root_url)s' % locals()
+            self._base = 'http://%(root_url)s/api/%(version)s' % locals()
 
     def _convert_since(self, since):
         """Convert "since" into a numeric value

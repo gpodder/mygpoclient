@@ -25,8 +25,8 @@ __version__ = '1.7'
 __website__ = 'http://thp.io/2010/mygpoclient/'
 __license__ = 'GNU General Public License v3 or later'
 
-# Default settings for the API client (server hostname and API version)
-HOST = 'gpodder.net'
+# Default settings for the API client (server root url and API version)
+ROOT_URL = 'http://gpodder.net'
 VERSION = 2
 TOPLIST_DEFAULT = 50
 

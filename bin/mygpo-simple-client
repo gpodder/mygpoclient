@@ -27,31 +27,31 @@ from mygpoclient import simple
 
 def usage():
     print("""
-    Usage: python %s {get|put} {username} {device_id} [host]
+    Usage: python %s {get|put} {username} {device_id} [host_or_url]
     """ % (sys.argv[0],), file=sys.stderr)
     sys.exit(1)
 
 if __name__ == '__main__':
-    # Use the default host if not specified
+    # Use the default url if not specified
     if len(sys.argv) == 4:
-        sys.argv.append(mygpoclient.HOST)
+        sys.argv.append(mygpoclient.ROOT_URL)
 
     # Check for valid arguments
     if len(sys.argv) != 5:
         usage()
 
     # Split arguments in local variables
-    progname, subcommand, username, device_id, host = sys.argv
+    progname, subcommand, username, device_id, root_url = sys.argv
 
     # Check for valid subcommand
     if subcommand not in ('get', 'put'):
         usage()
 
     # Read password from the terminal
-    password = getpass.getpass("%s@%s's password: " % (username, host))
+    password = getpass.getpass("%s@%s's password: " % (username, root_url))
 
-    # Create the client object with username/password/host set
-    client = simple.SimpleClient(username, password, host)
+    # Create the client object with username/password/root_url set
+    client = simple.SimpleClient(username, password, root_url)
 
     if subcommand == 'get':
         # Get the URL list and print it, one per line
