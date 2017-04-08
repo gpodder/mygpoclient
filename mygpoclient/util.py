@@ -20,7 +20,7 @@ import mygpoclient
 import datetime
 
 def join(*args):
-    """Join separate URL parts to a ful URL"""
+    """Join separate URL parts to a full URL"""
     return '/'.join(args)
 
 def iso8601_to_datetime(s):
