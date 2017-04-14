@@ -78,3 +78,21 @@ class Test_Exceptions(unittest.TestCase):
                           self.locator.settings_uri, type='foobar',
                           scope_param1=None, scope_param2=None)
 
+    def test_create_with_url(self):
+        """Test locator creation with a root URL instead of host"""
+        loc = locator.Locator('hello', 'https://gpo.self.hosted/my')
+        self.assertEquals(loc.toplist_uri(),
+                           'https://gpo.self.hosted/my/toplist/50.opml')
+
+    def test_create_with_url_slash(self):
+        """Test locator creation with a root URL ending with a slash"""
+        loc = locator.Locator('hello', 'https://gpo.self.hosted/my/')
+        self.assertEquals(loc.toplist_uri(),
+                           'https://gpo.self.hosted/my/toplist/50.opml')
+
+    def test_create_with_host(self):
+        """Test locator creation with a host"""
+        loc = locator.Locator('hello', 'gpo.self.hosted')
+        self.assertEquals(loc.toplist_uri(),
+                           'http://gpo.self.hosted/toplist/50.opml')
+
