@@ -162,3 +162,7 @@ class SimpleClient(object):
         uri = self._locator.suggestions_uri(count, self.FORMAT)
         return [Podcast.from_dict(x) for x in self._client.GET(uri)]
 
+    @property
+    def locator(self):
+        """ read-only access to the locator """
+        return self._locator

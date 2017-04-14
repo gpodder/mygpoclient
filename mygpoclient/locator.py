@@ -62,7 +62,7 @@ class Locator(object):
         except ValueError:
             raise ValueError('since must be a numeric value (or None)')
 
-    def subscriptions_uri(self, device_id, format='opml'):
+    def subscriptions_uri(self, device_id=None, format='opml'):
         """Get the Simple API URI for a subscription list
 
         >>> locator = Locator('john')
@@ -74,9 +74,13 @@ class Locator(object):
         if format not in self.SIMPLE_FORMATS:
             raise ValueError('Unsupported file format')
 
-        filename = '%(device_id)s.%(format)s' % locals()
+        username = self._username
+        if device_id is None:
+            path = '%(username)s.%(format)s' % locals()
+        else:
+            path = '%(username)s/%(device_id)s.%(format)s' % locals()
         return util.join(self._simple_base,
-                'subscriptions', self._username, filename)
+                'subscriptions', path)
 
     def toplist_uri(self, count=50, format='opml'):
         """Get the Simple API URI for the toplist
@@ -329,3 +333,12 @@ class Locator(object):
             filename += '?podcast=%s&episode=%s' % (quote(scope_param1), quote(scope_param2))
 
         return util.join(self._base, 'settings' , filename)
+
+    def root_uri(self):
+        """ Get the server's root URI.
+
+        >>> locator = Locator(None)
+        >>> locator.root_uri()
+        'http://gpodder.net'
+        """
+        return self._simple_base
