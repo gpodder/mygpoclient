@@ -12,13 +12,13 @@ import os
 import sys
 
 class BPSync(object):
-    def __init__(self, filename, host=mygpoclient.HOST, device='bp'):
+    def __init__(self, filename, root_url=mygpoclient.ROOT_URL, device='bp'):
         self.filename = filename
         self.device = device
         username = os.environ['MYGPO_USERNAME']
         password = os.environ['MYGPO_PASSWORD']
-        host = os.environ.get('MYGPO_HOSTNAME', host)
-        self.client = simple.SimpleClient(username, password, host)
+        root_url = os.environ.get('MYGPO_HOSTNAME', root_url)
+        self.client = simple.SimpleClient(username, password, root_url)
 
     def put(self):
         lines = open(self.filename).read().strip().splitlines()
@@ -45,7 +45,7 @@ def usage(s=None):
     The following environment variables are optional:
 
       BPSYNC_BP_CONF .. Path to your bp.conf file
-      MYGPO_HOSTNAME .. Host of the web service to use
+      MYGPO_HOSTNAME .. Host or URL of the web service to use
     """ % ((os.path.basename(sys.argv[0]),)*4), file=sys.stderr)
     if s is not None:
         print(s, file=sys.stderr)

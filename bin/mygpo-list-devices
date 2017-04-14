@@ -27,27 +27,27 @@ from mygpoclient import api
 
 def usage():
     print("""
-    Usage: python %s {username} [host]
+    Usage: python %s {username} [host_or_url]
     """ % (sys.argv[0],), file=sys.stderr)
     sys.exit(1)
 
 if __name__ == '__main__':
-    # Use the default host if not specified
+    # Use the default url if not specified
     if len(sys.argv) == 2:
-        sys.argv.append(mygpoclient.HOST)
+        sys.argv.append(mygpoclient.ROOT_URL)
 
     # Check for valid arguments
     if len(sys.argv) != 3:
         usage()
 
     # Split arguments in local variables
-    progname, username, host = sys.argv
+    progname, username, root_url = sys.argv
 
     # Read password from the terminal
-    password = getpass.getpass("%s@%s's password: " % (username, host))
+    password = getpass.getpass("%s@%s's password: " % (username, root_url))
 
-    # Create the client object with username/password/host set
-    client = api.MygPodderClient(username, password, host)
+    # Create the client object with username/password/root_url set
+    client = api.MygPodderClient(username, password, root_url)
 
     for device in client.get_devices():
         print(device)
