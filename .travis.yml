@@ -3,7 +3,12 @@ python:
   - "2.6"
   - "2.7"
   - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "nightly"
 # command to install dependencies
-install: pip install simplejson minimock
+install: pip install simplejson minimock coverage
 # command to run tests
-script: nosetests
+script:
+- make test
