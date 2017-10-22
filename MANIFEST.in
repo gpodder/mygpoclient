@@ -1,5 +1,5 @@
 include AUTHORS
 include COPYING
-include DEPENDENCIES
+include CONTRIBUTING.md
 include NEWS
 include makefile

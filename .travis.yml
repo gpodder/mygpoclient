@@ -3,7 +3,19 @@ python:
   - "2.6"
   - "2.7"
   - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "nightly"
 # command to install dependencies
-install: pip install simplejson minimock
+install: pip install simplejson minimock coverage
 # command to run tests
-script: nosetests
+script:
+- make test
+deploy:
+  provider: pypi
+  user: "gpodder"
+  password:
+    secure: "LhMmayKATJlyob0pkRvcDfie5vi8O+BdpMgJ224C+SXpwpQafPfHNUFzi3+IkS7z3KbYx/jTpP6gcfmEXnG/nI74U0U4fnY1KQixEfwcRTLHNDnx72qe4zXkXAtBzXCRROnyOTir1AolPiC8lpiL+ZBc8cBwan+322IZdlL8t5g="
+  on:
+    tags: true
