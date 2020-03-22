@@ -317,17 +317,17 @@ class Locator(object):
 
         filename = self._username + '/%(type)s.json' % locals()
 
-        if type is 'device':
+        if type == 'device':
             if scope_param1 is None:
                 raise ValueError('Devicename not specified')
             filename += '?device=%(scope_param1)s' % locals()
 
-        if type is 'podcast':
+        if type == 'podcast':
             if scope_param1 is None:
                 raise ValueError('Podcast URL not specified')
             filename += '?podcast=%s' % quote(scope_param1)
 
-        if type is 'episode':
+        if type == 'episode':
             if (scope_param1 is None) or (scope_param2 is None):
                 raise ValueError('Podcast or Episode URL not specified')
             filename += '?podcast=%s&episode=%s' % (quote(scope_param1), quote(scope_param2))
