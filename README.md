@@ -11,7 +11,7 @@ The source of this library is managed in a Git repository at
 
 Documentation can be read online at
 
-    http://mygpoclient.readthedocs.io/
+    https://mygpoclient.readthedocs.io/
 
 If you have any questions, please don't hesitate to contact
 the gPodder developers mailing list at
