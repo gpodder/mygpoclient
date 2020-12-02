@@ -11,6 +11,7 @@ from mygpoclient import simple
 import os
 import sys
 
+
 class BPSync(object):
     def __init__(self, filename, root_url=mygpoclient.ROOT_URL, device='bp'):
         self.filename = filename
@@ -27,7 +28,8 @@ class BPSync(object):
 
     def get(self):
         podcasts = self.client.get_subscriptions(self.device)
-        open(self.filename, 'w').write('\n'.join(podcasts+['']))
+        open(self.filename, 'w').write('\n'.join(podcasts + ['']))
+
 
 def usage(s=None):
     print("""
@@ -46,10 +48,11 @@ def usage(s=None):
 
       BPSYNC_BP_CONF .. Path to your bp.conf file
       MYGPO_HOSTNAME .. Host or URL of the web service to use
-    """ % ((os.path.basename(sys.argv[0]),)*4), file=sys.stderr)
+    """ % ((os.path.basename(sys.argv[0]),) * 4), file=sys.stderr)
     if s is not None:
         print(s, file=sys.stderr)
     sys.exit(1)
+
 
 if __name__ == '__main__':
     if len(sys.argv) not in (2, 3):
@@ -57,7 +60,7 @@ if __name__ == '__main__':
 
     if 'MYGPO_USERNAME' not in os.environ or \
             'MYGPO_PASSWORD' not in os.environ:
-       usage('MYGPO_USERNAME or MYGPO_PASSWORD not set!')
+        usage('MYGPO_USERNAME or MYGPO_PASSWORD not set!')
 
     filename = os.environ.get('BPSYNC_BP_CONF', 'bp.conf')
 
@@ -77,4 +80,3 @@ if __name__ == '__main__':
         client.get()
     else:
         usage('Unknown command')
-

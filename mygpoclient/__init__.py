@@ -34,6 +34,8 @@ TOPLIST_DEFAULT = 50
 user_agent = 'mygpoclient/%s (+%s)' % (__version__, __website__)
 
 # Version checking
+
+
 def require_version(minimum_required):
     """Require a minimum version of the library
 
@@ -53,4 +55,3 @@ def require_version(minimum_required):
     this_version = [int(x) for x in __version__.split('.')]
     minimum_required = [int(x) for x in minimum_required.split('.')]
     return minimum_required <= this_version
-

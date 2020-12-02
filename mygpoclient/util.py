@@ -15,13 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import mygpoclient
-
 import datetime
+
 
 def join(*args):
     """Join separate URL parts to a full URL"""
     return '/'.join(args)
+
 
 def iso8601_to_datetime(s):
     """Convert a ISO8601-formatted string to datetime
@@ -35,13 +35,15 @@ def iso8601_to_datetime(s):
     >>> iso8601_to_datetime('xXxXxXxXxxxxXxxxXxx')
     >>>
     """
-    for format in ('%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f', '%Y-%m-%dT%H:%M:%SZ'):
+    for format in ('%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f',
+                   '%Y-%m-%dT%H:%M:%SZ'):
         try:
             return datetime.datetime.strptime(s, format)
         except ValueError:
             continue
 
     return None
+
 
 def datetime_to_iso8601(dt):
     """Convert a datetime to a ISO8601-formatted string
@@ -50,6 +52,7 @@ def datetime_to_iso8601(dt):
     '2009-12-29T19:25:33'
     """
     return dt.strftime('%Y-%m-%dT%H:%M:%S')
+
 
 def position_to_seconds(s):
     """Convert a position string to its amount of seconds
@@ -66,7 +69,8 @@ def position_to_seconds(s):
     360000
     """
     hours, minutes, seconds = (int(x) for x in s.split(':', 2))
-    return (((hours*60)+minutes)*60)+seconds
+    return (((hours * 60) + minutes) * 60) + seconds
+
 
 def seconds_to_position(seconds):
     """Convert the amount of seconds to a position string
@@ -82,10 +86,8 @@ def seconds_to_position(seconds):
     >>> seconds_to_position(60*60*100)
     '100:00:00'
     """
-    minutes = int(seconds/60)
+    minutes = int(seconds / 60)
     seconds = seconds % 60
-    hours = int(minutes/60)
+    hours = int(minutes / 60)
     minutes = minutes % 60
     return '%02d:%02d:%02d' % (hours, minutes, seconds)
-
-

@@ -25,7 +25,6 @@ except ImportError:
     from StringIO import StringIO as BytesIO
     import urllib2 as request
 
-from mygpoclient import http
 from mygpoclient import json
 
 import unittest
@@ -33,7 +32,8 @@ import minimock
 
 
 def fqname(o):
-      return o.__module__ + "." + o.__name__
+    return o.__module__ + "." + o.__name__
+
 
 class Test_JsonClient(unittest.TestCase):
     PORT = 9876
@@ -66,7 +66,7 @@ class Test_JsonClient(unittest.TestCase):
     def test_parseResponse_worksWithIntegerList(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
         self.mock_setHttpResponse(b'[1,2,3,6,7]')
-        self.assertEquals(client.GET(self.URI_BASE + '/'), [1,2,3,6,7])
+        self.assertEquals(client.GET(self.URI_BASE + '/'), [1, 2, 3, 6, 7])
 
     def test_parseResponse_emptyString_returnsNone(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
@@ -77,5 +77,3 @@ class Test_JsonClient(unittest.TestCase):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
         self.mock_setHttpResponse(b'this is not a valid json string')
         self.assertRaises(json.JsonException, client.GET, self.URI_BASE + '/')
-
-

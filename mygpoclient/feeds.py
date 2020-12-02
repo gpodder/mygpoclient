@@ -44,7 +44,7 @@ except ImportError:
     import json
 
 
-BASE_URL='http://mygpo-feedservice.appspot.com'
+BASE_URL = 'http://mygpo-feedservice.appspot.com'
 
 
 class FeedServiceResponse(list):
@@ -61,13 +61,11 @@ class FeedServiceResponse(list):
             for url in feed['urls']:
                 self.indexed_feeds[url] = feed
 
-
     def get_feeds(self):
         """
         Returns the parsed feeds in order of the initial request
         """
         return (self.get_feed(url) for url in self.feed_urls)
-
 
     def get_feed(self, url):
         """
@@ -95,44 +93,45 @@ class FeedserviceClient(mygpoclient.json.JsonClient):
 
         # call _prepare_request directly from HttpClient, because
         # JsonClient would JSON-encode our POST-data
-        request = mygpoclient.http.HttpClient._prepare_request(method, uri, post_data)
+        request = mygpoclient.http.HttpClient._prepare_request(
+            method, uri, post_data)
         request.add_header('Accept', 'application/json')
         request.add_header('Accept-Encoding', 'gzip')
 
         last_modified = data.get('last_modified', None)
         if last_modified is not None:
-            request.add_header('If-Modified-Since', self.format_header_date(last_modified))
+            request.add_header(
+                'If-Modified-Since',
+                self.format_header_date(last_modified))
 
         return request
-
 
     def _process_response(self, response):
         """ Extract Last-modified header and passes response body
             to JsonClient for decoding"""
 
-        last_modified = self.parse_header_date(response.headers['last-modified'])
+        last_modified = self.parse_header_date(
+            response.headers['last-modified'])
         feeds = super(FeedserviceClient, self)._process_response(response)
         return feeds, last_modified
 
-
     def parse_feeds(self, feed_urls, last_modified=None, strip_html=False,
-                use_cache=True, inline_logo=False, scale_logo=None,
-                logo_format=None):
+                    use_cache=True, inline_logo=False, scale_logo=None,
+                    logo_format=None):
         """
         Passes the given feed-urls to mygpo-feedservice to be parsed
         and returns the response
         """
 
         url = self.build_url(strip_html=strip_html, use_cache=use_cache,
-                inline_logo=inline_logo, scale_logo=scale_logo,
-                logo_format=logo_format)
+                             inline_logo=inline_logo, scale_logo=scale_logo,
+                             logo_format=logo_format)
 
         request_data = dict(feed_urls=feed_urls, last_modified=last_modified)
 
         feeds, last_modified = self.POST(url, request_data)
 
         return FeedServiceResponse(feeds, last_modified, feed_urls)
-
 
     def build_url(self, **kwargs):
         """
@@ -145,12 +144,14 @@ class FeedserviceClient(mygpoclient.json.JsonClient):
         args = [k_v for k_v in args if k_v[1] is not None]
 
         # boolean flags are represented as 1 and 0 in the query-string
-        args = [(k_v1[0], int(k_v1[1]) if isinstance(k_v1[1], bool) else k_v1[1]) for k_v1 in args]
+        args = [
+            (k_v1[0], int(
+                k_v1[1]) if isinstance(
+                k_v1[1], bool) else k_v1[1]) for k_v1 in args]
         args = urlencode(dict(args))
 
         url = '%s?%s' % (query_url, args)
         return url
-
 
     @staticmethod
     def parse_header_date(date_str):

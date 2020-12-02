@@ -21,6 +21,7 @@ from mygpoclient import locator
 from mygpoclient import json
 from mygpoclient import simple
 
+
 class Tag(object):
     """Container class for a tag in the top tag list
 
@@ -56,9 +57,8 @@ class Tag(object):
         if not isinstance(other, self.__class__):
             return False
 
-        return all(getattr(self, k) == getattr(other, k) \
-                for k in self.REQUIRED_KEYS)
-
+        return all(getattr(self, k) == getattr(other, k)
+                   for k in self.REQUIRED_KEYS)
 
 
 class Episode(object):
@@ -78,7 +78,8 @@ class Episode(object):
     REQUIRED_KEYS = ('title', 'url', 'podcast_title', 'podcast_url',
                      'description', 'website', 'released', 'mygpo_link')
 
-    def __init__(self, title, url, podcast_title, podcast_url, description, website, released, mygpo_link):
+    def __init__(self, title, url, podcast_title, podcast_url,
+                 description, website, released, mygpo_link):
         self.title = title
         self.url = url
         self.podcast_title = podcast_title
@@ -109,8 +110,9 @@ class Episode(object):
         if not isinstance(other, self.__class__):
             return False
 
-        return all(getattr(self, k) == getattr(other, k) \
-            for k in self.REQUIRED_KEYS)
+        return all(getattr(self, k) == getattr(other, k)
+                   for k in self.REQUIRED_KEYS)
+
 
 class PublicClient(object):
     """Client for the gpodder.net "anonymous" API
@@ -121,7 +123,8 @@ class PublicClient(object):
     """
     FORMAT = 'json'
 
-    def __init__(self, root_url=mygpoclient.ROOT_URL, client_class=json.JsonClient):
+    def __init__(self, root_url=mygpoclient.ROOT_URL,
+                 client_class=json.JsonClient):
         """Creates a new Public API client
 
         The parameter root_url is optional and defaults to

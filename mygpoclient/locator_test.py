@@ -18,6 +18,7 @@
 from mygpoclient import locator
 import unittest
 
+
 class Test_Exceptions(unittest.TestCase):
     def setUp(self):
         self.locator = locator.Locator('jane')
@@ -25,34 +26,34 @@ class Test_Exceptions(unittest.TestCase):
     def test_subscriptions_uri_exceptions(self):
         """Test if unsupported formats raise a ValueError"""
         self.assertRaises(ValueError,
-                self.locator.subscriptions_uri, 'gpodder', 'html')
+                          self.locator.subscriptions_uri, 'gpodder', 'html')
 
     def test_toplist_uri_exceptions(self):
         """Test if unsupported formats raise a ValueError"""
         self.assertRaises(ValueError,
-                self.locator.toplist_uri, 10, 'html')
+                          self.locator.toplist_uri, 10, 'html')
 
     def test_suggestions_uri_exceptions(self):
         """Test if unsupported formats raise a ValueError"""
         self.assertRaises(ValueError,
-                self.locator.suggestions_uri, 20, 'jpeg')
+                          self.locator.suggestions_uri, 20, 'jpeg')
 
     def test_search_uri_exception(self):
         """Test if unsupported formats raise a ValueError"""
         self.assertRaises(ValueError,
-                self.locator.search_uri, 30, 'mp3')
+                          self.locator.search_uri, 30, 'mp3')
 
     def test_subscription_updates_uri_exceptions(self):
         """Test if wrong "since" values raise a ValueError"""
         self.assertRaises(ValueError,
-                self.locator.subscription_updates_uri, 'ipod', 'anytime')
+                          self.locator.subscription_updates_uri, 'ipod', 'anytime')
 
     def test_download_episode_actions_uri_exceptions(self):
         """Test if using both "podcast" and "device_id" raises a ValueError"""
         self.assertRaises(ValueError,
-                self.locator.download_episode_actions_uri,
-                podcast='http://example.org/episodes.rss',
-                device_id='gpodder')
+                          self.locator.download_episode_actions_uri,
+                          podcast='http://example.org/episodes.rss',
+                          device_id='gpodder')
 
     def test_device_settings_uri_exception(self):
         """Test if using no parameter for a device Setting raises a ValueError"""
@@ -78,7 +79,6 @@ class Test_Exceptions(unittest.TestCase):
                           self.locator.settings_uri, type='foobar',
                           scope_param1=None, scope_param2=None)
 
-
     def test_subscriptions_uri_no_device(self):
         """Test that no device returns user subscriptions"""
         self.assertEquals(self.locator.subscriptions_uri(),
@@ -93,18 +93,16 @@ class Test_Exceptions(unittest.TestCase):
         """Test locator creation with a root URL instead of host"""
         loc = locator.Locator('hello', 'https://gpo.self.hosted/my')
         self.assertEquals(loc.toplist_uri(),
-                           'https://gpo.self.hosted/my/toplist/50.opml')
+                          'https://gpo.self.hosted/my/toplist/50.opml')
 
     def test_create_with_url_slash(self):
         """Test locator creation with a root URL ending with a slash"""
         loc = locator.Locator('hello', 'https://gpo.self.hosted/my/')
         self.assertEquals(loc.toplist_uri(),
-                           'https://gpo.self.hosted/my/toplist/50.opml')
+                          'https://gpo.self.hosted/my/toplist/50.opml')
 
     def test_create_with_host(self):
         """Test locator creation with a host"""
         loc = locator.Locator('hello', 'gpo.self.hosted')
         self.assertEquals(loc.toplist_uri(),
-                           'http://gpo.self.hosted/toplist/50.opml')
-
-
+                          'http://gpo.self.hosted/toplist/50.opml')

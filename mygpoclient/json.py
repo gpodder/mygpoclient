@@ -18,13 +18,11 @@
 # Fix gPodder bug 900 (so "import json" doesn't import this module)
 from __future__ import absolute_import
 
-import mygpoclient
-
 try:
     # Python 3
     bytes = bytes
 
-except:
+except BaseException:
     # Python 2
     bytes = str
 
@@ -33,7 +31,11 @@ import json
 from mygpoclient import http
 
 # Additional exceptions for JSON-related errors
-class JsonException(Exception): pass
+
+
+class JsonException(Exception):
+    pass
+
 
 class JsonClient(http.HttpClient):
     """A HttpClient with built-in JSON support
@@ -42,6 +44,7 @@ class JsonClient(http.HttpClient):
     JSON-related web services so that code using this class will
     not need to care about (de-)serialization of data structures.
     """
+
     def __init__(self, username=None, password=None):
         http.HttpClient.__init__(self, username, password)
 

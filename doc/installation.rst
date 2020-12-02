@@ -15,13 +15,13 @@ the code by using the command:
 
 .. code-block:: bash
 
- 	git clone https://github.com/gpodder/mygpoclient.git
+  git clone https://github.com/gpodder/mygpoclient.git
 
 or install it with ``pip``:
 
 .. code-block:: bash
 
- 	pip install mygpoclient
+  pip install mygpoclient
 
 
 Running Unit tests
@@ -69,7 +69,7 @@ You probably want to use the following commands:
 .. code-block:: bash
 
 	pydoc mygpoclient.simple
- 	pydoc mygpoclient.api
+	pydoc mygpoclient.api
 
 If you want, you can let Epydoc create the API documentation in the source
 tree:

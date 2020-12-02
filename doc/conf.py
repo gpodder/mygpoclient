@@ -169,6 +169,3 @@ texinfo_documents = [
      author, 'mygpoclient', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
