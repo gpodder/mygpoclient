@@ -25,11 +25,13 @@ import mygpoclient
 
 from mygpoclient import api
 
+
 def usage():
     print("""
     Usage: python %s {username} [host_or_url]
     """ % (sys.argv[0],), file=sys.stderr)
     sys.exit(1)
+
 
 if __name__ == '__main__':
     # Use the default url if not specified
@@ -53,5 +55,4 @@ if __name__ == '__main__':
         print(device)
         for podcast in client.get_subscriptions(device):
             print('  ' + podcast)
-        print('-'*50)
-
+        print('-' * 50)

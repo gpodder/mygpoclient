@@ -20,18 +20,20 @@ from mygpoclient import testing
 
 import unittest
 
+
 class Test_Podcast(unittest.TestCase):
     def test_podcastFromDict_raisesValueError_missingKey(self):
         self.assertRaises(ValueError,
-                simple.Podcast.from_dict, {'url': 'a', 'title': 'b'})
+                          simple.Podcast.from_dict, {'url': 'a', 'title': 'b'})
+
 
 class Test_SimpleClient(unittest.TestCase):
     USERNAME = 'a'
     PASSWORD = 'b'
     DEVICE_NAME = 'x'
     SUBSCRIPTIONS = [
-            'http://lugradio.org/episodes.rss',
-            'http://feeds2.feedburner.com/LinuxOutlaws',
+        'http://lugradio.org/episodes.rss',
+        'http://feeds2.feedburner.com/LinuxOutlaws',
     ]
     SUBSCRIPTIONS_JSON = b"""
       ["http://lugradio.org/episodes.rss",
@@ -39,19 +41,19 @@ class Test_SimpleClient(unittest.TestCase):
     """
     SUGGESTIONS = [
         simple.Podcast('http://feeds.feedburner.com/linuxoutlaws',
-                'Linux Outlaws',
-                'Open source talk with a serious attitude',
-                'http://linuxoutlaws.com/podcast',
-                1736, 1736,
-                'http://www.gpodder.net/podcast/11092',
-                'http://linuxoutlaws.com/files/albumart-itunes.jpg'),
+                       'Linux Outlaws',
+                       'Open source talk with a serious attitude',
+                       'http://linuxoutlaws.com/podcast',
+                       1736, 1736,
+                       'http://www.gpodder.net/podcast/11092',
+                       'http://linuxoutlaws.com/files/albumart-itunes.jpg'),
         simple.Podcast('http://feeds.twit.tv/floss_video_large',
-                'FLOSS Weekly Video (large)',
-                'We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.',
-                'http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c',
-                50, 50,
-                'http://www.gpodder.net/podcast/31991',
-                'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
+                       'FLOSS Weekly Video (large)',
+                       'We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.',
+                       'http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c',
+                       50, 50,
+                       'http://www.gpodder.net/podcast/31991',
+                       'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
     ]
     SUGGESTIONS_JSON = b"""
     [{
@@ -79,11 +81,12 @@ class Test_SimpleClient(unittest.TestCase):
     def setUp(self):
         self.fake_client = testing.FakeJsonClient()
         self.client = simple.SimpleClient(self.USERNAME, self.PASSWORD,
-                client_class=self.fake_client)
+                                          client_class=self.fake_client)
 
     def test_putSubscriptions(self):
         self.fake_client.response_value = b''
-        result = self.client.put_subscriptions(self.DEVICE_NAME, self.SUBSCRIPTIONS)
+        result = self.client.put_subscriptions(
+            self.DEVICE_NAME, self.SUBSCRIPTIONS)
         self.assertEquals(result, True)
         self.assertEquals(len(self.fake_client.requests), 1)
 
@@ -104,18 +107,25 @@ class Test_MissingCredentials(unittest.TestCase):
     DEVICE_NAME = 'unit-test-device'
 
     def test_getSubscriptions_UserAndPassAreNone(self):
-        client = simple.SimpleClient(None, None, client_class=testing.FakeJsonClient())
-        self.assertRaises(simple.MissingCredentials, client.get_subscriptions, (self.DEVICE_NAME,))
+        client = simple.SimpleClient(
+            None, None, client_class=testing.FakeJsonClient())
+        self.assertRaises(simple.MissingCredentials,
+                          client.get_subscriptions, (self.DEVICE_NAME,))
 
     def test_getSubscriptions_EmptyUserAndPass(self):
-        client = simple.SimpleClient('', '', client_class=testing.FakeJsonClient())
-        self.assertRaises(simple.MissingCredentials, client.get_subscriptions, (self.DEVICE_NAME,))
+        client = simple.SimpleClient(
+            '', '', client_class=testing.FakeJsonClient())
+        self.assertRaises(simple.MissingCredentials,
+                          client.get_subscriptions, (self.DEVICE_NAME,))
 
     def test_getSubscriptions_EmptyPassword(self):
-        client = simple.SimpleClient('user', '', client_class=testing.FakeJsonClient())
-        self.assertRaises(simple.MissingCredentials, client.get_subscriptions, (self.DEVICE_NAME,))
+        client = simple.SimpleClient(
+            'user', '', client_class=testing.FakeJsonClient())
+        self.assertRaises(simple.MissingCredentials,
+                          client.get_subscriptions, (self.DEVICE_NAME,))
 
     def test_getSubscriptions_EmptyUsername(self):
-        client = simple.SimpleClient('', 'pass', client_class=testing.FakeJsonClient())
-        self.assertRaises(simple.MissingCredentials, client.get_subscriptions, (self.DEVICE_NAME,))
-
+        client = simple.SimpleClient(
+            '', 'pass', client_class=testing.FakeJsonClient())
+        self.assertRaises(simple.MissingCredentials,
+                          client.get_subscriptions, (self.DEVICE_NAME,))

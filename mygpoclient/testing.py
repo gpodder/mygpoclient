@@ -17,12 +17,14 @@
 
 from mygpoclient import json
 
+
 class FakeJsonClient(object):
     """Fake implementation of a JsonClient used for testing
 
     Set the response using response_value and check the list
     of requests this object got using the requests list.
     """
+
     def __init__(self):
         self.requests = []
         self.response_value = ''
@@ -50,4 +52,3 @@ class FakeJsonClient(object):
 
     def PUT(self, uri, data):
         return self._request('PUT', uri, data)
-

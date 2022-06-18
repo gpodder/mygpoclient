@@ -40,7 +40,6 @@ def needs_credentials(f):
     return _wrapper
 
 
-
 class Podcast(object):
     """Container class for a podcast
 
@@ -54,7 +53,8 @@ class Podcast(object):
     REQUIRED_FIELDS = ('url', 'title', 'description', 'website', 'subscribers',
                        'subscribers_last_week', 'mygpo_link', 'logo_url')
 
-    def __init__(self, url, title, description, website, subscribers, subscribers_last_week, mygpo_link, logo_url):
+    def __init__(self, url, title, description, website,
+                 subscribers, subscribers_last_week, mygpo_link, logo_url):
         self.url = url
         self.title = title
         self.description = description
@@ -85,8 +85,8 @@ class Podcast(object):
         if not isinstance(other, self.__class__):
             return False
 
-        return all(getattr(self, k) == getattr(other, k) \
-                for k in self.REQUIRED_FIELDS)
+        return all(getattr(self, k) == getattr(other, k)
+                   for k in self.REQUIRED_FIELDS)
 
 
 class SimpleClient(object):
@@ -98,7 +98,7 @@ class SimpleClient(object):
     FORMAT = 'json'
 
     def __init__(self, username, password, root_url=mygpoclient.ROOT_URL,
-            client_class=json.JsonClient):
+                 client_class=json.JsonClient):
         """Creates a new Simple API client
 
         Username and password must be specified and are
@@ -144,7 +144,7 @@ class SimpleClient(object):
         Returns True if the update was successful, False otherwise.
         """
         uri = self._locator.subscriptions_uri(device_id, self.FORMAT)
-        return (self._client.PUT(uri, urls) == None)
+        return self._client.PUT(uri, urls) is None
 
     @needs_credentials
     def get_suggestions(self, count=10):

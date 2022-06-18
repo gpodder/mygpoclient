@@ -18,18 +18,18 @@
 try:
     # Python 2
     str = unicode
-except:
+except BaseException:
     # Python 3
     pass
-
-import mygpoclient
 
 from mygpoclient import util
 from mygpoclient import simple
 from mygpoclient import public
 
+
 # Additional error types for the advanced API client
-class InvalidResponse(Exception): pass
+class InvalidResponse(Exception):
+    pass
 
 
 class UpdateResult(object):
@@ -39,9 +39,11 @@ class UpdateResult(object):
     update_urls - A list of (old_url, new_url) tuples
     since - A timestamp value for use in future requests
     """
+
     def __init__(self, update_urls, since):
         self.update_urls = update_urls
         self.since = since
+
 
 class SubscriptionChanges(object):
     """Container for subscription changes
@@ -51,10 +53,12 @@ class SubscriptionChanges(object):
     remove - A list of URLs that have been removed
     since - A timestamp value for use in future requests
     """
+
     def __init__(self, add, remove, since):
         self.add = add
         self.remove = remove
         self.since = since
+
 
 class EpisodeActionChanges(object):
     """Container for added episode actions
@@ -63,9 +67,11 @@ class EpisodeActionChanges(object):
     actions - A list of EpisodeAction objects
     since - A timestamp value for use in future requests
     """
+
     def __init__(self, actions, since):
         self.actions = actions
         self.since = since
+
 
 class PodcastDevice(object):
     """This class encapsulates a podcast device
@@ -81,13 +87,17 @@ class PodcastDevice(object):
     def __init__(self, device_id, caption, type, subscriptions):
         # Check if the device type is valid
         if type not in self.VALID_TYPES:
-            raise ValueError('Invalid device type "%s" (see VALID_TYPES)' % type)
+            raise ValueError(
+                'Invalid device type "%s" (see VALID_TYPES)' %
+                type)
 
-        # Check if subsciptions is a numeric value
+        # Check if subscriptions is a numeric value
         try:
             int(subscriptions)
-        except:
-            raise ValueError('Subscription must be a numeric value but was %s' % subscriptions)
+        except BaseException:
+            raise ValueError(
+                'Subscription must be a numeric value but was %s' %
+                subscriptions)
 
         self.device_id = device_id
         self.caption = caption
@@ -102,11 +112,12 @@ class PodcastDevice(object):
         PodcastDevice('mygpo', 'My Device', 'mobile', 10)
         """
         return '%s(%r, %r, %r, %r)' % (self.__class__.__name__,
-                self.device_id, self.caption, self.type, self.subscriptions)
+                                       self.device_id, self.caption, self.type, self.subscriptions)
 
     @classmethod
     def from_dictionary(cls, d):
         return cls(d['id'], d['caption'], d['type'], d['subscriptions'])
+
 
 class EpisodeAction(object):
     """This class encapsulates an episode action
@@ -128,25 +139,31 @@ class EpisodeAction(object):
     VALID_ACTIONS = ('download', 'play', 'delete', 'new', 'flattr')
 
     def __init__(self, podcast, episode, action,
-            device=None, timestamp=None,
-            started=None, position=None, total=None):
+                 device=None, timestamp=None,
+                 started=None, position=None, total=None):
         # Check if the action is valid
         if action not in self.VALID_ACTIONS:
-            raise ValueError('Invalid action type "%s" (see VALID_ACTIONS)' % action)
+            raise ValueError(
+                'Invalid action type "%s" (see VALID_ACTIONS)' %
+                action)
 
         # Disallow play-only attributes for non-play actions
         if action != 'play':
             if started is not None:
-                raise ValueError('Started can only be set for the "play" action')
+                raise ValueError(
+                    'Started can only be set for the "play" action')
             elif position is not None:
-                raise ValueError('Position can only be set for the "play" action')
+                raise ValueError(
+                    'Position can only be set for the "play" action')
             elif total is not None:
                 raise ValueError('Total can only be set for the "play" action')
 
         # Check the format of the timestamp value
         if timestamp is not None:
             if util.iso8601_to_datetime(timestamp) is None:
-                raise ValueError('Timestamp has to be in ISO 8601 format but was %s' % timestamp)
+                raise ValueError(
+                    'Timestamp has to be in ISO 8601 format but was %s' %
+                    timestamp)
 
         # Check if we have a "position" value if we have started or total
         if position is None and (started is not None or total is not None):
@@ -157,21 +174,27 @@ class EpisodeAction(object):
             try:
                 started = int(started)
             except ValueError:
-                raise ValueError('Started must be an integer value (seconds) but was %s' % started)
+                raise ValueError(
+                    'Started must be an integer value (seconds) but was %s' %
+                    started)
 
         # Check that "position" is a number if it's set
         if position is not None:
             try:
                 position = int(position)
             except ValueError:
-                raise ValueError('Position must be an integer value (seconds) but was %s' % position)
+                raise ValueError(
+                    'Position must be an integer value (seconds) but was %s' %
+                    position)
 
         # Check that "total" is a number if it's set
         if total is not None:
             try:
                 total = int(total)
             except ValueError:
-                raise ValueError('Total must be an integer value (seconds) but was %s' % total)
+                raise ValueError(
+                    'Total must be an integer value (seconds) but was %s' %
+                    total)
 
         self.podcast = podcast
         self.episode = episode
@@ -196,12 +219,13 @@ class EpisodeAction(object):
             d[mandatory] = value
 
         for optional in ('device', 'timestamp',
-                'started', 'position', 'total'):
+                         'started', 'position', 'total'):
             value = getattr(self, optional)
             if value is not None:
                 d[optional] = value
 
         return d
+
 
 class MygPodderClient(simple.SimpleClient):
     """gpodder.net API Client
@@ -238,10 +262,14 @@ class MygPodderClient(simple.SimpleClient):
         uri = self._locator.add_remove_subscriptions_uri(device_id)
 
         if not all(isinstance(x, str) for x in add_urls):
-            raise ValueError('add_urls must be a list of strings but was %s' % add_urls)
+            raise ValueError(
+                'add_urls must be a list of strings but was %s' %
+                add_urls)
 
         if not all(isinstance(x, str) for x in remove_urls):
-            raise ValueError('remove_urls must be a list of strings but was %s' % remove_urls)
+            raise ValueError(
+                'remove_urls must be a list of strings but was %s' %
+                remove_urls)
 
         data = {'add': add_urls, 'remove': remove_urls}
         response = self._client.POST(uri, data)
@@ -255,19 +283,25 @@ class MygPodderClient(simple.SimpleClient):
         try:
             since = int(response['timestamp'])
         except ValueError:
-            raise InvalidResponse('Invalid value %s for timestamp in response' % response['timestamp'])
+            raise InvalidResponse(
+                'Invalid value %s for timestamp in response' %
+                response['timestamp'])
 
         if 'update_urls' not in response:
             raise InvalidResponse('Response does not contain update_urls')
 
         try:
             update_urls = [(a, b) for a, b in response['update_urls']]
-        except:
-            raise InvalidResponse('Invalid format of update_urls in response: %s' % response['update_urls'])
+        except BaseException:
+            raise InvalidResponse(
+                'Invalid format of update_urls in response: %s' %
+                response['update_urls'])
 
-        if not all(isinstance(a, str) and isinstance(b, str) \
-                    for a, b in update_urls):
-            raise InvalidResponse('Invalid format of update_urls in response: %s' % update_urls)
+        if not all(isinstance(a, str) and isinstance(b, str)
+                   for a, b in update_urls):
+            raise InvalidResponse(
+                'Invalid format of update_urls in response: %s' %
+                update_urls)
 
         return UpdateResult(update_urls, since)
 
@@ -299,15 +333,21 @@ class MygPodderClient(simple.SimpleClient):
             raise InvalidResponse('Timestamp missing from response')
 
         if not all(isinstance(x, str) for x in data['add']):
-            raise InvalidResponse('Invalid value(s) in list of added podcasts: %s' % data['add'])
+            raise InvalidResponse(
+                'Invalid value(s) in list of added podcasts: %s' %
+                data['add'])
 
         if not all(isinstance(x, str) for x in data['remove']):
-            raise InvalidResponse('Invalid value(s) in list of removed podcasts: %s' % data['remove'])
+            raise InvalidResponse(
+                'Invalid value(s) in list of removed podcasts: %s' %
+                data['remove'])
 
         try:
             since = int(data['timestamp'])
         except ValueError:
-            raise InvalidResponse('Timestamp has invalid format in response: %s' % data['timestamp'])
+            raise InvalidResponse(
+                'Timestamp has invalid format in response: %s' %
+                data['timestamp'])
 
         return SubscriptionChanges(data['add'], data['remove'], since)
 
@@ -330,13 +370,15 @@ class MygPodderClient(simple.SimpleClient):
         try:
             since = int(response['timestamp'])
         except ValueError:
-            raise InvalidResponse('Invalid value %s for timestamp in response' % response['timestamp'])
+            raise InvalidResponse(
+                'Invalid value %s for timestamp in response' %
+                response['timestamp'])
 
         return since
 
     @simple.needs_credentials
     def download_episode_actions(self, since=None,
-            podcast=None, device_id=None):
+                                 podcast=None, device_id=None):
         """Downloads a list of EpisodeAction objects from the server
 
         Returns a EpisodeActionChanges object with the list of
@@ -344,7 +386,7 @@ class MygPodderClient(simple.SimpleClient):
         future calls to this method when retrieving episodes.
         """
         uri = self._locator.download_episode_actions_uri(since,
-                podcast, device_id)
+                                                         podcast, device_id)
         data = self._client.GET(uri)
 
         if data is None:
@@ -359,8 +401,8 @@ class MygPodderClient(simple.SimpleClient):
         try:
             since = int(data['timestamp'])
         except ValueError:
-            raise InvalidResponse('Invalid value for timestamp: ' + 
-                    data['timestamp'])
+            raise InvalidResponse('Invalid value for timestamp: ' +
+                                  data['timestamp'])
 
         dicts = data['actions']
         try:
@@ -390,7 +432,7 @@ class MygPodderClient(simple.SimpleClient):
             data['caption'] = caption
         if type is not None:
             data['type'] = type
-        return (self._client.POST(uri, data) is None)
+        return self._client.POST(uri, data) is None
 
     @simple.needs_credentials
     def get_devices(self):
@@ -421,10 +463,9 @@ class MygPodderClient(simple.SimpleClient):
         uri = self._locator.settings_uri(type, scope_param1, scope_param2)
         return self._client.GET(uri)
 
-    def set_settings(self, type, scope_param1, scope_param2, set={}, remove=[]):
+    def set_settings(self, type, scope_param1,
+                     scope_param2, set={}, remove=[]):
         """Returns a Dictionary with the set settings for the type & specified scope"""
         uri = self._locator.settings_uri(type, scope_param1, scope_param2)
-        data = {}
-        data["set"] = set
-        data["remove"] = remove
+        data = {"set": set, "remove": remove}
         return self._client.POST(uri, data)

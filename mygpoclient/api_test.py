@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import mygpoclient
-
 from mygpoclient import api
 from mygpoclient import testing
 
@@ -36,14 +34,15 @@ EPISODE_URL_4 = u'http://www.example.com/test/me_now.avi'
 DEVICE_ID_1 = u'gpodder.on.my.phone'
 DEVICE_ID_2 = u'95dce59cf340123fa'
 
+
 class Test_SubscriptionChanges(unittest.TestCase):
     ADD = [
-            FEED_URL_1,
-            FEED_URL_3,
+        FEED_URL_1,
+        FEED_URL_3,
     ]
     REMOVE = [
-            FEED_URL_2,
-            FEED_URL_4,
+        FEED_URL_2,
+        FEED_URL_4,
     ]
     SINCE = 1262101867
 
@@ -56,9 +55,9 @@ class Test_SubscriptionChanges(unittest.TestCase):
 
 class Test_EpisodeActionChanges(unittest.TestCase):
     ACTIONS = [
-            api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'download'),
-            api.EpisodeAction(FEED_URL_2, EPISODE_URL_3, 'play'),
-            api.EpisodeAction(FEED_URL_2, EPISODE_URL_4, 'delete'),
+        api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'download'),
+        api.EpisodeAction(FEED_URL_2, EPISODE_URL_3, 'play'),
+        api.EpisodeAction(FEED_URL_2, EPISODE_URL_4, 'delete'),
     ]
     SINCE = 1262102013
 
@@ -80,13 +79,13 @@ class Test_PodcastDevice(unittest.TestCase):
 
     def test_invalidDeviceType_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.PodcastDevice, DEVICE_ID_2, self.CAPTION,
-                'does-not-exist', 1337)
+                          api.PodcastDevice, DEVICE_ID_2, self.CAPTION,
+                          'does-not-exist', 1337)
 
     def test_nonNumericSubscriptions_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.PodcastDevice, DEVICE_ID_1, self.CAPTION,
-                'laptop', 'notanumber')
+                          api.PodcastDevice, DEVICE_ID_1, self.CAPTION,
+                          'laptop', 'notanumber')
 
 
 class Test_EpisodeAction(unittest.TestCase):
@@ -97,8 +96,8 @@ class Test_EpisodeAction(unittest.TestCase):
 
     def test_initSetsCorrectAttributes(self):
         action = api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'play',
-                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED,
-                self.VALID_POSITION, self.VALID_TOTAL)
+                                   DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED,
+                                   self.VALID_POSITION, self.VALID_TOTAL)
         self.assertEquals(action.podcast, FEED_URL_1)
         self.assertEquals(action.episode, EPISODE_URL_1)
         self.assertEquals(action.action, 'play')
@@ -110,48 +109,48 @@ class Test_EpisodeAction(unittest.TestCase):
 
     def test_invalidAction_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.EpisodeAction, FEED_URL_2, EPISODE_URL_3, 'invalidaction',
-                DEVICE_ID_2, self.XML_TIMESTAMP)
+                          api.EpisodeAction, FEED_URL_2, EPISODE_URL_3, 'invalidaction',
+                          DEVICE_ID_2, self.XML_TIMESTAMP)
 
     def test_startedIsSetWithNoPlayAction_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.EpisodeAction, FEED_URL_4, EPISODE_URL_2, 'download',
-                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED)
-        
+                          api.EpisodeAction, FEED_URL_4, EPISODE_URL_2, 'download',
+                          DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED)
+
     def test_positionIsSetWithNoPlayAction_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.EpisodeAction, FEED_URL_4, EPISODE_URL_2, 'download',
-                DEVICE_ID_1, self.XML_TIMESTAMP, None, self.VALID_POSITION)
+                          api.EpisodeAction, FEED_URL_4, EPISODE_URL_2, 'download',
+                          DEVICE_ID_1, self.XML_TIMESTAMP, None, self.VALID_POSITION)
 
     def test_totalIsSetWithNoPlayAction_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.EpisodeAction, FEED_URL_4, EPISODE_URL_2, 'download',
-                DEVICE_ID_1, self.XML_TIMESTAMP, None, None, self.VALID_TOTAL)
+                          api.EpisodeAction, FEED_URL_4, EPISODE_URL_2, 'download',
+                          DEVICE_ID_1, self.XML_TIMESTAMP, None, None, self.VALID_TOTAL)
 
     def test_invalidTimestampFormat_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.EpisodeAction, FEED_URL_3, EPISODE_URL_3, 'delete',
-                DEVICE_ID_2, 'today')
+                          api.EpisodeAction, FEED_URL_3, EPISODE_URL_3, 'delete',
+                          DEVICE_ID_2, 'today')
 
     def test_onlyStartedSet_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
-                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED)
+                          api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
+                          DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED)
 
     def test_invalidStartedFormat_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
-                DEVICE_ID_1, self.XML_TIMESTAMP, '10 minutes into the show', self.VALID_POSITION)
+                          api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
+                          DEVICE_ID_1, self.XML_TIMESTAMP, '10 minutes into the show', self.VALID_POSITION)
 
     def test_invalidPositionFormat_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
-                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED, '15 minutes later')
+                          api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
+                          DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED, '15 minutes later')
 
     def test_invalidTotalFormat_raisesValueError(self):
         self.assertRaises(ValueError,
-                api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
-                DEVICE_ID_1, self.XML_TIMESTAMP, None, self.VALID_POSITION, '30 minutes total')
+                          api.EpisodeAction, FEED_URL_1, EPISODE_URL_4, 'play',
+                          DEVICE_ID_1, self.XML_TIMESTAMP, None, self.VALID_POSITION, '30 minutes total')
 
     def test_toDictionary_containsMandatoryAttributes(self):
         action = api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'play')
@@ -166,8 +165,8 @@ class Test_EpisodeAction(unittest.TestCase):
 
     def test_toDictionary_containsAllAttributes(self):
         action = api.EpisodeAction(FEED_URL_3, EPISODE_URL_4, 'play',
-                DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED,
-                self.VALID_POSITION, self.VALID_TOTAL)
+                                   DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED,
+                                   self.VALID_POSITION, self.VALID_TOTAL)
         dictionary = action.to_dictionary()
         self.assertEquals(len(list(dictionary.keys())), 8)
         self.assert_('podcast' in dictionary)
@@ -190,26 +189,26 @@ class Test_EpisodeAction(unittest.TestCase):
 
 class Test_MygPodderClient(unittest.TestCase):
     ADD = [
-            FEED_URL_1,
-            FEED_URL_3,
+        FEED_URL_1,
+        FEED_URL_3,
     ]
     REMOVE = [
-            FEED_URL_2,
-            FEED_URL_4,
+        FEED_URL_2,
+        FEED_URL_4,
     ]
     ADD_REMOVE_AS_JSON_UPLOAD = {
-            'add': [FEED_URL_1, FEED_URL_3],
-            'remove': [FEED_URL_2, FEED_URL_4],
+        'add': [FEED_URL_1, FEED_URL_3],
+        'remove': [FEED_URL_2, FEED_URL_4],
     }
     ACTIONS = [
-            api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'download'),
-            api.EpisodeAction(FEED_URL_2, EPISODE_URL_3, 'play'),
-            api.EpisodeAction(FEED_URL_2, EPISODE_URL_4, 'delete'),
+        api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'download'),
+        api.EpisodeAction(FEED_URL_2, EPISODE_URL_3, 'play'),
+        api.EpisodeAction(FEED_URL_2, EPISODE_URL_4, 'delete'),
     ]
     ACTIONS_AS_JSON_UPLOAD = [
-            {'podcast': FEED_URL_1, 'episode': EPISODE_URL_1, 'action': 'download'},
-            {'podcast': FEED_URL_2, 'episode': EPISODE_URL_3, 'action': 'play'},
-            {'podcast': FEED_URL_2, 'episode': EPISODE_URL_4, 'action': 'delete'},
+        {'podcast': FEED_URL_1, 'episode': EPISODE_URL_1, 'action': 'download'},
+        {'podcast': FEED_URL_2, 'episode': EPISODE_URL_3, 'action': 'play'},
+        {'podcast': FEED_URL_2, 'episode': EPISODE_URL_4, 'action': 'delete'},
     ]
     USERNAME = 'user01'
     PASSWORD = 's3cret'
@@ -218,7 +217,7 @@ class Test_MygPodderClient(unittest.TestCase):
     def setUp(self):
         self.fake_client = testing.FakeJsonClient()
         self.client = api.MygPodderClient(self.USERNAME, self.PASSWORD,
-                client_class=self.fake_client)
+                                          client_class=self.fake_client)
 
     def set_http_response_value(self, value):
         self.fake_client.response_value = value
@@ -248,47 +247,51 @@ class Test_MygPodderClient(unittest.TestCase):
     def test_putSubscriptions_withPodcastDevice(self):
         self.set_http_response_value(b'')
         device = api.PodcastDevice('manatee', 'My Device', 'mobile', 20)
-        self.assertEquals(self.client.put_subscriptions(device, self.ADD), True)
+        self.assertEquals(
+            self.client.put_subscriptions(
+                device, self.ADD), True)
         self.assert_http_request_count(1)
         self.assert_(self.has_put_json_data(self.ADD))
 
     def test_updateSubscriptions_raisesValueError_onInvalidAddList(self):
         self.assertRaises(ValueError,
-                self.client.update_subscriptions, DEVICE_ID_2,
-                [FEED_URL_1, 123, FEED_URL_3], self.REMOVE)
+                          self.client.update_subscriptions, DEVICE_ID_2,
+                          [FEED_URL_1, 123, FEED_URL_3], self.REMOVE)
 
     def test_updateSubscriptions_raisesValueError_onInvalidRemoveList(self):
         self.assertRaises(ValueError,
-                self.client.update_subscriptions, DEVICE_ID_2,
-                self.ADD, [FEED_URL_2, FEED_URL_4, [1, 2, 3]])
+                          self.client.update_subscriptions, DEVICE_ID_2,
+                          self.ADD, [FEED_URL_2, FEED_URL_4, [1, 2, 3]])
 
     def test_updateSubscriptions_raisesInvalidResponse_onEmptyResponse(self):
         self.set_http_response_value(b'')
         self.assertRaises(api.InvalidResponse,
-                self.client.update_subscriptions, DEVICE_ID_1,
-                self.ADD, self.REMOVE)
+                          self.client.update_subscriptions, DEVICE_ID_1,
+                          self.ADD, self.REMOVE)
 
-    def test_updateSubscriptions_raisesInvalidResponse_onMissingTimestamp(self):
+    def test_updateSubscriptions_raisesInvalidResponse_onMissingTimestamp(
+            self):
         self.set_http_response_value(b'{}')
         self.assertRaises(api.InvalidResponse,
-                self.client.update_subscriptions, DEVICE_ID_1,
-                self.ADD, self.REMOVE)
+                          self.client.update_subscriptions, DEVICE_ID_1,
+                          self.ADD, self.REMOVE)
 
-    def test_updateSubscriptions_raisesInvalidResponse_onInvalidTimestamp(self):
+    def test_updateSubscriptions_raisesInvalidResponse_onInvalidTimestamp(
+            self):
         self.set_http_response_value(b"""
         {"timestamp": "not gonna happen"}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.update_subscriptions, DEVICE_ID_1,
-                self.ADD, self.REMOVE)
+                          self.client.update_subscriptions, DEVICE_ID_1,
+                          self.ADD, self.REMOVE)
 
     def test_updateSubscriptions_raisesInvalidResponse_withoutUpdateUrls(self):
         self.set_http_response_value(b"""
         {"timestamp": 1262103016}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.update_subscriptions, DEVICE_ID_1,
-                self.ADD, self.REMOVE)
+                          self.client.update_subscriptions, DEVICE_ID_1,
+                          self.ADD, self.REMOVE)
 
     def test_updateSubscriptions_raisesInvalidResponse_withNonStringList(self):
         self.set_http_response_value(b"""
@@ -298,8 +301,8 @@ class Test_MygPodderClient(unittest.TestCase):
         ]}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.update_subscriptions, DEVICE_ID_2,
-                self.ADD, self.REMOVE)
+                          self.client.update_subscriptions, DEVICE_ID_2,
+                          self.ADD, self.REMOVE)
 
     def test_updateSubscriptions_raisesInvalidResponse_withInvalidList(self):
         self.set_http_response_value(b"""
@@ -309,8 +312,8 @@ class Test_MygPodderClient(unittest.TestCase):
         ]}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.update_subscriptions, DEVICE_ID_2,
-                self.ADD, self.REMOVE)
+                          self.client.update_subscriptions, DEVICE_ID_2,
+                          self.ADD, self.REMOVE)
 
     def test_updateSubscriptions_returnsUpdateResult(self):
         self.set_http_response_value(b"""
@@ -322,14 +325,14 @@ class Test_MygPodderClient(unittest.TestCase):
         ]}
         """)
         update_urls_expected = [
-                ('http://test2.invalid/feed.rss',
-                 'http://test2.invalid/feed.rss'),
-                ('http://x.invalid/episodes.xml?format=2',
-                 'http://x.invalid/episodes.xml'),
+            ('http://test2.invalid/feed.rss',
+             'http://test2.invalid/feed.rss'),
+            ('http://x.invalid/episodes.xml?format=2',
+             'http://x.invalid/episodes.xml'),
         ]
 
         result = self.client.update_subscriptions(DEVICE_ID_1,
-                self.ADD, self.REMOVE)
+                                                  self.ADD, self.REMOVE)
         # result is a UpdateResult object
         self.assert_(hasattr(result, 'since'))
         self.assert_(hasattr(result, 'update_urls'))
@@ -341,7 +344,7 @@ class Test_MygPodderClient(unittest.TestCase):
     def test_pullSubscriptions_raisesInvalidResponse_onEmptyResponse(self):
         self.set_http_response_value(b'')
         self.assertRaises(api.InvalidResponse,
-                self.client.pull_subscriptions, DEVICE_ID_2)
+                          self.client.pull_subscriptions, DEVICE_ID_2)
 
     def test_pullSubscriptions_raisesInvalidResponse_onMissingTimestamp(self):
         self.set_http_response_value(b"""
@@ -355,7 +358,7 @@ class Test_MygPodderClient(unittest.TestCase):
         ]}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.pull_subscriptions, DEVICE_ID_2)
+                          self.client.pull_subscriptions, DEVICE_ID_2)
 
     def test_pullSubscriptions_raisesInvalidResponse_onMissingAddList(self):
         self.set_http_response_value(b"""
@@ -366,7 +369,7 @@ class Test_MygPodderClient(unittest.TestCase):
         "timestamp": 1262103016}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.pull_subscriptions, DEVICE_ID_2)
+                          self.client.pull_subscriptions, DEVICE_ID_2)
 
     def test_pullSubscriptions_raisesInvalidResponse_onMissingRemoveList(self):
         self.set_http_response_value(b"""
@@ -377,7 +380,7 @@ class Test_MygPodderClient(unittest.TestCase):
         "timestamp": 1262103016}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.pull_subscriptions, DEVICE_ID_2)
+                          self.client.pull_subscriptions, DEVICE_ID_2)
 
     def test_pullSubscriptions_raisesInvalidResponse_onInvalidTimestamp(self):
         self.set_http_response_value(b"""
@@ -392,7 +395,7 @@ class Test_MygPodderClient(unittest.TestCase):
         "timestamp": "should not work"}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.pull_subscriptions, DEVICE_ID_2)
+                          self.client.pull_subscriptions, DEVICE_ID_2)
 
     def test_pullSubscriptions_raisesInvalidResponse_onInvalidAddList(self):
         self.set_http_response_value(b"""
@@ -408,7 +411,7 @@ class Test_MygPodderClient(unittest.TestCase):
         "timestamp": 1262103016}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.pull_subscriptions, DEVICE_ID_2)
+                          self.client.pull_subscriptions, DEVICE_ID_2)
 
     def test_pullSubscriptions_raisesInvalidResponse_onInvalidRemoveList(self):
         self.set_http_response_value(b"""
@@ -424,7 +427,7 @@ class Test_MygPodderClient(unittest.TestCase):
         "timestamp": 1262103016}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.pull_subscriptions, DEVICE_ID_2)
+                          self.client.pull_subscriptions, DEVICE_ID_2)
 
     def test_pullSubscriptions_returnsChangesListAndTimestamp(self):
         self.set_http_response_value(b"""
@@ -447,19 +450,21 @@ class Test_MygPodderClient(unittest.TestCase):
     def test_uploadEpisodeActions_raisesInvalidResponse_onEmptyResponse(self):
         self.set_http_response_value(b'')
         self.assertRaises(api.InvalidResponse,
-                self.client.upload_episode_actions, self.ACTIONS)
+                          self.client.upload_episode_actions, self.ACTIONS)
 
-    def test_uploadEpisodeActions_raisesInvalidResponse_onMissingTimestamp(self):
+    def test_uploadEpisodeActions_raisesInvalidResponse_onMissingTimestamp(
+            self):
         self.set_http_response_value(b'{}')
         self.assertRaises(api.InvalidResponse,
-                self.client.upload_episode_actions, self.ACTIONS)
+                          self.client.upload_episode_actions, self.ACTIONS)
 
-    def test_uploadEpisodeActions_raisesInvalidResponse_onInvalidTimestamp(self):
+    def test_uploadEpisodeActions_raisesInvalidResponse_onInvalidTimestamp(
+            self):
         self.set_http_response_value(b"""
         {"timestamp": "just nothin'.."}
         """)
         self.assertRaises(api.InvalidResponse,
-                self.client.upload_episode_actions, self.ACTIONS)
+                          self.client.upload_episode_actions, self.ACTIONS)
 
     def test_uploadEpisodeActions_returnsTimestamp(self):
         self.set_http_response_value(b"""
@@ -470,42 +475,57 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assert_http_request_count(1)
         self.assert_(self.has_posted_json_data(self.ACTIONS_AS_JSON_UPLOAD))
 
-    def test_downloadEpisodeActions_raisesInvalidResponse_onEmptyResponse(self):
+    def test_downloadEpisodeActions_raisesInvalidResponse_onEmptyResponse(
+            self):
         self.set_http_response_value(b'')
-        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
+        self.assertRaises(
+            api.InvalidResponse,
+            self.client.download_episode_actions)
 
-    def test_downloadEpisodeActions_raisesInvalidResponse_onMissingActions(self):
+    def test_downloadEpisodeActions_raisesInvalidResponse_onMissingActions(
+            self):
         self.set_http_response_value(b"""
         {"timestamp": 1262103016}
         """)
-        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
+        self.assertRaises(
+            api.InvalidResponse,
+            self.client.download_episode_actions)
 
-    def test_downloadEpisodeActions_raisesInvalidResponse_onMissingTimestamp(self):
+    def test_downloadEpisodeActions_raisesInvalidResponse_onMissingTimestamp(
+            self):
         self.set_http_response_value(b"""
         {"actions": [
             {"podcast": "a", "episode": "b", "action": "download"},
             {"podcast": "x", "episode": "y", "action": "play"}
         ]}
         """)
-        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
+        self.assertRaises(
+            api.InvalidResponse,
+            self.client.download_episode_actions)
 
-    def test_downloadEpisodeActions_raisesInvalidResponse_onInvalidTimestamp(self):
+    def test_downloadEpisodeActions_raisesInvalidResponse_onInvalidTimestamp(
+            self):
         self.set_http_response_value(b"""
         {"actions": [
             {"podcast": "a", "episode": "b", "action": "download"},
             {"podcast": "x", "episode": "y", "action": "play"}
         ], "timestamp": "right now"}
         """)
-        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
+        self.assertRaises(
+            api.InvalidResponse,
+            self.client.download_episode_actions)
 
-    def test_downloadEpisodeActions_raisesInvalidResponse_onIncompleteActions(self):
+    def test_downloadEpisodeActions_raisesInvalidResponse_onIncompleteActions(
+            self):
         self.set_http_response_value(b"""
         {"actions": [
             {"podcast": "a", "episode": "b", "action": "download"},
             {"podcast": "x", "episode": "y"}
         ], "timestamp": 1262103016}
         """)
-        self.assertRaises(api.InvalidResponse, self.client.download_episode_actions)
+        self.assertRaises(
+            api.InvalidResponse,
+            self.client.download_episode_actions)
 
     def test_downloadEpisodeActions_returnsActionList(self):
         self.set_http_response_value(b"""
@@ -536,7 +556,7 @@ class Test_MygPodderClient(unittest.TestCase):
     def test_updateDeviceSettings_withCaption(self):
         self.set_http_response_value(b'')
         result = self.client.update_device_settings(DEVICE_ID_1,
-                caption='Poodonkis')
+                                                    caption='Poodonkis')
         self.assertEquals(result, True)
         self.assert_http_request_count(1)
         self.assert_(self.has_posted_json_data({'caption': 'Poodonkis'}))
@@ -544,7 +564,7 @@ class Test_MygPodderClient(unittest.TestCase):
     def test_updateDeviceSettings_withType(self):
         self.set_http_response_value(b'')
         result = self.client.update_device_settings(DEVICE_ID_1,
-                type='desktop')
+                                                    type='desktop')
         self.assertEquals(result, True)
         self.assert_http_request_count(1)
         self.assert_(self.has_posted_json_data({'type': 'desktop'}))
@@ -552,7 +572,7 @@ class Test_MygPodderClient(unittest.TestCase):
     def test_updateDeviceSettings_withCaptionAndType(self):
         self.set_http_response_value(b'')
         result = self.client.update_device_settings(DEVICE_ID_1,
-                'My Unit Testing Device', 'desktop')
+                                                    'My Unit Testing Device', 'desktop')
         self.assertEquals(result, True)
         self.assert_http_request_count(1)
         self.assert_(self.has_posted_json_data({
@@ -627,11 +647,21 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEquals(len(favorites), 2)
         episode1, episode2 = favorites
         self.assertEquals(episode1.title, 'TWiT 245: No Hitler For You')
-        self.assertEquals(episode1.url, 'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
-        self.assertEquals(episode1.podcast_title, 'this WEEK in TECH - MP3 Edition')
+        self.assertEquals(
+            episode1.url,
+            'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
+        self.assertEquals(
+            episode1.podcast_title,
+            'this WEEK in TECH - MP3 Edition')
         self.assertEquals(episode1.podcast_url, 'http://leo.am/podcasts/twit')
         self.assertEquals(episode1.description, '[...]')
-        self.assertEquals(episode1.website, 'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
+        self.assertEquals(
+            episode1.website,
+            'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
         self.assertEquals(episode1.released, '2010-12-25T00:30:00')
-        self.assertEquals(episode1.mygpo_link, 'http://gpodder.net/episode/1046492')
-        self.assertEquals(episode2.website, 'http://feedproxy.google.com/~r/coverville/~3/5UK8-PZmmMQ/')
+        self.assertEquals(
+            episode1.mygpo_link,
+            'http://gpodder.net/episode/1046492')
+        self.assertEquals(
+            episode2.website,
+            'http://feedproxy.google.com/~r/coverville/~3/5UK8-PZmmMQ/')

@@ -17,8 +17,6 @@
 
 import mygpoclient
 
-import os
-
 try:
     # Python 3
     from urllib.parse import quote_plus, quote
@@ -28,6 +26,7 @@ except ImportError:
     from urllib import quote_plus, quote
 
 from mygpoclient import util
+
 
 class Locator(object):
     """URI Locator for API endpoints
@@ -41,7 +40,7 @@ class Locator(object):
     SETTINGS_TYPES = ('account', 'device', 'podcast', 'episode')
 
     def __init__(self, username, root_url=mygpoclient.ROOT_URL,
-            version=mygpoclient.VERSION):
+                 version=mygpoclient.VERSION):
         self._username = username
         if root_url.endswith('/'):
             root_url = root_url[:-1]
@@ -52,7 +51,8 @@ class Locator(object):
             self._simple_base = 'http://%(root_url)s' % locals()
             self._base = 'http://%(root_url)s/api/%(version)s' % locals()
 
-    def _convert_since(self, since):
+    @staticmethod
+    def _convert_since(since):
         """Convert "since" into a numeric value
 
         This is internally used for value-checking.
@@ -80,7 +80,7 @@ class Locator(object):
         else:
             path = '%(username)s/%(device_id)s.%(format)s' % locals()
         return util.join(self._simple_base,
-                'subscriptions', path)
+                         'subscriptions', path)
 
     def toplist_uri(self, count=50, format='opml'):
         """Get the Simple API URI for the toplist
@@ -143,7 +143,7 @@ class Locator(object):
         """
         filename = '%(device_id)s.json' % locals()
         return util.join(self._base,
-                'subscriptions', self._username, filename)
+                         'subscriptions', self._username, filename)
 
     def subscription_updates_uri(self, device_id, since=None):
         """Get the Advanced API URI for downloading list diffs
@@ -163,7 +163,7 @@ class Locator(object):
             filename += '?since=%(since)d' % locals()
 
         return util.join(self._base,
-                'subscriptions', self._username, filename)
+                         'subscriptions', self._username, filename)
 
     def upload_episode_actions_uri(self):
         """Get the Advanced API URI for uploading episode actions
@@ -176,7 +176,7 @@ class Locator(object):
         return util.join(self._base, 'episodes', filename)
 
     def download_episode_actions_uri(self, since=None,
-            podcast=None, device_id=None):
+                                     podcast=None, device_id=None):
         """Get the Advanced API URI for downloading episode actions
 
         The parameter "since" is optional and should be a numeric
@@ -218,7 +218,8 @@ class Locator(object):
             params.append(('device', device_id))
 
         if params:
-            filename += '?' + '&'.join('%s=%s' % (key, quote(value)) for key, value in params)
+            filename += '?' + '&'.join('%s=%s' %
+                                       (key, quote(value)) for key, value in params)
 
         return util.join(self._base, 'episodes', filename)
 
@@ -283,7 +284,8 @@ class Locator(object):
         >>> locator.episode_data_uri('http://podcast.com','http://podcast.com/foo')
         'http://gpodder.net/api/2/data/episode.json?podcast=http%3A//podcast.com&url=http%3A//podcast.com/foo'
         """
-        filename = 'episode.json?podcast=%s&url=%s' % (quote(podcast_url), quote(episode_url))
+        filename = 'episode.json?podcast=%s&url=%s' % (
+            quote(podcast_url), quote(episode_url))
         return util.join(self._base, 'data', filename)
 
     def favorite_episodes_uri(self):
@@ -330,9 +332,10 @@ class Locator(object):
         if type == 'episode':
             if (scope_param1 is None) or (scope_param2 is None):
                 raise ValueError('Podcast or Episode URL not specified')
-            filename += '?podcast=%s&episode=%s' % (quote(scope_param1), quote(scope_param2))
+            filename += '?podcast=%s&episode=%s' % (
+                quote(scope_param1), quote(scope_param2))
 
-        return util.join(self._base, 'settings' , filename)
+        return util.join(self._base, 'settings', filename)
 
     def root_uri(self):
         """ Get the server's root URI.

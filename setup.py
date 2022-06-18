@@ -17,7 +17,7 @@ docstrings = re.findall('"""(.*?)"""', main_py, re.DOTALL)
 
 # List the packages that need to be installed/packaged
 PACKAGES = (
-        PACKAGE,
+    PACKAGE,
 )
 
 SCRIPTS = glob.glob('bin/*')
@@ -65,7 +65,6 @@ setup(name=PACKAGE,
       packages=PACKAGES,
       scripts=SCRIPTS,
       data_files=DATA_FILES,
-      download_url=WEBSITE+PACKAGE+'-'+VERSION+'.tar.gz',
+      download_url=WEBSITE + PACKAGE + '-' + VERSION + '.tar.gz',
       classifiers=CLASSIFIERS,
-    )
-
+      )

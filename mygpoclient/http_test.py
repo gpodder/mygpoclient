@@ -36,6 +36,7 @@ except ImportError:
 
 def http_server(port, username, password, response):
     storage = {}
+
     class Handler(BaseHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             BaseHTTPRequestHandler.__init__(self, *args, **kwargs)
@@ -54,13 +55,17 @@ def http_server(port, username, password, response):
                 if authorization is not None:
                     auth_type, credentials = authorization.split(None, 1)
                     if auth_type.lower() == 'basic':
-                        credentials = base64.b64decode(credentials.encode('utf-8'))
-                        auth_user, auth_pass = credentials.decode('utf-8').split(':', 1)
+                        credentials = base64.b64decode(
+                            credentials.encode('utf-8'))
+                        auth_user, auth_pass = credentials.decode(
+                            'utf-8').split(':', 1)
                         if username == auth_user and password == auth_pass:
                             return True
 
                 self.send_response(401)
-                self.send_header('WWW-Authenticate', 'Basic realm="Fake HTTP Server"')
+                self.send_header(
+                    'WWW-Authenticate',
+                    'Basic realm="Fake HTTP Server"')
                 self.end_headers()
                 return False
 
@@ -86,16 +91,21 @@ def http_server(port, username, password, response):
             if not self._checks():
                 return
 
-            input_data = self.rfile.read(int(self.headers.get('content-length')))
+            input_data = self.rfile.read(
+                int(self.headers.get('content-length')))
             self.send_response(200)
             self.end_headers()
-            self.wfile.write(codecs.encode(input_data.decode('utf-8'), 'rot-13').encode('utf-8'))
+            self.wfile.write(
+                codecs.encode(
+                    input_data.decode('utf-8'),
+                    'rot-13').encode('utf-8'))
 
         def do_PUT(self):
             if not self._checks():
                 return
 
-            input_data = self.rfile.read(int(self.headers.get('content-length')))
+            input_data = self.rfile.read(
+                int(self.headers.get('content-length')))
             storage[self.path] = input_data
             self.send_response(200)
             self.end_headers()
@@ -117,6 +127,7 @@ def http_server(port, username, password, response):
 
     HTTPServer(('127.0.0.1', port), Handler).serve_forever()
 
+
 class Test_HttpClient(unittest.TestCase):
     USERNAME = 'john'
     PASSWORD = 'secret'
@@ -127,7 +138,7 @@ class Test_HttpClient(unittest.TestCase):
 
     def setUp(self):
         self.server_process = multiprocessing.Process(target=http_server,
-                args=(self.PORT, self.USERNAME, self.PASSWORD, self.RESPONSE))
+                                                      args=(self.PORT, self.USERNAME, self.PASSWORD, self.RESPONSE))
         self.server_process.start()
         import time
         time.sleep(.1)
@@ -139,57 +150,63 @@ class Test_HttpClient(unittest.TestCase):
 
     def test_UnknownResponse(self):
         client = HttpClient()
-        path = self.URI_BASE+'/invaliderror'
+        path = self.URI_BASE + '/invaliderror'
         self.assertRaises(UnknownResponse, client.GET, path)
 
     def test_NotFound(self):
         client = HttpClient()
-        path = self.URI_BASE+'/notfound'
+        path = self.URI_BASE + '/notfound'
         self.assertRaises(NotFound, client.GET, path)
 
     def test_Unauthorized(self):
         client = HttpClient('invalid-username', 'invalid-password')
-        path = self.URI_BASE+'/auth'
+        path = self.URI_BASE + '/auth'
         self.assertRaises(Unauthorized, client.GET, path)
 
     def test_BadRequest(self):
         client = HttpClient()
-        path = self.URI_BASE+'/badrequest'
+        path = self.URI_BASE + '/badrequest'
         self.assertRaises(BadRequest, client.GET, path)
 
     def test_GET(self):
         client = HttpClient()
-        path = self.URI_BASE+'/noauth'
+        path = self.URI_BASE + '/noauth'
         self.assertEquals(client.GET(path), self.RESPONSE)
 
     def test_authenticated_GET(self):
         client = HttpClient(self.USERNAME, self.PASSWORD)
-        path = self.URI_BASE+'/auth'
+        path = self.URI_BASE + '/auth'
         self.assertEquals(client.GET(path), self.RESPONSE)
 
     def test_unauthenticated_GET(self):
         client = HttpClient()
-        path = self.URI_BASE+'/auth'
+        path = self.URI_BASE + '/auth'
         self.assertRaises(Unauthorized, client.GET, path)
 
     def test_POST(self):
         client = HttpClient()
-        path = self.URI_BASE+'/noauth'
-        self.assertEquals(client.POST(path, self.DUMMYDATA), codecs.encode(self.DUMMYDATA.decode('utf-8'), 'rot-13').encode('utf-8'))
+        path = self.URI_BASE + '/noauth'
+        self.assertEquals(
+            client.POST(
+                path, self.DUMMYDATA), codecs.encode(
+                self.DUMMYDATA.decode('utf-8'), 'rot-13').encode('utf-8'))
 
     def test_authenticated_POST(self):
         client = HttpClient(self.USERNAME, self.PASSWORD)
-        path = self.URI_BASE+'/auth'
-        self.assertEquals(client.POST(path, self.DUMMYDATA), codecs.encode(self.DUMMYDATA.decode('utf-8'), 'rot-13').encode('utf-8'))
+        path = self.URI_BASE + '/auth'
+        self.assertEquals(
+            client.POST(
+                path, self.DUMMYDATA), codecs.encode(
+                self.DUMMYDATA.decode('utf-8'), 'rot-13').encode('utf-8'))
 
     def test_unauthenticated_POST(self):
         client = HttpClient()
-        path = self.URI_BASE+'/auth'
+        path = self.URI_BASE + '/auth'
         self.assertRaises(Unauthorized, client.POST, path, self.DUMMYDATA)
 
     def test_PUT(self):
         client = HttpClient()
-        path = self.URI_BASE+'/noauth'
+        path = self.URI_BASE + '/noauth'
         self.assertEquals(client.PUT(path, self.DUMMYDATA), b'PUT OK')
 
     def test_GET_after_PUT(self):
@@ -197,6 +214,7 @@ class Test_HttpClient(unittest.TestCase):
         for i in range(10):
             path = self.URI_BASE + '/file.%(i)d.txt' % locals()
             client.PUT(path, self.RESPONSE + str(i).encode('utf-8'))
-            self.assertEquals(client.GET(path), self.RESPONSE + str(i).encode('utf-8'))
-
-
+            self.assertEquals(
+                client.GET(path),
+                self.RESPONSE +
+                str(i).encode('utf-8'))

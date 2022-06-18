@@ -21,13 +21,18 @@ from mygpoclient import testing
 
 import unittest
 
+
 class Test_Tag(unittest.TestCase):
     def test_tagFromDict_raisesValueError_missingKey(self):
-        self.assertRaises(ValueError,public.Tag.from_dict, {'tag':'abcde'} )
+        self.assertRaises(ValueError, public.Tag.from_dict, {'tag': 'abcde'})
+
 
 class Test_Episode(unittest.TestCase):
     def test_episodeFromDict_raisesValueError_missingKey(self):
-        self.assertRaises(ValueError,public.Episode.from_dict, {'title':'foobar','podcast_url':'http://www.podcast.com'})
+        self.assertRaises(
+            ValueError, public.Episode.from_dict, {
+                'title': 'foobar', 'podcast_url': 'http://www.podcast.com'})
+
 
 class Test_PublicClient(unittest.TestCase):
     TOPLIST_JSON = b"""
@@ -53,20 +58,20 @@ class Test_PublicClient(unittest.TestCase):
     }]
     """
     TOPLIST = [
-            simple.Podcast('http://feeds.feedburner.com/linuxoutlaws',
-                'Linux Outlaws',
-                'Open source talk with a serious attitude',
-                'http://linuxoutlaws.com/podcast',
-                1736, 1736,
-                'http://www.gpodder.net/podcast/11092',
-                'http://linuxoutlaws.com/files/albumart-itunes.jpg'),
-            simple.Podcast('http://feeds.twit.tv/floss_video_large',
-                'FLOSS Weekly Video (large)',
-                'We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.',
-                'http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c',
-                50, 50,
-                'http://www.gpodder.net/podcast/31991',
-                'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
+        simple.Podcast('http://feeds.feedburner.com/linuxoutlaws',
+                       'Linux Outlaws',
+                       'Open source talk with a serious attitude',
+                       'http://linuxoutlaws.com/podcast',
+                       1736, 1736,
+                       'http://www.gpodder.net/podcast/11092',
+                       'http://linuxoutlaws.com/files/albumart-itunes.jpg'),
+        simple.Podcast('http://feeds.twit.tv/floss_video_large',
+                       'FLOSS Weekly Video (large)',
+                       'We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.',
+                       'http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c',
+                       50, 50,
+                       'http://www.gpodder.net/podcast/31991',
+                       'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
     ]
     SEARCHRESULT_JSON = b"""
     [{
@@ -91,20 +96,20 @@ class Test_PublicClient(unittest.TestCase):
     }]
     """
     SEARCHRESULT = [
-            simple.Podcast('http://feeds.feedburner.com/linuxoutlaws',
-                'Linux Outlaws',
-                'Open source talk with a serious attitude',
-                'http://linuxoutlaws.com/podcast',
-                1736, 1736,
-                'http://www.gpodder.net/podcast/11092',
-                'http://linuxoutlaws.com/files/albumart-itunes.jpg'),
-            simple.Podcast('http://feeds.twit.tv/floss_video_large',
-                'FLOSS Weekly Video (large)',
-                'We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.',
-                'http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c',
-                50, 50,
-                'http://www.gpodder.net/podcast/31991',
-                'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
+        simple.Podcast('http://feeds.feedburner.com/linuxoutlaws',
+                       'Linux Outlaws',
+                       'Open source talk with a serious attitude',
+                       'http://linuxoutlaws.com/podcast',
+                       1736, 1736,
+                       'http://www.gpodder.net/podcast/11092',
+                       'http://linuxoutlaws.com/files/albumart-itunes.jpg'),
+        simple.Podcast('http://feeds.twit.tv/floss_video_large',
+                       'FLOSS Weekly Video (large)',
+                       'We are not talking dentistry here; FLOSS all about Free Libre Open Source Software. Join hosts Randal Schwartz and Leo Laporte every Saturday as they talk with the most interesting and important people in the Open Source and Free Software community.',
+                       'http://syndication.mediafly.com/redirect/show/d581e9b773784df7a56f37e1138c037c',
+                       50, 50,
+                       'http://www.gpodder.net/podcast/31991',
+                       'http://static.mediafly.com/publisher/images/06cecab60c784f9d9866f5dcb73227c3/icon-150x150.png'),
     ]
 
     TOPTAGS_JSON = b"""
@@ -116,8 +121,8 @@ class Test_PublicClient(unittest.TestCase):
     ]
     """
     TOPTAGS = [
-               public.Tag('Technology',530),
-               public.Tag('Arts',400)
+        public.Tag('Technology', 530),
+        public.Tag('Arts', 400)
     ]
 
     PODCAST_JSON = b"""
@@ -133,12 +138,12 @@ class Test_PublicClient(unittest.TestCase):
     }
     """
     PODCAST = simple.Podcast('http://feeds.feedburner.com/linuxoutlaws',
-                'Linux Outlaws',
-                'Open source talk with a serious attitude',
-                'http://linuxoutlaws.com/podcast',
-                1736, 1736,
-                'http://www.gpodder.net/podcast/11092',
-                'http://linuxoutlaws.com/files/albumart-itunes.jpg')
+                             'Linux Outlaws',
+                             'Open source talk with a serious attitude',
+                             'http://linuxoutlaws.com/podcast',
+                             1736, 1736,
+                             'http://www.gpodder.net/podcast/11092',
+                             'http://linuxoutlaws.com/files/albumart-itunes.jpg')
 
     EPISODE_JSON = b"""
     {"title": "TWiT 245: No Hitler For You",
@@ -190,12 +195,15 @@ class Test_PublicClient(unittest.TestCase):
 
     def test_getPodcastData(self):
         self.fake_client.response_value = self.PODCAST_JSON
-        result = self.client.get_podcast_data('http://feeds.feedburner.com/linuxoutlaws')
+        result = self.client.get_podcast_data(
+            'http://feeds.feedburner.com/linuxoutlaws')
         self.assertEquals(result, self.PODCAST)
         self.assertEquals(len(self.fake_client.requests), 1)
 
     def test_getEpisodeData(self):
         self.fake_client.response_value = self.EPISODE_JSON
-        result = self.client.get_episode_data('http://leo.am/podcasts/twit','http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
+        result = self.client.get_episode_data(
+            'http://leo.am/podcasts/twit',
+            'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
         self.assertEquals(result, self.EPISODE)
         self.assertEquals(len(self.fake_client.requests), 1)

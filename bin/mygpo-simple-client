@@ -25,11 +25,13 @@ import mygpoclient
 
 from mygpoclient import simple
 
+
 def usage():
     print("""
     Usage: python %s {get|put} {username} {device_id} [host_or_url]
     """ % (sys.argv[0],), file=sys.stderr)
     sys.exit(1)
+
 
 if __name__ == '__main__':
     # Use the default url if not specified
@@ -64,4 +66,3 @@ if __name__ == '__main__':
             print('Upload successful.', file=sys.stderr)
         else:
             print('Could not upload list.', file=sys.stderr)
-

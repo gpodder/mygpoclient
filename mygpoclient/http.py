@@ -27,6 +27,7 @@ except ImportError:
 
 import mygpoclient
 
+
 class SimpleHttpPasswordManager(request.HTTPPasswordMgr):
     """Simplified password manager for urllib2
 
@@ -46,8 +47,9 @@ class SimpleHttpPasswordManager(request.HTTPPasswordMgr):
     def find_user_password(self, realm, authuri):
         self._count += 1
         if self._count > self.MAX_RETRIES:
-            return (None, None)
-        return (self._username, self._password)
+            return None, None
+        return self._username, self._password
+
 
 class HttpRequest(request.Request):
     """Request object with customizable method
@@ -68,6 +70,7 @@ class HttpRequest(request.Request):
     >>> request.get_method()
     'PUT'
     """
+
     def set_method(self, method):
         setattr(self, '_method', method)
 
@@ -79,10 +82,20 @@ class HttpRequest(request.Request):
 
 
 # Possible exceptions that will be raised by HttpClient
-class Unauthorized(Exception): pass
-class NotFound(Exception): pass
-class BadRequest(Exception): pass
-class UnknownResponse(Exception): pass
+class Unauthorized(Exception):
+    pass
+
+
+class NotFound(Exception):
+    pass
+
+
+class BadRequest(Exception):
+    pass
+
+
+class UnknownResponse(Exception):
+    pass
 
 
 class HttpClient(object):
@@ -92,6 +105,7 @@ class HttpClient(object):
     from the rest of the code by providing a simple interface for doing
     requests and handling authentication.
     """
+
     def __init__(self, username=None, password=None):
         self._username = username
         self._password = password
@@ -153,4 +167,3 @@ class HttpClient(object):
     def PUT(self, uri, data):
         """Convenience method for carrying out a PUT request"""
         return self._request('PUT', uri, data)
-
