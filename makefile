@@ -1,4 +1,3 @@
-
 # gpodder.net API Client
 # Copyright (C) 2009-2013 Thomas Perl and the gPodder Team
 #
@@ -15,21 +14,32 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+PACKAGE := mygpoclient
+
+PYTHON ?= python
+FIND ?= find
+PYTEST ?= $(PYTHON) -m pytest
+
+help:
+	@echo ""
+	@echo "$(MAKE) test ......... Run unit tests"
+	@echo "$(MAKE) clean ........ Clean build directory"
+	@echo "$(MAKE) distclean .... $(MAKE) clean + remove 'dist/'"
+	@echo ""
+
 test:
-	nosetests --cover-erase --with-coverage --with-doctest \
-	    --cover-package=mygpoclient
+	$(PYTEST)
 
 docs:
 	epydoc -n 'gpodder.net API Client Library' -o docs/ mygpoclient -v --exclude='.*_test'
 
 clean:
-	find -name '*.pyc' -exec rm '{}' \;
-	rm -f .coverage
-	rm -rf docs/ build/
+	$(FIND) . -name '*.pyc' -o -name __pycache__ -exec $(RM) -r '{}' +
+	$(RM) -r build
+	$(RM) .coverage MANIFEST
 
 distclean: clean
-	rm -f MANIFEST
-	rm -rf dist/
+	$(RM) -r dist
 
-.PHONY: test docs clean distclean
-
+.PHONY: help test docs clean distclean
+.DEFAULT: help
