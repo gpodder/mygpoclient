@@ -21,7 +21,7 @@ This is mygpoclient, the gpodder.net API Client Library for Python.
 """
 
 __author__ = 'Thomas Perl <thp@gpodder.org>'
-__version__ = '1.8'
+__version__ = '1.9'
 __website__ = 'http://gpodder.org/mygpoclient/'
 __license__ = 'GNU General Public License v3 or later'
 
