@@ -222,7 +222,7 @@ class Test_MygPodderClient(unittest.TestCase):
     def set_http_response_value(self, value):
         self.fake_client.response_value = value
 
-    def assertTruehttp_request_count(self, count):
+    def assert_http_request_count(self, count):
         self.assertEqual(len(self.fake_client.requests), count)
 
     def has_put_json_data(self, data, required_method='PUT'):
@@ -242,7 +242,7 @@ class Test_MygPodderClient(unittest.TestCase):
         self.set_http_response_value(b'[]')
         device = api.PodcastDevice('manatee', 'My Device', 'mobile', 20)
         self.assertEqual(self.client.get_subscriptions(device), [])
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
 
     def test_putSubscriptions_withPodcastDevice(self):
         self.set_http_response_value(b'')
@@ -250,7 +250,7 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEqual(
             self.client.put_subscriptions(
                 device, self.ADD), True)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
         self.assertTrue(self.has_put_json_data(self.ADD))
 
     def test_updateSubscriptions_raisesValueError_onInvalidAddList(self):
@@ -338,7 +338,7 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertTrue(hasattr(result, 'update_urls'))
         self.assertEqual(result.since, self.SINCE)
         self.assertEqual(result.update_urls, update_urls_expected)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
         self.assertTrue(self.has_posted_json_data(self.ADD_REMOVE_AS_JSON_UPLOAD))
 
     def test_pullSubscriptions_raisesInvalidResponse_onEmptyResponse(self):
@@ -445,7 +445,7 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEqual(changes.add, [FEED_URL_1, FEED_URL_2])
         self.assertEqual(changes.remove, [FEED_URL_3, FEED_URL_4])
         self.assertEqual(changes.since, self.SINCE)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
 
     def test_uploadEpisodeActions_raisesInvalidResponse_onEmptyResponse(self):
         self.set_http_response_value(b'')
@@ -472,7 +472,7 @@ class Test_MygPodderClient(unittest.TestCase):
         """)
         result = self.client.upload_episode_actions(self.ACTIONS)
         self.assertEqual(result, self.SINCE)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
         self.assertTrue(self.has_posted_json_data(self.ACTIONS_AS_JSON_UPLOAD))
 
     def test_downloadEpisodeActions_raisesInvalidResponse_onEmptyResponse(
@@ -544,13 +544,13 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEqual(action2.episode, 'y')
         self.assertEqual(action2.action, 'play')
         self.assertEqual(changes.since, self.SINCE)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
 
     def test_updateDeviceSettings_withNothing(self):
         self.set_http_response_value(b'')
         result = self.client.update_device_settings(DEVICE_ID_1)
         self.assertEqual(result, True)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
         self.assertTrue(self.has_posted_json_data({}))
 
     def test_updateDeviceSettings_withCaption(self):
@@ -558,7 +558,7 @@ class Test_MygPodderClient(unittest.TestCase):
         result = self.client.update_device_settings(DEVICE_ID_1,
                                                     caption='Poodonkis')
         self.assertEqual(result, True)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
         self.assertTrue(self.has_posted_json_data({'caption': 'Poodonkis'}))
 
     def test_updateDeviceSettings_withType(self):
@@ -566,7 +566,7 @@ class Test_MygPodderClient(unittest.TestCase):
         result = self.client.update_device_settings(DEVICE_ID_1,
                                                     type='desktop')
         self.assertEqual(result, True)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
         self.assertTrue(self.has_posted_json_data({'type': 'desktop'}))
 
     def test_updateDeviceSettings_withCaptionAndType(self):
@@ -574,7 +574,7 @@ class Test_MygPodderClient(unittest.TestCase):
         result = self.client.update_device_settings(DEVICE_ID_1,
                                                     'My Unit Testing Device', 'desktop')
         self.assertEqual(result, True)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
         self.assertTrue(self.has_posted_json_data({
             'caption': 'My Unit Testing Device',
             'type': 'desktop'}))
@@ -620,7 +620,7 @@ class Test_MygPodderClient(unittest.TestCase):
         self.assertEqual(device2.caption, 'The Lappy')
         self.assertEqual(device2.type, 'laptop')
         self.assertEqual(device2.subscriptions, 4711)
-        self.assertTruehttp_request_count(1)
+        self.assert_http_request_count(1)
 
     def test_getFavoriteEpisodes_returnsEpisodeList(self):
         self.set_http_response_value(b"""
