@@ -172,38 +172,38 @@ class Test_PublicClient(unittest.TestCase):
     def test_getToplist(self):
         self.fake_client.response_value = self.TOPLIST_JSON
         result = self.client.get_toplist()
-        self.assertEquals(result, self.TOPLIST)
-        self.assertEquals(len(self.fake_client.requests), 1)
+        self.assertEqual(result, self.TOPLIST)
+        self.assertEqual(len(self.fake_client.requests), 1)
 
     def test_searchPodcasts(self):
         self.fake_client.response_value = self.SEARCHRESULT_JSON
         result = self.client.search_podcasts('wicked')
-        self.assertEquals(result, self.SEARCHRESULT)
-        self.assertEquals(len(self.fake_client.requests), 1)
+        self.assertEqual(result, self.SEARCHRESULT)
+        self.assertEqual(len(self.fake_client.requests), 1)
 
     def test_getPodcastsOfATag(self):
         self.fake_client.response_value = self.SEARCHRESULT_JSON
         result = self.client.get_podcasts_of_a_tag('wicked')
-        self.assertEquals(result, self.SEARCHRESULT)
-        self.assertEquals(len(self.fake_client.requests), 1)
+        self.assertEqual(result, self.SEARCHRESULT)
+        self.assertEqual(len(self.fake_client.requests), 1)
 
     def test_getTopTags(self):
         self.fake_client.response_value = self.TOPTAGS_JSON
         result = self.client.get_toptags()
-        self.assertEquals(result, self.TOPTAGS)
-        self.assertEquals(len(self.fake_client.requests), 1)
+        self.assertEqual(result, self.TOPTAGS)
+        self.assertEqual(len(self.fake_client.requests), 1)
 
     def test_getPodcastData(self):
         self.fake_client.response_value = self.PODCAST_JSON
         result = self.client.get_podcast_data(
             'http://feeds.feedburner.com/linuxoutlaws')
-        self.assertEquals(result, self.PODCAST)
-        self.assertEquals(len(self.fake_client.requests), 1)
+        self.assertEqual(result, self.PODCAST)
+        self.assertEqual(len(self.fake_client.requests), 1)
 
     def test_getEpisodeData(self):
         self.fake_client.response_value = self.EPISODE_JSON
         result = self.client.get_episode_data(
             'http://leo.am/podcasts/twit',
             'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
-        self.assertEquals(result, self.EPISODE)
-        self.assertEquals(len(self.fake_client.requests), 1)
+        self.assertEqual(result, self.EPISODE)
+        self.assertEqual(len(self.fake_client.requests), 1)
