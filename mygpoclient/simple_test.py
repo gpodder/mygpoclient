@@ -87,20 +87,20 @@ class Test_SimpleClient(unittest.TestCase):
         self.fake_client.response_value = b''
         result = self.client.put_subscriptions(
             self.DEVICE_NAME, self.SUBSCRIPTIONS)
-        self.assertEquals(result, True)
-        self.assertEquals(len(self.fake_client.requests), 1)
+        self.assertEqual(result, True)
+        self.assertEqual(len(self.fake_client.requests), 1)
 
     def test_getSubscriptions(self):
         self.fake_client.response_value = self.SUBSCRIPTIONS_JSON
         subscriptions = self.client.get_subscriptions(self.DEVICE_NAME)
-        self.assertEquals(subscriptions, self.SUBSCRIPTIONS)
-        self.assertEquals(len(self.fake_client.requests), 1)
+        self.assertEqual(subscriptions, self.SUBSCRIPTIONS)
+        self.assertEqual(len(self.fake_client.requests), 1)
 
     def test_getSuggestions(self):
         self.fake_client.response_value = self.SUGGESTIONS_JSON
         suggestions = self.client.get_suggestions(50)
-        self.assertEquals(suggestions, self.SUGGESTIONS)
-        self.assertEquals(len(self.fake_client.requests), 1)
+        self.assertEqual(suggestions, self.SUGGESTIONS)
+        self.assertEqual(len(self.fake_client.requests), 1)
 
 
 class Test_MissingCredentials(unittest.TestCase):
