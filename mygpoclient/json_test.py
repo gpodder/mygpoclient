@@ -61,17 +61,17 @@ class Test_JsonClient(unittest.TestCase):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
         self.mock_setHttpResponse(b'{"a": "B", "c": "D"}')
         items = list(sorted(client.GET(self.URI_BASE + '/').items()))
-        self.assertEquals(items, [('a', 'B'), ('c', 'D')])
+        self.assertEqual(items, [('a', 'B'), ('c', 'D')])
 
     def test_parseResponse_worksWithIntegerList(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
         self.mock_setHttpResponse(b'[1,2,3,6,7]')
-        self.assertEquals(client.GET(self.URI_BASE + '/'), [1, 2, 3, 6, 7])
+        self.assertEqual(client.GET(self.URI_BASE + '/'), [1, 2, 3, 6, 7])
 
     def test_parseResponse_emptyString_returnsNone(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)
         self.mock_setHttpResponse(b'')
-        self.assertEquals(client.GET(self.URI_BASE + '/'), None)
+        self.assertEqual(client.GET(self.URI_BASE + '/'), None)
 
     def test_invalidContent_raisesJsonException(self):
         client = json.JsonClient(self.USERNAME, self.PASSWORD)

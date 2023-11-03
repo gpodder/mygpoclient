@@ -81,28 +81,28 @@ class Test_Exceptions(unittest.TestCase):
 
     def test_subscriptions_uri_no_device(self):
         """Test that no device returns user subscriptions"""
-        self.assertEquals(self.locator.subscriptions_uri(),
+        self.assertEqual(self.locator.subscriptions_uri(),
                           'http://gpodder.net/subscriptions/jane.opml')
 
     def test_root_uri(self):
         """Test that root_uri trivially works"""
-        self.assertEquals(self.locator.root_uri(),
+        self.assertEqual(self.locator.root_uri(),
                           'http://gpodder.net')
 
     def test_create_with_url(self):
         """Test locator creation with a root URL instead of host"""
         loc = locator.Locator('hello', 'https://gpo.self.hosted/my')
-        self.assertEquals(loc.toplist_uri(),
+        self.assertEqual(loc.toplist_uri(),
                           'https://gpo.self.hosted/my/toplist/50.opml')
 
     def test_create_with_url_slash(self):
         """Test locator creation with a root URL ending with a slash"""
         loc = locator.Locator('hello', 'https://gpo.self.hosted/my/')
-        self.assertEquals(loc.toplist_uri(),
+        self.assertEqual(loc.toplist_uri(),
                           'https://gpo.self.hosted/my/toplist/50.opml')
 
     def test_create_with_host(self):
         """Test locator creation with a host"""
         loc = locator.Locator('hello', 'gpo.self.hosted')
-        self.assertEquals(loc.toplist_uri(),
+        self.assertEqual(loc.toplist_uri(),
                           'http://gpo.self.hosted/toplist/50.opml')

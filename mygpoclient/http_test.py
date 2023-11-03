@@ -171,12 +171,12 @@ class Test_HttpClient(unittest.TestCase):
     def test_GET(self):
         client = HttpClient()
         path = self.URI_BASE + '/noauth'
-        self.assertEquals(client.GET(path), self.RESPONSE)
+        self.assertEqual(client.GET(path), self.RESPONSE)
 
     def test_authenticated_GET(self):
         client = HttpClient(self.USERNAME, self.PASSWORD)
         path = self.URI_BASE + '/auth'
-        self.assertEquals(client.GET(path), self.RESPONSE)
+        self.assertEqual(client.GET(path), self.RESPONSE)
 
     def test_unauthenticated_GET(self):
         client = HttpClient()
@@ -186,7 +186,7 @@ class Test_HttpClient(unittest.TestCase):
     def test_POST(self):
         client = HttpClient()
         path = self.URI_BASE + '/noauth'
-        self.assertEquals(
+        self.assertEqual(
             client.POST(
                 path, self.DUMMYDATA), codecs.encode(
                 self.DUMMYDATA.decode('utf-8'), 'rot-13').encode('utf-8'))
@@ -194,7 +194,7 @@ class Test_HttpClient(unittest.TestCase):
     def test_authenticated_POST(self):
         client = HttpClient(self.USERNAME, self.PASSWORD)
         path = self.URI_BASE + '/auth'
-        self.assertEquals(
+        self.assertEqual(
             client.POST(
                 path, self.DUMMYDATA), codecs.encode(
                 self.DUMMYDATA.decode('utf-8'), 'rot-13').encode('utf-8'))
@@ -207,14 +207,14 @@ class Test_HttpClient(unittest.TestCase):
     def test_PUT(self):
         client = HttpClient()
         path = self.URI_BASE + '/noauth'
-        self.assertEquals(client.PUT(path, self.DUMMYDATA), b'PUT OK')
+        self.assertEqual(client.PUT(path, self.DUMMYDATA), b'PUT OK')
 
     def test_GET_after_PUT(self):
         client = HttpClient()
         for i in range(10):
             path = self.URI_BASE + '/file.%(i)d.txt' % locals()
             client.PUT(path, self.RESPONSE + str(i).encode('utf-8'))
-            self.assertEquals(
+            self.assertEqual(
                 client.GET(path),
                 self.RESPONSE +
                 str(i).encode('utf-8'))
