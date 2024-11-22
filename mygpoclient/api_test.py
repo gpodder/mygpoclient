@@ -48,9 +48,9 @@ class Test_SubscriptionChanges(unittest.TestCase):
 
     def test_initSetsCorrectAttributes(self):
         changes = api.SubscriptionChanges(self.ADD, self.REMOVE, self.SINCE)
-        self.assertEquals(changes.add, self.ADD)
-        self.assertEquals(changes.remove, self.REMOVE)
-        self.assertEquals(changes.since, self.SINCE)
+        self.assertEqual(changes.add, self.ADD)
+        self.assertEqual(changes.remove, self.REMOVE)
+        self.assertEqual(changes.since, self.SINCE)
 
 
 class Test_EpisodeActionChanges(unittest.TestCase):
@@ -63,8 +63,8 @@ class Test_EpisodeActionChanges(unittest.TestCase):
 
     def test_initSetsCorrectAttributes(self):
         changes = api.EpisodeActionChanges(self.ACTIONS, self.SINCE)
-        self.assertEquals(changes.actions, self.ACTIONS)
-        self.assertEquals(changes.since, self.SINCE)
+        self.assertEqual(changes.actions, self.ACTIONS)
+        self.assertEqual(changes.since, self.SINCE)
 
 
 class Test_PodcastDevice(unittest.TestCase):
@@ -72,10 +72,10 @@ class Test_PodcastDevice(unittest.TestCase):
 
     def test_initSetsCorrectAttributes(self):
         device = api.PodcastDevice(DEVICE_ID_1, self.CAPTION, 'mobile', 42)
-        self.assertEquals(device.device_id, DEVICE_ID_1)
-        self.assertEquals(device.caption, self.CAPTION)
-        self.assertEquals(device.type, 'mobile')
-        self.assertEquals(device.subscriptions, 42)
+        self.assertEqual(device.device_id, DEVICE_ID_1)
+        self.assertEqual(device.caption, self.CAPTION)
+        self.assertEqual(device.type, 'mobile')
+        self.assertEqual(device.subscriptions, 42)
 
     def test_invalidDeviceType_raisesValueError(self):
         self.assertRaises(ValueError,
@@ -98,14 +98,14 @@ class Test_EpisodeAction(unittest.TestCase):
         action = api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'play',
                                    DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED,
                                    self.VALID_POSITION, self.VALID_TOTAL)
-        self.assertEquals(action.podcast, FEED_URL_1)
-        self.assertEquals(action.episode, EPISODE_URL_1)
-        self.assertEquals(action.action, 'play')
-        self.assertEquals(action.device, DEVICE_ID_1)
-        self.assertEquals(action.timestamp, self.XML_TIMESTAMP)
-        self.assertEquals(action.started, self.VALID_STARTED)
-        self.assertEquals(action.position, self.VALID_POSITION)
-        self.assertEquals(action.total, self.VALID_TOTAL)
+        self.assertEqual(action.podcast, FEED_URL_1)
+        self.assertEqual(action.episode, EPISODE_URL_1)
+        self.assertEqual(action.action, 'play')
+        self.assertEqual(action.device, DEVICE_ID_1)
+        self.assertEqual(action.timestamp, self.XML_TIMESTAMP)
+        self.assertEqual(action.started, self.VALID_STARTED)
+        self.assertEqual(action.position, self.VALID_POSITION)
+        self.assertEqual(action.total, self.VALID_TOTAL)
 
     def test_invalidAction_raisesValueError(self):
         self.assertRaises(ValueError,
@@ -155,36 +155,36 @@ class Test_EpisodeAction(unittest.TestCase):
     def test_toDictionary_containsMandatoryAttributes(self):
         action = api.EpisodeAction(FEED_URL_1, EPISODE_URL_1, 'play')
         dictionary = action.to_dictionary()
-        self.assertEquals(len(list(dictionary.keys())), 3)
-        self.assert_('podcast' in dictionary)
-        self.assert_('episode' in dictionary)
-        self.assert_('action' in dictionary)
-        self.assertEquals(dictionary['podcast'], FEED_URL_1)
-        self.assertEquals(dictionary['episode'], EPISODE_URL_1)
-        self.assertEquals(dictionary['action'], 'play')
+        self.assertEqual(len(list(dictionary.keys())), 3)
+        self.assertIn('podcast', dictionary)
+        self.assertIn('episode', dictionary)
+        self.assertIn('action', dictionary)
+        self.assertEqual(dictionary['podcast'], FEED_URL_1)
+        self.assertEqual(dictionary['episode'], EPISODE_URL_1)
+        self.assertEqual(dictionary['action'], 'play')
 
     def test_toDictionary_containsAllAttributes(self):
         action = api.EpisodeAction(FEED_URL_3, EPISODE_URL_4, 'play',
                                    DEVICE_ID_1, self.XML_TIMESTAMP, self.VALID_STARTED,
                                    self.VALID_POSITION, self.VALID_TOTAL)
         dictionary = action.to_dictionary()
-        self.assertEquals(len(list(dictionary.keys())), 8)
-        self.assert_('podcast' in dictionary)
-        self.assert_('episode' in dictionary)
-        self.assert_('action' in dictionary)
-        self.assert_('device' in dictionary)
-        self.assert_('timestamp' in dictionary)
-        self.assert_('started' in dictionary)
-        self.assert_('position' in dictionary)
-        self.assert_('total' in dictionary)
-        self.assertEquals(dictionary['podcast'], FEED_URL_3)
-        self.assertEquals(dictionary['episode'], EPISODE_URL_4)
-        self.assertEquals(dictionary['action'], 'play')
-        self.assertEquals(dictionary['device'], DEVICE_ID_1)
-        self.assertEquals(dictionary['timestamp'], self.XML_TIMESTAMP)
-        self.assertEquals(dictionary['started'], self.VALID_STARTED)
-        self.assertEquals(dictionary['position'], self.VALID_POSITION)
-        self.assertEquals(dictionary['total'], self.VALID_TOTAL)
+        self.assertEqual(len(list(dictionary.keys())), 8)
+        self.assertIn('podcast', dictionary)
+        self.assertIn('episode', dictionary)
+        self.assertIn('action', dictionary)
+        self.assertIn('device', dictionary)
+        self.assertIn('timestamp', dictionary)
+        self.assertIn('started', dictionary)
+        self.assertIn('position', dictionary)
+        self.assertIn('total', dictionary)
+        self.assertEqual(dictionary['podcast'], FEED_URL_3)
+        self.assertEqual(dictionary['episode'], EPISODE_URL_4)
+        self.assertEqual(dictionary['action'], 'play')
+        self.assertEqual(dictionary['device'], DEVICE_ID_1)
+        self.assertEqual(dictionary['timestamp'], self.XML_TIMESTAMP)
+        self.assertEqual(dictionary['started'], self.VALID_STARTED)
+        self.assertEqual(dictionary['position'], self.VALID_POSITION)
+        self.assertEqual(dictionary['total'], self.VALID_TOTAL)
 
 
 class Test_MygPodderClient(unittest.TestCase):
@@ -223,13 +223,13 @@ class Test_MygPodderClient(unittest.TestCase):
         self.fake_client.response_value = value
 
     def assert_http_request_count(self, count):
-        self.assertEquals(len(self.fake_client.requests), count)
+        self.assertEqual(len(self.fake_client.requests), count)
 
     def has_put_json_data(self, data, required_method='PUT'):
         """Returns True if the FakeJsonClient has received the given data"""
         for method, uri, sent in self.fake_client.requests:
             if method == required_method:
-                self.assertEquals(sent, data)
+                self.assertEqual(sent, data)
                 return True
 
         return False
@@ -241,17 +241,17 @@ class Test_MygPodderClient(unittest.TestCase):
     def test_getSubscriptions_withPodcastDevice(self):
         self.set_http_response_value(b'[]')
         device = api.PodcastDevice('manatee', 'My Device', 'mobile', 20)
-        self.assertEquals(self.client.get_subscriptions(device), [])
+        self.assertEqual(self.client.get_subscriptions(device), [])
         self.assert_http_request_count(1)
 
     def test_putSubscriptions_withPodcastDevice(self):
         self.set_http_response_value(b'')
         device = api.PodcastDevice('manatee', 'My Device', 'mobile', 20)
-        self.assertEquals(
+        self.assertEqual(
             self.client.put_subscriptions(
                 device, self.ADD), True)
         self.assert_http_request_count(1)
-        self.assert_(self.has_put_json_data(self.ADD))
+        self.assertTrue(self.has_put_json_data(self.ADD))
 
     def test_updateSubscriptions_raisesValueError_onInvalidAddList(self):
         self.assertRaises(ValueError,
@@ -334,12 +334,12 @@ class Test_MygPodderClient(unittest.TestCase):
         result = self.client.update_subscriptions(DEVICE_ID_1,
                                                   self.ADD, self.REMOVE)
         # result is a UpdateResult object
-        self.assert_(hasattr(result, 'since'))
-        self.assert_(hasattr(result, 'update_urls'))
-        self.assertEquals(result.since, self.SINCE)
-        self.assertEquals(result.update_urls, update_urls_expected)
+        self.assertTrue(hasattr(result, 'since'))
+        self.assertTrue(hasattr(result, 'update_urls'))
+        self.assertEqual(result.since, self.SINCE)
+        self.assertEqual(result.update_urls, update_urls_expected)
         self.assert_http_request_count(1)
-        self.assert_(self.has_posted_json_data(self.ADD_REMOVE_AS_JSON_UPLOAD))
+        self.assertTrue(self.has_posted_json_data(self.ADD_REMOVE_AS_JSON_UPLOAD))
 
     def test_pullSubscriptions_raisesInvalidResponse_onEmptyResponse(self):
         self.set_http_response_value(b'')
@@ -442,9 +442,9 @@ class Test_MygPodderClient(unittest.TestCase):
         "timestamp": 1262103016}
         """)
         changes = self.client.pull_subscriptions(DEVICE_ID_2)
-        self.assertEquals(changes.add, [FEED_URL_1, FEED_URL_2])
-        self.assertEquals(changes.remove, [FEED_URL_3, FEED_URL_4])
-        self.assertEquals(changes.since, self.SINCE)
+        self.assertEqual(changes.add, [FEED_URL_1, FEED_URL_2])
+        self.assertEqual(changes.remove, [FEED_URL_3, FEED_URL_4])
+        self.assertEqual(changes.since, self.SINCE)
         self.assert_http_request_count(1)
 
     def test_uploadEpisodeActions_raisesInvalidResponse_onEmptyResponse(self):
@@ -471,9 +471,9 @@ class Test_MygPodderClient(unittest.TestCase):
         {"timestamp": 1262103016}
         """)
         result = self.client.upload_episode_actions(self.ACTIONS)
-        self.assertEquals(result, self.SINCE)
+        self.assertEqual(result, self.SINCE)
         self.assert_http_request_count(1)
-        self.assert_(self.has_posted_json_data(self.ACTIONS_AS_JSON_UPLOAD))
+        self.assertTrue(self.has_posted_json_data(self.ACTIONS_AS_JSON_UPLOAD))
 
     def test_downloadEpisodeActions_raisesInvalidResponse_onEmptyResponse(
             self):
@@ -535,47 +535,47 @@ class Test_MygPodderClient(unittest.TestCase):
         ], "timestamp": 1262103016}
         """)
         changes = self.client.download_episode_actions()
-        self.assertEquals(len(changes.actions), 2)
+        self.assertEqual(len(changes.actions), 2)
         action1, action2 = changes.actions
-        self.assertEquals(action1.podcast, 'a')
-        self.assertEquals(action1.episode, 'b')
-        self.assertEquals(action1.action, 'download')
-        self.assertEquals(action2.podcast, 'x')
-        self.assertEquals(action2.episode, 'y')
-        self.assertEquals(action2.action, 'play')
-        self.assertEquals(changes.since, self.SINCE)
+        self.assertEqual(action1.podcast, 'a')
+        self.assertEqual(action1.episode, 'b')
+        self.assertEqual(action1.action, 'download')
+        self.assertEqual(action2.podcast, 'x')
+        self.assertEqual(action2.episode, 'y')
+        self.assertEqual(action2.action, 'play')
+        self.assertEqual(changes.since, self.SINCE)
         self.assert_http_request_count(1)
 
     def test_updateDeviceSettings_withNothing(self):
         self.set_http_response_value(b'')
         result = self.client.update_device_settings(DEVICE_ID_1)
-        self.assertEquals(result, True)
+        self.assertEqual(result, True)
         self.assert_http_request_count(1)
-        self.assert_(self.has_posted_json_data({}))
+        self.assertTrue(self.has_posted_json_data({}))
 
     def test_updateDeviceSettings_withCaption(self):
         self.set_http_response_value(b'')
         result = self.client.update_device_settings(DEVICE_ID_1,
                                                     caption='Poodonkis')
-        self.assertEquals(result, True)
+        self.assertEqual(result, True)
         self.assert_http_request_count(1)
-        self.assert_(self.has_posted_json_data({'caption': 'Poodonkis'}))
+        self.assertTrue(self.has_posted_json_data({'caption': 'Poodonkis'}))
 
     def test_updateDeviceSettings_withType(self):
         self.set_http_response_value(b'')
         result = self.client.update_device_settings(DEVICE_ID_1,
                                                     type='desktop')
-        self.assertEquals(result, True)
+        self.assertEqual(result, True)
         self.assert_http_request_count(1)
-        self.assert_(self.has_posted_json_data({'type': 'desktop'}))
+        self.assertTrue(self.has_posted_json_data({'type': 'desktop'}))
 
     def test_updateDeviceSettings_withCaptionAndType(self):
         self.set_http_response_value(b'')
         result = self.client.update_device_settings(DEVICE_ID_1,
                                                     'My Unit Testing Device', 'desktop')
-        self.assertEquals(result, True)
+        self.assertEqual(result, True)
         self.assert_http_request_count(1)
-        self.assert_(self.has_posted_json_data({
+        self.assertTrue(self.has_posted_json_data({
             'caption': 'My Unit Testing Device',
             'type': 'desktop'}))
 
@@ -610,16 +610,16 @@ class Test_MygPodderClient(unittest.TestCase):
         ]
         """)
         devices = self.client.get_devices()
-        self.assertEquals(len(devices), 2)
+        self.assertEqual(len(devices), 2)
         device1, device2 = devices
-        self.assertEquals(device1.device_id, DEVICE_ID_1)
-        self.assertEquals(device1.caption, 'Phone')
-        self.assertEquals(device1.type, 'mobile')
-        self.assertEquals(device1.subscriptions, 42)
-        self.assertEquals(device2.device_id, DEVICE_ID_2)
-        self.assertEquals(device2.caption, 'The Lappy')
-        self.assertEquals(device2.type, 'laptop')
-        self.assertEquals(device2.subscriptions, 4711)
+        self.assertEqual(device1.device_id, DEVICE_ID_1)
+        self.assertEqual(device1.caption, 'Phone')
+        self.assertEqual(device1.type, 'mobile')
+        self.assertEqual(device1.subscriptions, 42)
+        self.assertEqual(device2.device_id, DEVICE_ID_2)
+        self.assertEqual(device2.caption, 'The Lappy')
+        self.assertEqual(device2.type, 'laptop')
+        self.assertEqual(device2.subscriptions, 4711)
         self.assert_http_request_count(1)
 
     def test_getFavoriteEpisodes_returnsEpisodeList(self):
@@ -644,24 +644,24 @@ class Test_MygPodderClient(unittest.TestCase):
         ]
         """)
         favorites = self.client.get_favorite_episodes()
-        self.assertEquals(len(favorites), 2)
+        self.assertEqual(len(favorites), 2)
         episode1, episode2 = favorites
-        self.assertEquals(episode1.title, 'TWiT 245: No Hitler For You')
-        self.assertEquals(
+        self.assertEqual(episode1.title, 'TWiT 245: No Hitler For You')
+        self.assertEqual(
             episode1.url,
             'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
-        self.assertEquals(
+        self.assertEqual(
             episode1.podcast_title,
             'this WEEK in TECH - MP3 Edition')
-        self.assertEquals(episode1.podcast_url, 'http://leo.am/podcasts/twit')
-        self.assertEquals(episode1.description, '[...]')
-        self.assertEquals(
+        self.assertEqual(episode1.podcast_url, 'http://leo.am/podcasts/twit')
+        self.assertEqual(episode1.description, '[...]')
+        self.assertEqual(
             episode1.website,
             'http://www.podtrac.com/pts/redirect.mp3/aolradio.podcast.aol.com/twit/twit0245.mp3')
-        self.assertEquals(episode1.released, '2010-12-25T00:30:00')
-        self.assertEquals(
+        self.assertEqual(episode1.released, '2010-12-25T00:30:00')
+        self.assertEqual(
             episode1.mygpo_link,
             'http://gpodder.net/episode/1046492')
-        self.assertEquals(
+        self.assertEqual(
             episode2.website,
             'http://feedproxy.google.com/~r/coverville/~3/5UK8-PZmmMQ/')

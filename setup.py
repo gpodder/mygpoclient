@@ -2,7 +2,7 @@
 # Generic setup script for single-package Python projects
 # by Thomas Perl <thp.io/about>
 
-from distutils.core import setup
+from setuptools import setup
 
 import re
 import os
